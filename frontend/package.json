@@ -7,7 +7,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "lint": "ng lint"
+    "lint": "ng lint",
+    "prepare": "husky"
   },
   "private": true,
   "dependencies": {
@@ -37,6 +38,7 @@
     "eslint-import-resolver-typescript": "^4.2.4",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-prettier": "^5.2.5",
+    "husky": "^9.1.7",
     "jasmine-core": "~5.5.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
@@ -47,5 +49,11 @@
     "prettier": "^3.5.3",
     "typescript": "~5.7.2",
     "typescript-eslint": "8.27.0"
+  },
+  "lint-staged": {
+    "*.{ts,js,html,css,scss}": [
+      "npx prettier --write",
+      "npx eslint --fix --config frontend/eslint.config.js"
+    ]
   }
 }
