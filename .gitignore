@@ -27,7 +27,7 @@ Thumbs.db
 /frontend/tmp
 /frontend/out-tsc
 /frontend/bazel-out
-/.angular/cache
+/frontend/.angular/cache
 
 # Dependencies
 /frontend/node_modules
