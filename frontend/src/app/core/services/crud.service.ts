@@ -11,8 +11,8 @@ export class CrudService {
 
   constructor(private http: HttpClient) {}
 
-  get<T>(endpoint: string): Observable<T> {
-    return this.http.get<T>(`${this.baseUrl}${endpoint}`, {});
+  get<T>(endpoint: string, apiUrl: string = this.baseUrl): Observable<T> {
+    return this.http.get<T>(`${apiUrl}${endpoint}`, {});
   }
 
   getById<T>(endpoint: string, id: number | string): Observable<T> {
