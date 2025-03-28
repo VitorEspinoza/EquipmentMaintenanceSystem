@@ -1,0 +1,23 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="rafael.leonardo">
+        <sql dbms="postgresql">
+            CREATE TABLE maintenance_requests (
+                                                  id SERIAL PRIMARY KEY,
+                                                  startDate TIMESTAMP NOT NULL,
+                                                  state VARCHAR(25) NOT NULL,
+                                                  idEquipment INTEGER NOT NULL,
+                                                  defectDescription VARCHAR(255) NOT NULL,
+                                                  idClient INTEGER NOT NULL,
+                                                  rejectionReason VARCHAR(255),
+                                                  budgetPrice DECIMAL(10,2),
+                                                  paymentDate TIMESTAMP,
+                                                  FOREIGN KEY (idEquipment) REFERENCES equipments(idEquipment),
+                                                  FOREIGN KEY (idClient) REFERENCES client(idClient)
+            );
+        </sql>
+    </changeSet>
+</databaseChangeLog>

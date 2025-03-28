@@ -1,0 +1,20 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="rafael.leonardo">
+        <sql dbms="postgresql">
+            CREATE TABLE address (
+                                       id SERIAL PRIMARY KEY,
+                                       zipcode VARCHAR(10) NOT NULL,
+                                       neighbourhood VARCHAR(100) NOT NULL,
+                                       street VARCHAR(255) NOT NULL,
+                                       city VARCHAR(100) NOT NULL,
+                                       state VARCHAR(50) NOT NULL,
+                                       number VARCHAR(10),
+                                       complement VARCHAR(100)
+           );
+        </sql>
+    </changeSet>
+</databaseChangeLog>
