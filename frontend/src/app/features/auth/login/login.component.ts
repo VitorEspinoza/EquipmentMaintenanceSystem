@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
@@ -14,7 +14,7 @@ export class LoginComponent implements OnInit {
   private readonly router = inject(Router);
 
   private readonly authService = inject(AuthService);
-  loginForm!: FormGoup;
+  loginForm!: FormGroup;
 
   ngOnInit(): void {
     this.loginForm = this.fb.group({
