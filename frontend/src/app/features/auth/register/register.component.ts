@@ -17,7 +17,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { Router, RouterModule } from '@angular/router';
 import { NgxMaskDirective, NgxMaskPipe } from 'ngx-mask';
-import { AddressService } from '../../../shared/models/service/addressService';
+import { catchError, of, switchMap } from 'rxjs';
+import { AddressService } from '../../../shared/models/service/address.service';
 import { AuthService } from '../services/auth.service';
 
 const MATERIAL_MODULES = [MatFormFieldModule, MatInputModule, MatButtonModule, MatCardModule, MatIconModule];
@@ -45,28 +46,47 @@ export class RegisterComponent implements OnInit {
       {
         password: ['', [Validators.required]],
         confirmPassword: ['', [Validators.required]],
-        cpf: ['', [Validators.required, Validators.length(11)]],
+        cpf: ['', [Validators.required, Validators.pattern(/^.{11}$/)]],
         name: ['', [Validators.required]],
         email: ['', [Validators.required, Validators.email]],
-        zipcode: ['', [Validators.required, Validators.minLength(8)]],
-        phone: ['', [Validators.required, Validators.minLength(10)]],
+        zipcode: ['', [Validators.required, Validators.pattern(/^.{8}$/)]],
+        phone: ['', [Validators.required, Validators.pattern(/^.{10,11}$/)]],
+        street: ['', [Validators.required]],
+        number: ['', [Validators.required]],
+        neighbourhood: ['', [Validators.required]],
+        city: ['', [Validators.required]],
+        state: ['', [Validators.required]],
+        complement: [''],
       },
       { validators: passwordMatchValidator }
     );
-    this.registerForm.get('cpf')?.valueChanges.subscribe(value => {
-      console.log(value);
-    });
-  }
-
-  searchAddressByZipcode() {
-    this.addressService.searchAddressByZipcode(this.registerForm.get('zipcode')?.value).subscribe(endereco => {
-      this.registerForm.patchValue({
-        street: endereco.logradouro,
-        neighborhood: endereco.bairro,
-        city: endereco.localidade,
-        state: endereco.estado,
+    this.registerForm
+      .get('zipcode')
+      ?.valueChanges.pipe(
+        switchMap(value => {
+          if (value && value.length === 8) {
+            return this.addressService
+              .searchAddressByZipcode(value)
+              .pipe(catchError(() => of('Erro ao acessar api Viacep!')));
+          }
+          return of(null);
+        })
+      )
+      .subscribe({
+        next: (endereco: { logradouro: string; bairro: string; localidade: string; estado: string }) => {
+          if (endereco) {
+            this.registerForm.patchValue({
+              street: endereco.logradouro,
+              neighbourhood: endereco.bairro,
+              city: endereco.localidade,
+              state: endereco.estado,
+            });
+          }
+        },
+        error: (message: string) => {
+          console.error(message);
+        },
       });
-    });
   }
 
   onSubmit() {
