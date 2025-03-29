@@ -1,4 +1,4 @@
-import { NgIf } from '@angular/common';
+import { CommonModule, NgIf } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import {
   AbstractControl,
@@ -12,18 +12,29 @@ import {
 } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatOptionModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select'; // Importe o MatSelectModule
 import { Router, RouterModule } from '@angular/router';
 import { NgxMaskDirective, NgxMaskPipe } from 'ngx-mask';
 import { catchError, of, switchMap } from 'rxjs';
 import { AddressService } from '../../../shared/models/service/address.service';
+import { State } from '../models/state';
 import { AuthService } from '../services/auth.service';
 
-const MATERIAL_MODULES = [MatFormFieldModule, MatInputModule, MatButtonModule, MatCardModule, MatIconModule];
+const MATERIAL_MODULES = [
+  MatFormFieldModule,
+  MatInputModule,
+  MatButtonModule,
+  MatCardModule,
+  MatIconModule,
+  MatOptionModule,
+  MatSelectModule,
+];
 const FORM_MODULES = [ReactiveFormsModule, FormsModule];
-const COMMON_MODULES = [NgIf];
+const COMMON_MODULES = [NgIf, CommonModule];
 const CORE_MODULES = [RouterModule];
 const NGXCONFIG = [NgxMaskDirective, NgxMaskPipe];
 
@@ -38,6 +49,7 @@ export class RegisterComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
   private readonly addressService = inject(AddressService); // Inject AddressService
+  states: State[] = [];
 
   registerForm!: FormGroup;
 
@@ -60,6 +72,10 @@ export class RegisterComponent implements OnInit {
       },
       { validators: passwordMatchValidator }
     );
+    this.addressService.searchNeighborhoods().subscribe((data: State[]) => {
+      this.states = data.sort((a, b) => a.nome.localeCompare(b.nome));
+    });
+
     this.registerForm
       .get('zipcode')
       ?.valueChanges.pipe(

@@ -7,10 +7,16 @@ import { CrudService } from '../../../core/services/crud.service';
 })
 export class AddressService {
   private readonly viaCepUrl = 'https://viacep.com.br/ws';
+  private readonly ibgeUrl = 'https://servicodados.ibge.gov.br';
   private readonly crudService = inject(CrudService);
 
   searchAddressByZipcode(zipcode: string): Observable<any> {
     const endpoint = `/${zipcode}/json/`;
     return this.crudService.get(endpoint, this.viaCepUrl);
+  }
+
+  searchNeighborhoods(): Observable<any> {
+    const endpoint = '/api/v1/localidades/estados/';
+    return this.crudService.get(endpoint, this.ibgeUrl);
   }
 }
