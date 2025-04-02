@@ -4,7 +4,7 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <include file="db/changelog/migrations/tables/001_create_user_table.xml"/>
+    <include file="/db/changelog/migrations/tables/001_create_account_table.xml"/>
     <include file="db/changelog/migrations/tables/002_create_address_table.xml"/>
     <include file="db/changelog/migrations/tables/003_create_client_table.xml"/>
     <include file="db/changelog/migrations/tables/004_create_employee_table.xml"/>

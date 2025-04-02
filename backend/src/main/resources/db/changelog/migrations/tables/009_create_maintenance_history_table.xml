@@ -12,9 +12,9 @@
                                                  idDestinationEmployee INTEGER NOT NULL,
                                                  redirectDate TIMESTAMP NOT NULL,
                                                  reason VARCHAR(255) NOT NULL,
-                                                 FOREIGN KEY (idMaintenance) REFERENCES maintenance(idMaintenance),
-                                                 FOREIGN KEY (idOriginEmployee) REFERENCES employee(idEmployee),
-                                                 FOREIGN KEY (idDestinationEmployee) REFERENCES employee(idEmployee)
+                                                 FOREIGN KEY (idMaintenance) REFERENCES maintenance(id),
+                                                 FOREIGN KEY (idOriginEmployee) REFERENCES employee(id),
+                                                 FOREIGN KEY (idDestinationEmployee) REFERENCES employee(id)
             );
         </sql>
     </changeSet>

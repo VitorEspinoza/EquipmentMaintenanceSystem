@@ -13,8 +13,8 @@
                                          customerGuidelines VARCHAR(255) NOT NULL,
                                          startDate TIMESTAMP NOT NULL,
                                          endDate TIMESTAMP,
-                                         FOREIGN KEY (idRequest) REFERENCES maintenance_requests(idRequest),
-                                         FOREIGN KEY (idEmployee) REFERENCES employee(idEmployee)
+                                         FOREIGN KEY (idRequest) REFERENCES maintenance_request(id),
+                                         FOREIGN KEY (idEmployee) REFERENCES employee(id)
             );
         </sql>
     </changeSet>

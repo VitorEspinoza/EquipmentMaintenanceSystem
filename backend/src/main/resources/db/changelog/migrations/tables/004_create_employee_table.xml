@@ -7,8 +7,8 @@
         <sql dbms="postgresql">
             CREATE TABLE employee (
                                       id SERIAL PRIMARY KEY,
-                                      idUser INTEGER NOT NULL,
-                                      FOREIGN KEY (idUser) REFERENCES user(idUser)
+                                      idAccount INTEGER NOT NULL,
+                                      FOREIGN KEY (idAccount) REFERENCES account(id)
             );
         </sql>
     </changeSet>

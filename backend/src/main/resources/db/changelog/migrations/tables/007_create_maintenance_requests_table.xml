@@ -5,7 +5,7 @@
 
     <changeSet id="1" author="rafael.leonardo">
         <sql dbms="postgresql">
-            CREATE TABLE maintenance_requests (
+            CREATE TABLE maintenance_request (
                                                   id SERIAL PRIMARY KEY,
                                                   startDate TIMESTAMP NOT NULL,
                                                   state VARCHAR(25) NOT NULL,
@@ -15,8 +15,8 @@
                                                   rejectionReason VARCHAR(255),
                                                   budgetPrice DECIMAL(10,2),
                                                   paymentDate TIMESTAMP,
-                                                  FOREIGN KEY (idEquipment) REFERENCES equipments(idEquipment),
-                                                  FOREIGN KEY (idClient) REFERENCES client(idClient)
+                                                  FOREIGN KEY (idEquipment) REFERENCES equipment(id),
+                                                  FOREIGN KEY (idClient) REFERENCES client(id)
             );
         </sql>
     </changeSet>

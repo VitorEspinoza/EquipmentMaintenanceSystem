@@ -11,7 +11,7 @@
                                                    previousState VARCHAR(20),
                                                    newState VARCHAR(20) NOT NULL,
                                                    changeDate TIMESTAMP NOT NULL,
-                                                   FOREIGN KEY (idRequest) REFERENCES maintenance_requests(idRequest)
+                                                   FOREIGN KEY (idRequest) REFERENCES maintenance_request(id)
             );
         </sql>
     </changeSet>
