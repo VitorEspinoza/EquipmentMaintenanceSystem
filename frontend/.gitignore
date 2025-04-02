@@ -1,0 +1,43 @@
+### COMMON ###
+.DS_Store
+Thumbs.db
+*.log
+.env
+*.env.*
+!.env.example
+
+### IDEs and Editors ###
+.idea/
+.vscode/*
+.vscode/settings.json
+.vscode/tasks.json
+.vscode/launch.json
+.vscode/extensions.json
+.history/*
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+### FRONTEND (ANGULAR) ###
+# Compiled output
+dist
+tmp
+out-tsc
+bazel-out
+.angular/cache
+
+# Dependencies
+node_modules
+
+# Testing and coverage
+coverage
+libpeerconnection.log
+testem.log
+typings
+
+# Miscellaneous Angular
+.sass-cache/
+connect.lock
