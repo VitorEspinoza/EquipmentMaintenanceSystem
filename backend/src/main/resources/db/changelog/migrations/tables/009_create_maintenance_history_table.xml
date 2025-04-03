@@ -7,14 +7,14 @@
         <sql dbms="postgresql">
             CREATE TABLE maintenance_history (
                                                  id SERIAL PRIMARY KEY,
-                                                 idMaintenance INTEGER NOT NULL,
-                                                 idOriginEmployee INTEGER NOT NULL,
-                                                 idDestinationEmployee INTEGER NOT NULL,
-                                                 redirectDate TIMESTAMP NOT NULL,
+                                                 id_maintenance INTEGER NOT NULL,
+                                                 id_origin_employee INTEGER NOT NULL,
+                                                 id_destination_employee INTEGER NOT NULL,
+                                                 redirect_date TIMESTAMP NOT NULL,
                                                  reason VARCHAR(255) NOT NULL,
-                                                 FOREIGN KEY (idMaintenance) REFERENCES maintenance(id),
-                                                 FOREIGN KEY (idOriginEmployee) REFERENCES employee(id),
-                                                 FOREIGN KEY (idDestinationEmployee) REFERENCES employee(id)
+                                                 FOREIGN KEY (id_maintenance) REFERENCES maintenance(id),
+                                                 FOREIGN KEY (id_origin_employee) REFERENCES employee(id),
+                                                 FOREIGN KEY (id_destination_employee) REFERENCES employee(id)
             );
         </sql>
     </changeSet>

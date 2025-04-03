@@ -5,7 +5,7 @@
 
     <changeSet id="1" author="rafael.leonardo">
         <sql dbms="postgresql">
-            CREATE TABLE equipment_categories (
+            CREATE TABLE equipment_category (
                                                   id SERIAL PRIMARY KEY,
                                                   name VARCHAR(50) NOT NULL,
                                                   description VARCHAR(255),

@@ -7,14 +7,14 @@
         <sql dbms="postgresql">
             CREATE TABLE maintenance (
                                          id SERIAL PRIMARY KEY,
-                                         idRequest INTEGER NOT NULL,
-                                         idEmployee INTEGER NOT NULL,
+                                         id_request INTEGER NOT NULL,
+                                         id_employee INTEGER NOT NULL,
                                          description VARCHAR(255) NOT NULL,
-                                         customerGuidelines VARCHAR(255) NOT NULL,
-                                         startDate TIMESTAMP NOT NULL,
-                                         endDate TIMESTAMP,
-                                         FOREIGN KEY (idRequest) REFERENCES maintenance_request(id),
-                                         FOREIGN KEY (idEmployee) REFERENCES employee(id)
+                                         customer_guidelines VARCHAR(255) NOT NULL,
+                                         start_date TIMESTAMP NOT NULL,
+                                         end_date TIMESTAMP,
+                                         FOREIGN KEY (id_request) REFERENCES maintenance_request(id),
+                                         FOREIGN KEY (id_employee) REFERENCES employee(id)
             );
         </sql>
     </changeSet>
