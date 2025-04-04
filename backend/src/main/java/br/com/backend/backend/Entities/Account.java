@@ -1,6 +1,5 @@
-package br.com.backend.backend.entity;
+package br.com.backend.backend.Entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,19 +25,6 @@ public class Account {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "name")
-    private String name;
-
-    @Column(name = "cpf")
-    private String cpf;
-
-    @Column(name = "phone")
-    private String phone;
-
     @Column(name = "active")
     private Boolean active;
-
-    @JsonBackReference
-    @OneToOne(mappedBy = "account", cascade = CascadeType.ALL)
-    private Client client;
 }

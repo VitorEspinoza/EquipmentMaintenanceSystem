@@ -1,6 +1,5 @@
-package br.com.backend.backend.entity;
+package br.com.backend.backend.Entities;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,13 +19,21 @@ public class Client {
     @Column(name = "id")
     private Integer id;
 
-    @JsonManagedReference
     @OneToOne
     @JoinColumn(name = "id_account", referencedColumnName = "id")
     private Account account;
 
-    @JsonManagedReference
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne
     @JoinColumn(name = "id_address", referencedColumnName = "id")
     private Address address;
+
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "cpf")
+    private String cpf;
+
+    @Column(name = "phone")
+    private String phone;
+
 }
