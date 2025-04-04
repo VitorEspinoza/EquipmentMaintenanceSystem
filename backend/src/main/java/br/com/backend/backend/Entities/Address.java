@@ -1,6 +1,5 @@
-package br.com.backend.backend.entity;
+package br.com.backend.backend.Entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -40,8 +39,4 @@ public class Address {
 
     @Column(name = "complement")
     private String complement;
-
-    @JsonBackReference
-    @OneToOne(mappedBy = "address", cascade = CascadeType.ALL)
-    private Client client;
 }
