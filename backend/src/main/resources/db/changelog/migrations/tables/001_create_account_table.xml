@@ -9,12 +9,9 @@
                                     id SERIAL PRIMARY KEY,
                                     email VARCHAR(120) NOT NULL,
                                     password VARCHAR(128) NOT NULL,
-                                    name VARCHAR(120) NOT NULL,
-                                    cpf VARCHAR(11),
-                                    phone VARCHAR(20),
+                                    role VARCHAR(20) NOT NULL CHECK (role IN ('CLIENT', 'EMPLOYEE')),
                                     active BOOLEAN NOT NULL DEFAULT TRUE,
-                                    UNIQUE (email),
-                                    UNIQUE (cpf)
+                                    UNIQUE (email)
             );
         </sql>
     </changeSet>

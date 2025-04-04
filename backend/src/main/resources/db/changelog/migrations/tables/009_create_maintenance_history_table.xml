@@ -10,7 +10,7 @@
                                                  id_maintenance INTEGER NOT NULL,
                                                  id_origin_employee INTEGER NOT NULL,
                                                  id_destination_employee INTEGER NOT NULL,
-                                                 redirect_date TIMESTAMP NOT NULL,
+                                                 redirectDate TIMESTAMP NOT NULL,
                                                  reason VARCHAR(255) NOT NULL,
                                                  FOREIGN KEY (id_maintenance) REFERENCES maintenance(id),
                                                  FOREIGN KEY (id_origin_employee) REFERENCES employee(id),
