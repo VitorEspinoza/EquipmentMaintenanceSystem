@@ -12,6 +12,11 @@
                                       FOREIGN KEY (idAccount) REFERENCES account(id),
                                       FOREIGN KEY (idAddress) REFERENCES address(id),
                                       UNIQUE (idAddress)
+                                      id_account INTEGER NOT NULL,
+                                      id_address INTEGER,
+                                      FOREIGN KEY (id_account) REFERENCES account(id),
+                                      FOREIGN KEY (id_address) REFERENCES address(id),
+                                      UNIQUE (id_address)
             );
         </sql>
     </changeSet>

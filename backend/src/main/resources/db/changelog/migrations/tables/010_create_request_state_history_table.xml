@@ -7,11 +7,11 @@
         <sql dbms="postgresql">
             CREATE TABLE request_state_history (
                                                    id SERIAL PRIMARY KEY,
-                                                   idRequest INTEGER NOT NULL,
-                                                   previousState VARCHAR(20),
-                                                   newState VARCHAR(20) NOT NULL,
-                                                   changeDate TIMESTAMP NOT NULL,
-                                                   FOREIGN KEY (idRequest) REFERENCES maintenance_request(id)
+                                                   id_request INTEGER NOT NULL,
+                                                   previous_state VARCHAR(20),
+                                                   new_state VARCHAR(20) NOT NULL,
+                                                   change_date TIMESTAMP NOT NULL,
+                                                   FOREIGN KEY (id_request) REFERENCES maintenance_request(id)
             );
         </sql>
     </changeSet>

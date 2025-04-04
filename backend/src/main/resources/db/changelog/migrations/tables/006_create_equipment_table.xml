@@ -7,9 +7,9 @@
         <sql dbms="postgresql">
             CREATE TABLE equipment (
                                        id SERIAL PRIMARY KEY,
-                                       descriptionEquipment VARCHAR(255) NOT NULL,
-                                       idEquipmentCategory INTEGER NOT NULL,
-                                       FOREIGN KEY (idEquipmentCategory) REFERENCES equipment_categories(id)
+                                       description_equipment VARCHAR(255) NOT NULL,
+                                       id_equipment_category INTEGER NOT NULL,
+                                       FOREIGN KEY (id_equipment_category) REFERENCES equipment_categories(id)
             );
         </sql>
     </changeSet>

@@ -9,6 +9,8 @@
                                       id SERIAL PRIMARY KEY,
                                       idAccount INTEGER NOT NULL,
                                       FOREIGN KEY (idAccount) REFERENCES account(id)
+                                      id_account INTEGER NOT NULL,
+                                      FOREIGN KEY (id_account) REFERENCES account(id)
             );
         </sql>
     </changeSet>

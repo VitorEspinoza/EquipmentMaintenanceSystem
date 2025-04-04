@@ -7,16 +7,16 @@
         <sql dbms="postgresql">
             CREATE TABLE maintenance_request (
                                                   id SERIAL PRIMARY KEY,
-                                                  startDate TIMESTAMP NOT NULL,
+                                                  start_date TIMESTAMP NOT NULL,
                                                   state VARCHAR(25) NOT NULL,
-                                                  idEquipment INTEGER NOT NULL,
-                                                  defectDescription VARCHAR(255) NOT NULL,
-                                                  idClient INTEGER NOT NULL,
-                                                  rejectionReason VARCHAR(255),
-                                                  budgetPrice DECIMAL(10,2),
-                                                  paymentDate TIMESTAMP,
-                                                  FOREIGN KEY (idEquipment) REFERENCES equipment(id),
-                                                  FOREIGN KEY (idClient) REFERENCES client(id)
+                                                  id_equipment INTEGER NOT NULL,
+                                                  defect_description VARCHAR(255) NOT NULL,
+                                                  id_client INTEGER NOT NULL,
+                                                  rejection_reason VARCHAR(255),
+                                                  budget_price DECIMAL(10,2),
+                                                  payment_date TIMESTAMP,
+                                                  FOREIGN KEY (id_equipment) REFERENCES equipment(id),
+                                                  FOREIGN KEY (id_client) REFERENCES client(id)
             );
         </sql>
     </changeSet>
