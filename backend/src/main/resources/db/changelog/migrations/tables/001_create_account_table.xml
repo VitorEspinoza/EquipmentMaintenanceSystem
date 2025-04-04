@@ -10,6 +10,7 @@
                                     email VARCHAR(120) NOT NULL,
                                     password VARCHAR(128) NOT NULL,
                                     role VARCHAR(20) NOT NULL CHECK (role IN ('CLIENT', 'EMPLOYEE')),
+                                    active BOOLEAN NOT NULL DEFAULT TRUE,
                                     UNIQUE (email)
             );
         </sql>
