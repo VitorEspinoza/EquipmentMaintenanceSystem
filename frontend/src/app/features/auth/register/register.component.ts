@@ -83,7 +83,7 @@ export class RegisterComponent implements OnInit {
         zipcode: ['', [Validators.required, Validators.pattern(/^.{8}$/)]],
         phone: ['', [Validators.required, Validators.pattern(/^.{10,11}$/)]],
         street: ['', [Validators.required]],
-        number: ['', [Validators.required]],
+        number: ['', [Validators.required, Validators.pattern('^[0-9]{1,6}$')]],
         neighbourhood: ['', [Validators.required]],
         city: ['', [Validators.required, this.cityValidator]],
         state: ['', [Validators.required, this.stateValidator]],
