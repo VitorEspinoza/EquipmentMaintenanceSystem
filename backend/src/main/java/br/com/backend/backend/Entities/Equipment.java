@@ -1,6 +1,5 @@
-package br.com.backend.backend.entity;
+package br.com.backend.backend.Entities;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
