@@ -5,7 +5,7 @@
 
     <changeSet id="1" author="rafael.leonardo">
         <sql dbms="postgresql">
-            CREATE TABLE customer (
+            CREATE TABLE client (
                                       id SERIAL PRIMARY KEY,
                                       id_account INTEGER NOT NULL,
                                       id_address INTEGER,
