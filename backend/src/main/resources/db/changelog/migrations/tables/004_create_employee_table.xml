@@ -7,9 +7,9 @@
         <sql dbms="postgresql">
             CREATE TABLE employee (
                                       id SERIAL PRIMARY KEY,
-                                      idAccount INTEGER NOT NULL,
-                                      FOREIGN KEY (idAccount) REFERENCES account(id)
                                       id_account INTEGER NOT NULL,
+                                      name VARCHAR(120) NOT NULL,
+                                      birth_date DATE,
                                       FOREIGN KEY (id_account) REFERENCES account(id)
             );
         </sql>
