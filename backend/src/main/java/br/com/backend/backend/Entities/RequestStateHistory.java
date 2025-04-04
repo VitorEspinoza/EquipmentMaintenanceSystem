@@ -1,6 +1,6 @@
 package br.com.backend.backend.Entities;
 
-import br.com.backend.backend.Enums.MaintenanceRequestState;
+import br.com.backend.backend.Enums.EnMaintenanceRequestState;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -23,11 +23,11 @@ public class RequestStateHistory {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "previous_state", length = 20)
-    private MaintenanceRequestState previousState;
+    private EnMaintenanceRequestState previousState;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "new_state", nullable = false, length = 20)
-    private MaintenanceRequestState newState;
+    private EnMaintenanceRequestState newState;
 
     @Column(name = "change_date", nullable = false)
     private LocalDateTime changeDate;

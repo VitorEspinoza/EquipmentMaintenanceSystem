@@ -1,6 +1,6 @@
 package br.com.backend.backend.Enums;
 
-public enum MaintenanceRequestState {
+public enum EnMaintenanceRequestState {
     OPEN,
     QUOTED,
     REJECTED,
