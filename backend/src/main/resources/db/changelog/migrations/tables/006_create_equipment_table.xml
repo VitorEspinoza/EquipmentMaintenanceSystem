@@ -9,7 +9,7 @@
                                        id SERIAL PRIMARY KEY,
                                        description_equipment VARCHAR(255) NOT NULL,
                                        id_equipment_category INTEGER NOT NULL,
-                                       FOREIGN KEY (id_equipment_category) REFERENCES equipment_categories(id)
+                                       FOREIGN KEY (id_equipment_category) REFERENCES equipment_category(id)
             );
         </sql>
     </changeSet>
