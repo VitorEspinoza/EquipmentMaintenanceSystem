@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
 import { NotificationConfig } from '../interfaces/notificationConfig';
+import { NotificationComponent } from '../components/notification/notification.component';
 
 type NotificationType = 'success' | 'info' | 'error' | 'warning';
 
@@ -31,7 +32,7 @@ export class NotificationService {
       panelClass: ['custom-notification', config.data.type],
     };
 
-    return this.snackBar.openFromComponent(Notification, snackBarConfig);
+    return this.snackBar.openFromComponent(NotificationComponent, snackBarConfig);
   }
 
   private notify(type: NotificationType, message: string, title?: string, duration?: number) {

@@ -9,6 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { AuthService } from '../services/auth.service';
+import { NotificationService } from '../../../core/services/notification.service';
 
 const MATERIAL_MODULES = [MatFormFieldModule, MatInputModule, MatButtonModule, MatCardModule, MatIconModule];
 const FORM_MODULES = [ReactiveFormsModule, FormsModule];
@@ -24,7 +25,7 @@ const CORE_MODULES = [RouterModule];
 export class LoginComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
-
+  private readonly notificationService = inject(NotificationService);
   private readonly authService = inject(AuthService);
   loginForm!: FormGroup;
 
@@ -37,8 +38,8 @@ export class LoginComponent implements OnInit {
 
   onSubmit() {
     this.authService.login(this.loginForm.value).subscribe({
-      next: () => console.log('Successful'),
-      error: () => console.log('Error'),
+      next: () => this.notificationService.success('Sucesso', 'Login'),
+      error: () => this.notificationService.error('Error', 'Login'),
     });
   }
 }
