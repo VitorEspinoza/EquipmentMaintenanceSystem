@@ -1,7 +1,5 @@
-package br.com.backend.backend.entity;
+package br.com.backend.backend.Entities;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,7 +30,6 @@ public class EquipmentCategory {
     @Column(name = "active")
     private Boolean active;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
     private Set<Equipment> equipments;
 }
