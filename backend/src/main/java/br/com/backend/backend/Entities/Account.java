@@ -1,15 +1,12 @@
 package br.com.backend.backend.Entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Table(name = "account")
-@AllArgsConstructor
-@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Setter
 public class Account {
@@ -27,4 +24,17 @@ public class Account {
 
     @Column(name = "active")
     private Boolean active;
+
+    public static Account create(String email, String password) {
+        return new Account(
+                null,
+                email,
+                password,
+                true
+        );
+    }
+
+    public void desativar() {
+        this.active = false;
+    }
 }
