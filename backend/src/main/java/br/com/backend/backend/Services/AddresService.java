@@ -25,14 +25,15 @@ public class AddresService {
     }
 
     private Address create(CreateAddressDTO createAddressDTO) {
-        Address addressCreate = new Address();
-        addressCreate.setZipcode(createAddressDTO.getZipcode());
-        addressCreate.setNeighbourhood(createAddressDTO.getNeighbourhood());
-        addressCreate.setStreet(createAddressDTO.getStreet());
-        addressCreate.setCity(createAddressDTO.getCity());
-        addressCreate.setState(createAddressDTO.getState());
-        addressCreate.setNumber(createAddressDTO.getNumber());
-        addressCreate.setComplement(createAddressDTO.getComplement());
+        Address addressCreate = Address.create(
+                createAddressDTO.getZipcode(),
+                createAddressDTO.getNeighbourhood(),
+                createAddressDTO.getStreet(),
+                createAddressDTO.getCity(),
+                createAddressDTO.getState(),
+                createAddressDTO.getNumber(),
+                createAddressDTO.getComplement()
+        );
 
         return addressRepository.save(addressCreate);
     }

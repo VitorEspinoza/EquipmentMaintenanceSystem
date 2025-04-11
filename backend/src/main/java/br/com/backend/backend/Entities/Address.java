@@ -1,17 +1,13 @@
 package br.com.backend.backend.Entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Table(name = "address")
-@AllArgsConstructor
-@NoArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor(access=AccessLevel.PROTECTED)
 @Getter
-@Setter
 public class Address {
 
     @Id
@@ -39,4 +35,26 @@ public class Address {
 
     @Column(name = "complement")
     private String complement;
+
+    public static Address create(
+            String zipcode,
+            String neighbourhood,
+            String street,
+            String city,
+            String state,
+            String number,
+            String complement
+    ) {
+        return new Address(
+                null,
+                zipcode,
+                neighbourhood,
+                street,
+                city,
+                state,
+                number,
+                complement
+        );
+    }
+
 }
