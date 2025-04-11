@@ -34,4 +34,14 @@ public class EquipmentCategory {
     public static EquipmentCategory create(String name, String description, boolean active) {
         return new EquipmentCategory(null, name, description, active, new HashSet<>());
     }
+
+    public void update(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
+
+    public void inactivate() {
+        this.active = false;
+    }
+
 }
