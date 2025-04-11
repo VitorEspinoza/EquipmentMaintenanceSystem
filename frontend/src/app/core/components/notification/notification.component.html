@@ -1,0 +1,22 @@
+<div
+  [ngClass]="['flex items-center justify-between px-4 py-3 rounded-lg shadow-lg', typeStyles]"
+  data-testid="notification-container"
+>
+  <div class="flex items-center space-x-3">
+    <div class="text-xl">
+      <mat-icon data-testid="notification-icon">{{ getIcon() }}</mat-icon>
+    </div>
+    <div class="flex flex-col">
+      <span class="font-medium text-sm" data-testid="notification-title">{{ data.title }}</span>
+      <span class="text-sm opacity-90" data-testid="notification-message">{{ data.message }}</span>
+    </div>
+  </div>
+  <button
+    mat-icon-button
+    (click)="close()"
+    class="p-1 hover:opacity-80 transition-opacity"
+    data-testid="notification-close-btn"
+  >
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
