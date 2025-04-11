@@ -1,13 +1,13 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-
+import { BudgetRequest} from './models/budgetRequest';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
 
 @Component({
-  selector: 'app-orcamento',
+  selector: 'app-budget-approve.component',
   standalone: true,
   imports: [
     CommonModule,
@@ -16,27 +16,25 @@ import { MatDividerModule } from '@angular/material/divider';
     MatButtonModule,
     MatDividerModule,
   ],
-  templateUrl: './orcamento.component.html',
-  styleUrls: ['./orcamento.component.css']
+  templateUrl: './budget-approve.component.html',
+  styleUrls: ['./budget-approve.component.css']
 })
-export class OrcamentoComponent {
-  @Input() solicitacao: {
-    dataHora?: string;
-    equipamento: string;
-    categoria?: string;
-    cliente: string;
-    defeito?: string;
-    precoOrcado: string | number;
-  } = {
-    dataHora: '',
-    equipamento: '',
-    categoria: '',
-    cliente: '',
-    defeito: '',
-    precoOrcado: '',
-  };
 
-  @Input() observacoes: string = ''; // Observações pré-definidas como string vazia
+export class BudgetApproveComponent {
+  @Input() solicitacao: BudgetRequest = {
+  dataHora: '',
+  equipamento: '',
+  categoria: '',
+  cliente: '',
+  defeito: '',
+  precoOrcado: '',
+};
+
+constructor() {
+  console.log('Componente carregado!');
+}
+
+  @Input() observacoes: string = '';
 
   @Output() aprovar: EventEmitter<void> = new EventEmitter<void>();
   @Output() rejeitar: EventEmitter<void> = new EventEmitter<void>();
