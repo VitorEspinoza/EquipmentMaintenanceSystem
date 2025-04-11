@@ -31,8 +31,8 @@ public class EquipmentCategory {
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
     private Set<Equipment> equipments;
 
-    public static EquipmentCategory create(String name, String description, boolean active) {
-        return new EquipmentCategory(null, name, description, active, new HashSet<>());
+    public static EquipmentCategory create(String name, String description) {
+        return new EquipmentCategory(null, name, description, true, new HashSet<>());
     }
 
     public void update(String name, String description) {
