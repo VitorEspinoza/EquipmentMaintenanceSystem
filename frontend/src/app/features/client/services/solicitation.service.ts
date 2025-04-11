@@ -13,4 +13,8 @@ export class SolicitationService {
   getSolicitations(): Observable<Solicitation[]> {
     return this.crudService.get<Solicitation[]>(this.authPrefix);
   }
+
+  updateSolicitation(solicitation: Solicitation): Observable<void> {
+    return this.crudService.put<void>(`${this.authPrefix}/${solicitation.id}`, solicitation);
+  }
 }
