@@ -1,19 +1,17 @@
 package br.com.backend.backend.Entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(name = "equipment_category")
-@AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+
 @Getter
-@Setter
 public class EquipmentCategory {
 
     @Id
@@ -32,4 +30,8 @@ public class EquipmentCategory {
 
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
     private Set<Equipment> equipments;
+
+    public static EquipmentCategory create(String name, String description, boolean active) {
+        return new EquipmentCategory(null, name, description, active, new HashSet<>());
+    }
 }
