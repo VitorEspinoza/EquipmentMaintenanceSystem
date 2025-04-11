@@ -1,5 +1,6 @@
 package br.com.backend.backend.Exceptions;
 
+import br.com.backend.backend.Exceptions.Custom.CategoryAlreadyExists;
 import br.com.backend.backend.Exceptions.Custom.EquipmentCategoryNotFoundException;
 import br.com.backend.backend.Exceptions.Custom.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -18,6 +19,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Object> handleResourceNotFound(EquipmentCategoryNotFoundException ex) {
         return buildResponse(HttpStatus.NOT_FOUND, ex.getMessage());
     }
+
+    @ExceptionHandler(CategoryAlreadyExists.class)
+    public ResponseEntity<String> handleCategoryAlreadyExists(CategoryAlreadyExists ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleValidationException(MethodArgumentNotValidException ex) {
