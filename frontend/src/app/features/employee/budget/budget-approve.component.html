@@ -1,8 +1,8 @@
 <div class="center-square-container">
   <mat-card class="budget-approve.component-card">
-    <mat-card-header style="display: flex; justify-content: center; align-items: center;">
-      <mat-card-title style="text-align: center;"><strong>Detalhes do Serviço</strong></mat-card-title>
-    </mat-card-header>   
+    <mat-card-header style="display: flex; justify-content: center; align-items: center">
+      <mat-card-title style="text-align: center"><strong>Detalhes do Serviço</strong></mat-card-title>
+    </mat-card-header>
     <mat-card-content>
       <div class="info-item">
         <p>Equipamento: Notebook Dell Inspiron 15</p>
@@ -23,8 +23,11 @@
 
     <mat-divider></mat-divider>
 
-    <mat-card-actions class="action-buttons" style="display: flex; justify-content: center; align-items: center; gap: 10px;">
-      <button mat-flat-button color="primary">Aprovar Serviço</button>
+    <mat-card-actions
+      class="action-buttons"
+      style="display: flex; justify-content: center; align-items: center; gap: 10px"
+    >
+      <button mat-flat-button color="primary" (click)="aprovarServico()">Aprovar Serviço</button>
       <button mat-flat-button color="warn">Rejeitar Serviço</button>
     </mat-card-actions>
   </mat-card>
@@ -35,9 +38,7 @@
     </mat-card-header>
 
     <mat-card-content>
-      <p>
-        Cliente informou defeito na placa-mãe.
-      </p>
+      <p>Cliente informou defeito na placa-mãe.</p>
     </mat-card-content>
   </mat-card>
 </div>

@@ -1,9 +1,8 @@
 export interface BudgetRequest {
-    dataHora?: string; 
-    equipamento: string; 
-    categoria?: string; 
-    cliente: string; 
-    defeito?: string;
-    precoOrcado: number | string; 
-  }
-  
+  dataHora?: string;
+  equipamento: string;
+  categoria?: string;
+  cliente: string;
+  defeito?: string;
+  precoOrcado: number | string;
+}
