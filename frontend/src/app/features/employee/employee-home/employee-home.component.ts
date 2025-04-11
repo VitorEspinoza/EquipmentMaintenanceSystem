@@ -2,8 +2,8 @@ import { CommonModule, NgIf } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
-import { Solicitation } from '../../../client/models/solicitation';
-import { SolicitationService } from '../../../client/services/solicitation.service';
+import { Solicitation } from '../../client/models/solicitation';
+import { SolicitationService } from '../../client/services/solicitation.service';
 
 const MATERIAL_MODULES = [MatTableModule];
 const COMMON_MODULES = [NgIf, CommonModule];
