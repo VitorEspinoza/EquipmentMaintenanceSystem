@@ -3,8 +3,8 @@ import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router, RouterModule } from '@angular/router';
+import { CustomSnackBarService } from '../../../shared/services/services/custom-snack-bar.service';
 import { BudgetRequest } from './models/budgetRequest';
 
 @Component({
@@ -16,6 +16,7 @@ import { BudgetRequest } from './models/budgetRequest';
 })
 export class BudgetApproveComponent {
   private readonly router = inject(Router);
+  private readonly snackBar = inject(CustomSnackBarService);
 
   @Input() solicitacao: BudgetRequest = {
     dataHora: '',
@@ -26,22 +27,28 @@ export class BudgetApproveComponent {
     precoOrcado: '',
   };
 
-  constructor(private snackBar: MatSnackBar) {
+  constructor() {
     console.log('Componente carregado!');
   }
 
-  @Input() observacoes: string = '';
-
-  aprovarServico(): void {
-    const snack = this.snackBar.open(`Serviço aprovado no Valor de R% ${this.solicitacao.precoOrcado}`, 'ok', {
-      duration: 0,
-      panelClass: ['snackbar'],
-    });
-
-    snack.onAction().subscribe(() => {
-      this.router.navigate(['/client-home']);
+  aprovarServico() {
+    this.snackBar.show({
+      tipo: 'APROVADO',
+      preco: this.solicitacao.precoOrcado,
+      mensagem: 'Serviço aprovado no valor de',
+      redirectTo: '/client-home',
     });
   }
+
+  rejeitarServico() {
+    this.snackBar.show({
+      tipo: 'REJEITADO',
+      mensagem: 'Serviço reprovado!',
+      redirectTo: '/client-home',
+    });
+  }
+
+  @Input() observacoes: string = '';
 
   @Output() rejeitar: EventEmitter<void> = new EventEmitter<void>();
 

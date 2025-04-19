@@ -1,0 +1,37 @@
+<div class="fixed inset-0 flex items-center justify-center z-50">
+  <div class="flex flex-col gap-4 p-4 bg-white shadow-lg rounded-lg w-96">
+    <ng-container *ngIf="data.tipo === 'APROVADO'">
+      <span class="text-sm text-gray-800">
+        {{ data.mensagem }}
+        <span *ngIf="data.preco" class="font-semibold text-red-600"> R$ {{ data.preco | number: '1.2-2' }} </span>
+      </span>
+    </ng-container>
+
+    <ng-container *ngIf="data.tipo === 'REJEITADO' && !data.motivoRejeicao">
+      <span class="text-sm text-gray-800"> Por favor, informe o motivo da rejeição: </span>
+      <textarea
+        [(ngModel)]="motivoRejeicao"
+        class="border p-2 rounded-md w-full resize-none"
+        placeholder="Motivo da rejeição"
+        rows="4"
+      ></textarea>
+      <button
+        class="self-end px-4 py-1 rounded-full text-white bg-red-600 hover:bg-red-700 transition-colors text-sm font-medium shadow-sm cursor-pointer"
+        (click)="rejeitarServico()"
+      >
+        Confirmar Rejeição
+      </button>
+    </ng-container>
+
+    <ng-container *ngIf="data.tipo === 'REJEITADO' && data.motivoRejeicao">
+      <span class="text-sm text-gray-800"> Serviço rejeitado com o motivo: {{ data.motivoRejeicao }} </span>
+    </ng-container>
+
+    <button
+      class="self-end px-4 py-1 rounded-full text-white bg-blue-600 hover:bg-blue-700 transition-colors text-sm font-medium shadow-sm cursor-pointer"
+      (click)="dismiss()"
+    >
+      {{ data.tipo === 'APROVADO' || data.motivoRejeicao ? 'Ok' : 'Cancelar' }}
+    </button>
+  </div>
+</div>

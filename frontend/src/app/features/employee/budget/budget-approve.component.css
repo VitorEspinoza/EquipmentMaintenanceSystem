@@ -74,22 +74,3 @@ button {
   color: #333;
   line-height: 1.5;
 }
-
-::ng-deep .snackbar {
-  background-color: #4caf50; /* verde */
-  color: white;
-  font-size: 18px;
-  text-align: center;
-  justify-content: center;
-
-  /* centralizar na tela */
-  position: fixed !important;
-  top: 50% !important;
-  left: 50% !important;
-  transform: translate(-50%, -50%) !important;
-  min-width: 300px;
-  max-width: 80vw;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  padding: 16px 24px;
-}
