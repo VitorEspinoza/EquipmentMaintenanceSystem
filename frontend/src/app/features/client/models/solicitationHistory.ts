@@ -3,4 +3,6 @@ export interface SolicitationHistory {
   previousState: string;
   newState: string;
   changeDate: string;
+  updatedByClient: boolean;
+  updatedBy: string;
 }

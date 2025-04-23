@@ -34,6 +34,7 @@
           <th class="text-left px-4 py-2 text-sm text-gray-600">Estado Anterior</th>
           <th class="text-left px-4 py-2 text-sm text-gray-600">Novo Estado</th>
           <th class="text-left px-4 py-2 text-sm text-gray-600">Data de Mudança</th>
+          <th class="text-left px-4 py-2 text-sm text-gray-600">Atualizado por</th>
         </tr>
       </thead>
       <tbody>
@@ -45,6 +46,7 @@
             </span>
           </td>
           <td class="px-4 py-2">{{ h.changeDate | date: 'dd/MM/yyyy HH:mm' }}</td>
+          <td class="px-4 py-2">{{ (h.updatedByClient ? 'Cliente: ' : 'Funcionario: ') + h.updatedBy }}</td>
         </tr>
       </tbody>
     </table>
@@ -52,9 +54,18 @@
 
   <!-- Ações -->
   <div class="flex justify-center gap-4">
-    <button mat-stroked-button color="primary" (click)="onApprove()">Aprovar</button>
-    <button mat-stroked-button color="warn" (click)="onReject()">Rejeitar</button>
-    <button mat-stroked-button color="accent" (click)="onSendToNextStep()">Avançar Etapa</button>
+    <button *ngIf="requestData.status === 'ORÇADA'" mat-stroked-button color="primary" (click)="onApprove()">
+      Aprovar
+    </button>
+    <button *ngIf="requestData.status === 'ORÇADA'" mat-stroked-button color="warn" (click)="onReject()">
+      Rejeitar
+    </button>
+    <button *ngIf="requestData.status === 'REJEITADA'" mat-stroked-button color="warn" (click)="onRescue()">
+      Resgatar
+    </button>
+    <button *ngIf="requestData.status === 'ARRUMADA'" mat-stroked-button color="warn" (click)="onPayment()">
+      Pagar
+    </button>
   </div>
 </div>
 

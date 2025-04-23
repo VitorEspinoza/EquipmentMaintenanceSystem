@@ -45,8 +45,12 @@ export class ClientSolicitationComponent implements OnInit {
     // lógica para rejeitar
   }
 
-  onSendToNextStep() {
-    // lógica para avançar
+  onRescue() {
+    throw new Error('Method not implemented.');
+  }
+
+  onPayment() {
+    throw new Error('Method not implemented.');
   }
 
   getStatusClass(status: string): string {
