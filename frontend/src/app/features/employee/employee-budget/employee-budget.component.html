@@ -6,7 +6,7 @@
       <h3 class="text-lg font-semibold mb-2">Dados da Solicitação</h3>
       <p><strong>ID:</strong> {{ solicitation.id }}</p>
       <p><strong>Equipamento:</strong> {{ solicitation.equipment }}</p>
-      <p><strong>Data e Hora:</strong> {{ solicitation.dateTime }}</p>
+      <p><strong>Data e Hora:</strong> {{ solicitation.dateTime | date }}</p>
       <p><strong>Status:</strong> {{ solicitation.status }}</p>
     </div>
 

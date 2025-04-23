@@ -29,9 +29,9 @@ export class EmployeeBudgetComponent implements OnInit {
   ngOnInit(): void {
     this.solicitation = {
       id: 99,
-      equipment: 'Impressora HP LaserJet 1020',
+      equipment: 'Thinkpad',
       status: 'ABERTA',
-      dateTime: '2024-04-10T10:30:00',
+      dateTime: '2024-04-08T10:35:23',
     };
 
     const solicitationId = Number(this.route.snapshot.paramMap.get('id'));
@@ -53,7 +53,7 @@ export class EmployeeBudgetComponent implements OnInit {
     };
 
     this.solicitationService.updateSolicitation(updatedSolicitation).subscribe(() => {
-      this.router.navigate(['/employee']);
+      this.router.navigate(['/employee-home']);
     });
   }
 }
