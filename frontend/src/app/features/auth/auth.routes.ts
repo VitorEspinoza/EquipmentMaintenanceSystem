@@ -15,6 +15,6 @@ export const authRoutes: Routes = [
 
   {
     path: 'orcamento',
-    loadComponent: () => import('../employee/budget/budget-approve.component').then(m => m.BudgetApproveComponent),
+    loadComponent: () => import('../client/budget/budget-approve.component').then(m => m.BudgetApproveComponent),
   },
 ];
