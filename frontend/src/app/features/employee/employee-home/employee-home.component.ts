@@ -27,18 +27,21 @@ export class EmployeeHomeComponent implements OnInit {
         equipment: 'Impressora Epson',
         status: 'ABERTA',
         id: 1,
+        redirectedTo: 'Ian Bailone',
       },
       {
         dateTime: '2024-03-30T14:30:00',
         equipment: 'Monitor LG',
         status: 'ABERTA',
         id: 2,
+        redirectedTo: 'Gabriel Veiga',
       },
       {
         dateTime: '2024-03-28T11:45:00',
         equipment: 'Notebook Lenovo',
         status: 'FECHADA',
         id: 3,
+        redirectedTo: 'Rafael',
       },
     ].filter(s => s.status === 'ABERTA');
   }
