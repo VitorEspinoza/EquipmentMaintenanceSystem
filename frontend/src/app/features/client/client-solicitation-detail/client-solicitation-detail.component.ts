@@ -1,23 +1,23 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { SolicitationService } from '../services/solicitation.service';
-import { Solicitation } from '../models/solicitation';
 import { CommonModule } from '@angular/common';
+import { Component, inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
+import { ActivatedRoute } from '@angular/router';
+import { ClientSolicitation } from '../models/clientSolicitation';
+import { ClientSolicitationService } from '../services/client-solicitation.service';
 
 @Component({
   selector: 'app-client-service',
   standalone: true,
   imports: [CommonModule, MatButtonModule],
-  templateUrl: './client-solicitation.component.html',
-  styleUrls: ['./client-solicitation.component.css'],
+  templateUrl: './client-solicitation-detail.component.html',
+  styleUrls: ['./client-solicitation-detail.component.css'],
 })
-export class ClientSolicitationComponent implements OnInit {
+export class ClientSolicitationDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
-  private solicitationService = inject(SolicitationService);
+  private solicitationService = inject(ClientSolicitationService);
 
   requestId: string | null = null;
-  requestData?: Solicitation;
+  requestData?: ClientSolicitation;
 
   ngOnInit() {
     this.requestId = this.route.snapshot.paramMap.get('idSolicitation');

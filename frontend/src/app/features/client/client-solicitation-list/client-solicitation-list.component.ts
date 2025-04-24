@@ -2,23 +2,23 @@ import { CommonModule, NgIf } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
-import { Solicitation } from '../models/solicitation';
-import { SolicitationService } from '../services/solicitation.service';
+import { ClientSolicitation } from '../models/clientSolicitation';
+import { ClientSolicitationService } from '../services/client-solicitation.service';
 
 const MATERIAL_MODULES = [MatTableModule];
 const COMMON_MODULES = [NgIf, CommonModule];
 const CORE_MODULES = [RouterModule];
 
 @Component({
-  selector: 'app-client-home',
+  selector: 'app-client-solicitation-list',
   imports: [...MATERIAL_MODULES, ...CORE_MODULES, ...COMMON_MODULES],
-  templateUrl: './solicitation.component.html',
-  styleUrls: ['./solicitation.component.css'],
+  templateUrl: './client-solicitation-list.component.html',
+  styleUrls: ['./client-solicitation-list.component.css'],
 })
-export class ClientHomeComponent implements OnInit {
-  private readonly solicitationService = inject(SolicitationService);
+export class ClientSolicitationListComponent implements OnInit {
+  private readonly solicitationService = inject(ClientSolicitationService);
 
-  solicitations: Solicitation[] = [];
+  solicitations: ClientSolicitation[] = [];
 
   ngOnInit(): void {
     this.solicitationService.getSolicitations().subscribe(data => {

@@ -1,16 +1,16 @@
 import { inject, Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { CrudService } from '../../../core/services/crud.service';
-import { Solicitation } from '../models/solicitation';
+import { ClientSolicitation } from '../models/clientSolicitation';
 
 @Injectable({
   providedIn: 'root',
 })
-export class SolicitationService {
+export class ClientSolicitationService {
   private crudService = inject(CrudService);
   authPrefix = 'solicitaion';
 
-  private solicitations: Solicitation[] = [
+  private solicitations: ClientSolicitation[] = [
     {
       id: 0,
       idClient: 1,
@@ -20,6 +20,7 @@ export class SolicitationService {
       budgetPrice: 100,
       defectDescription: 'Impressora não liga',
       rejectionReason: '',
+      redirectedTo: 'Ian Bailone Almeida',
       history: [
         {
           id: 1,
@@ -40,6 +41,7 @@ export class SolicitationService {
       budgetPrice: 300,
       defectDescription: 'Tela piscando aleatoriamente',
       rejectionReason: '',
+      redirectedTo: 'Ian Bailone Almeida',
       history: [
         {
           id: 2,
@@ -68,6 +70,7 @@ export class SolicitationService {
       budgetPrice: 500,
       defectDescription: 'Imagem distorcida',
       rejectionReason: 'Valor do conserto acima do esperado pelo cliente',
+      redirectedTo: 'Ian Bailone Almeida',
       history: [
         {
           id: 4,
@@ -89,16 +92,16 @@ export class SolicitationService {
     },
   ];
 
-  getSolicitations(): Observable<Solicitation[]> {
+  getSolicitations(): Observable<ClientSolicitation[]> {
     return of(this.solicitations);
   }
 
-  getSolicitationById(id: number): Observable<Solicitation | undefined> {
+  getSolicitationById(id: number): Observable<ClientSolicitation | undefined> {
     const solicitation = this.solicitations.find(s => s.id === id);
     return of(solicitation);
   }
 
-  updateSolicitation(solicitation: Solicitation): Observable<void> {
+  updateSolicitation(solicitation: ClientSolicitation): Observable<void> {
     return this.crudService.put<void>(`${this.authPrefix}/${solicitation.id}`, solicitation);
   }
 }

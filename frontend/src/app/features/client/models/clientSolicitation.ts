@@ -1,6 +1,6 @@
 import { SolicitationHistory } from './solicitationHistory';
 
-export interface Solicitation {
+export interface ClientSolicitation {
   redirectedTo: any;
   id: number;
   idClient: number;
