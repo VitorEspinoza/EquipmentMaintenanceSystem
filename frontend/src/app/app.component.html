@@ -1,1 +1,6 @@
-<router-outlet></router-outlet>
+<app-sidenav
+  [isSidebarCollapsed]="isSidebarCollapsed()"
+  (changeIsSidebarCollapsed)="changeIsSidebarCollapsed($event)"
+/>
+
+<app-content [isSidebarCollapsed]="isSidebarCollapsed()" [screenWidth]="screenWidth()" />
