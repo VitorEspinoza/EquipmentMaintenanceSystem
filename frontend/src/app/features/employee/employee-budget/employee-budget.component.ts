@@ -32,6 +32,7 @@ export class EmployeeBudgetComponent implements OnInit {
       equipment: 'Thinkpad',
       status: 'ABERTA',
       dateTime: '2024-04-08T10:35:23',
+      redirectedTo: 'Ian Bailone Almeida',
     };
 
     const solicitationId = Number(this.route.snapshot.paramMap.get('id'));
