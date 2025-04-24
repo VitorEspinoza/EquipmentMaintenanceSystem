@@ -18,3 +18,19 @@ body {
   background: transparent !important;
   box-shadow: none !important;
 }
+
+/* .custom-notification {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  z-index: 9999 !important;
+  width: 420px !important;
+  max-width: 90vw;
+  min-width: 400px;
+  display: flex !important;
+  justify-content: center;
+  padding: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+} */
