@@ -3,8 +3,8 @@ import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
-import { SolicitationService } from '../../client/services/solicitation.service';
-import { Solicitation } from '../../client/models/solicitation';
+import { Solicitation } from '../../../shared/models/solicitation';
+import { SolicitationService } from '../../../shared/service/client-solicitation.service';
 
 const MATERIAL_MODULES = [MatTableModule];
 const COMMON_MODULES = [CommonModule, NgIf, FormsModule];

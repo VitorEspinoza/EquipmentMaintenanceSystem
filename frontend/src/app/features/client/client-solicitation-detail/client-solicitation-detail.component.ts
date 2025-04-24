@@ -2,8 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { ActivatedRoute } from '@angular/router';
-import { ClientSolicitation } from '../models/clientSolicitation';
-import { ClientSolicitationService } from '../services/client-solicitation.service';
+import { Solicitation } from '../../../shared/models/solicitation';
+import { SolicitationService } from '../../../shared/service/client-solicitation.service';
 
 @Component({
   selector: 'app-client-service',
@@ -14,10 +14,10 @@ import { ClientSolicitationService } from '../services/client-solicitation.servi
 })
 export class ClientSolicitationDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
-  private solicitationService = inject(ClientSolicitationService);
+  private solicitationService = inject(SolicitationService);
 
   requestId: string | null = null;
-  requestData?: ClientSolicitation;
+  requestData?: Solicitation;
 
   ngOnInit() {
     this.requestId = this.route.snapshot.paramMap.get('idSolicitation');

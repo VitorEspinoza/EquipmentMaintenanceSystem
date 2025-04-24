@@ -1,18 +1,18 @@
 import { inject, Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { CrudService } from '../../../core/services/crud.service';
-import { ClientSolicitation } from '../models/clientSolicitation';
+import { CrudService } from '../../core/services/crud.service';
+import { Solicitation } from '../models/solicitation';
 
 @Injectable({
   providedIn: 'root',
 })
-export class ClientSolicitationService {
+export class SolicitationService {
   private crudService = inject(CrudService);
   authPrefix = 'solicitaion';
 
-  private solicitations: ClientSolicitation[] = [
+  private solicitations: Solicitation[] = [
     {
-      id: 0,
+      id: 1,
       idClient: 1,
       dateTime: '2024-03-30T14:00:00',
       equipment: 'Impressora HP LaserJet',
@@ -33,7 +33,19 @@ export class ClientSolicitationService {
       ],
     },
     {
-      id: 1,
+      id: 2,
+      idClient: 1,
+      dateTime: '2024-03-30T14:00:00',
+      equipment: 'Monitor Dell',
+      status: 'ABERTA',
+      budgetPrice: 398,
+      defectDescription: 'Monitor não liga',
+      rejectionReason: '',
+      redirectedTo: null,
+      history: [],
+    },
+    {
+      id: 3,
       idClient: 1,
       dateTime: '2024-03-29T10:30:00',
       equipment: 'Notebook Dell Inspiron',
@@ -62,7 +74,7 @@ export class ClientSolicitationService {
       ],
     },
     {
-      id: 2,
+      id: 4,
       idClient: 1,
       dateTime: '2024-03-28T16:45:00',
       equipment: 'Monitor Samsung',
@@ -90,18 +102,30 @@ export class ClientSolicitationService {
         },
       ],
     },
+    {
+      id: 5,
+      idClient: 1,
+      dateTime: '2024-03-30T14:00:00',
+      equipment: 'Controle XBOX',
+      status: 'ABERTA',
+      budgetPrice: 350,
+      defectDescription: 'Demora a responder no analógico',
+      rejectionReason: '',
+      redirectedTo: null,
+      history: [],
+    },
   ];
 
-  getSolicitations(): Observable<ClientSolicitation[]> {
+  getSolicitations(): Observable<Solicitation[]> {
     return of(this.solicitations);
   }
 
-  getSolicitationById(id: number): Observable<ClientSolicitation | undefined> {
+  getSolicitationById(id: number): Observable<Solicitation | undefined> {
     const solicitation = this.solicitations.find(s => s.id === id);
     return of(solicitation);
   }
 
-  updateSolicitation(solicitation: ClientSolicitation): Observable<void> {
+  updateSolicitation(solicitation: Solicitation): Observable<void> {
     return this.crudService.put<void>(`${this.authPrefix}/${solicitation.id}`, solicitation);
   }
 }
