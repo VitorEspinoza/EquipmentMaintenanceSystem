@@ -21,29 +21,9 @@ export class ClientHomeComponent implements OnInit {
   solicitations: Solicitation[] = [];
 
   ngOnInit(): void {
-    this.solicitations = [
-      {
-        dateTime: '2024-03-30T14:00:00',
-        equipment: 'Impressora HP LaserJet',
-        status: 'ORÇADA',
-        id: 0,
-        redirectedTo: 'Ian Bailone Almeida',
-      },
-      {
-        dateTime: '2024-03-29T10:30:00',
-        equipment: 'Notebook Dell Inspiron',
-        status: 'APROVADA',
-        id: 1,
-        redirectedTo: 'Vitor Espinoza',
-      },
-      {
-        dateTime: '2024-03-28T16:45:00',
-        equipment: 'Monitor Samsung',
-        status: 'REJEITADA',
-        id: 2,
-        redirectedTo: 'Gabriel Veiga',
-      },
-    ];
+    this.solicitationService.getSolicitations().subscribe(data => {
+      this.solicitations = data;
+    });
   }
 
   getStatusClass(status: string): string {

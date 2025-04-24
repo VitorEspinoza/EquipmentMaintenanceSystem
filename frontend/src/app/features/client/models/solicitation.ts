@@ -1,10 +1,14 @@
+import { SolicitationHistory } from './solicitationHistory';
+
 export interface Solicitation {
   redirectedTo: any;
   id: number;
+  idClient: number;
   dateTime: string;
   equipment: string;
   status: string;
-  budgetValue?: number;
-  budgetedBy?: string;
-  budgetedAt?: string;
+  budgetPrice: number;
+  defectDescription: string;
+  rejectionReason: string;
+  history: SolicitationHistory[];
 }
