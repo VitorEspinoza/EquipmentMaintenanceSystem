@@ -21,7 +21,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { Router, RouterModule } from '@angular/router';
 import { NgxMaskDirective, NgxMaskPipe } from 'ngx-mask';
 import { catchError, map, Observable, of, startWith, switchMap } from 'rxjs';
-import { AddressService } from '../../../shared/models/service/address.service';
+import { AddressService } from '../../../shared/service/address.service';
 import { City } from '../models/city';
 import { State } from '../models/state';
 import { AuthService } from '../services/auth.service';

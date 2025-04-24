@@ -1,0 +1,17 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="rafael.leonardo">
+        <sql dbms="postgresql">
+            CREATE TABLE employee (
+                                      id SERIAL PRIMARY KEY,
+                                      id_account INTEGER NOT NULL,
+                                      name VARCHAR(120) NOT NULL,
+                                      birth_date DATE,
+                                      FOREIGN KEY (id_account) REFERENCES account(id)
+            );
+        </sql>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,18 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="rafael.leonardo">
+        <sql dbms="postgresql">
+            CREATE TABLE request_state_history (
+                                                   id SERIAL PRIMARY KEY,
+                                                   id_request INTEGER NOT NULL,
+                                                   previous_state VARCHAR(20),
+                                                   new_state VARCHAR(20) NOT NULL,
+                                                   change_date TIMESTAMP NOT NULL,
+                                                   FOREIGN KEY (id_request) REFERENCES maintenance_request(id)
+            );
+        </sql>
+    </changeSet>
+</databaseChangeLog>
