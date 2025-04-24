@@ -4,6 +4,6 @@ export const clientRoutes: Routes = [
   {
     path: 'budgetapprove',
     //canActivate: [authGuard],
-    loadComponent: () => import('./budget-approve.component').then(m => m.BudgetApproveComponent),
+    loadComponent: () => import('./budget-approve/budget-approve.component').then(m => m.BudgetApproveComponent),
   },
 ];

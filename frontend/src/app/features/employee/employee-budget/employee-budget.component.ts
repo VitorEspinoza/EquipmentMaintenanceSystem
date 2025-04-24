@@ -6,7 +6,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 
 import { NotificationService } from '../../../core/services/notification.service';
 import { Solicitation } from '../../../shared/models/solicitation';
-import { SolicitationService } from '../../../shared/service/client-solicitation.service';
+import { SolicitationService } from '../../../shared/services/client-solicitation.service';
 
 const MATERIAL_MODULES = [MatTableModule];
 const COMMON_MODULES = [CommonModule, NgIf, FormsModule];

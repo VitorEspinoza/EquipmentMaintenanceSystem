@@ -2,10 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatDialog } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
 import { Router, RouterModule } from '@angular/router';
-import { CustomSnackBarService } from '../../../shared/services/services/custom-snack-bar.service';
-import { BudgetRequest } from './models/budgetRequest';
+import { NotificationService } from '../../../../core/services/notification.service';
+import { BudgetRequest } from '../models/budgetRequest';
+import { BudgetRejectionModalComponent } from '../shared/components/budget-rejection-modal/budget-rejection-modal.component';
 
 @Component({
   selector: 'app-budget-approve.component',
@@ -16,7 +18,8 @@ import { BudgetRequest } from './models/budgetRequest';
 })
 export class BudgetApproveComponent {
   private readonly router = inject(Router);
-  private readonly snackBar = inject(CustomSnackBarService);
+  private readonly notificationService = inject(NotificationService);
+  private readonly dialog = inject(MatDialog);
 
   @Input() solicitacao: BudgetRequest = {
     dataHora: '',
@@ -27,25 +30,19 @@ export class BudgetApproveComponent {
     precoOrcado: '',
   };
 
-  constructor() {
-    console.log('Componente carregado!');
-  }
-
   aprovarServico() {
-    this.snackBar.show({
-      tipo: 'APROVADO',
-      preco: this.solicitacao.precoOrcado,
-      mensagem: 'Serviço aprovado no valor de',
-      redirectTo: '/client-home',
-    });
+    this.notificationService.success(`Serviço aprovado no valor de R$ 735,90`);
   }
 
   rejeitarServico() {
-    this.snackBar.show({
-      tipo: 'REJEITADO',
-      mensagem: 'Serviço reprovado!',
-      redirectTo: '/client-home',
-    });
+    this.dialog
+      .open(BudgetRejectionModalComponent, { data: {} })
+      .afterClosed()
+      .subscribe((response: any) => {
+        if (!response) return;
+        console.log('motivo: ', response);
+        this.notificationService.info('Este orçamento foi recusado!');
+      });
   }
 
   @Input() observacoes: string = '';

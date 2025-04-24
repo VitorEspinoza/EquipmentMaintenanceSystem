@@ -4,7 +4,7 @@ import { MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
 import { map } from 'rxjs';
 import { Solicitation } from '../../../shared/models/solicitation';
-import { SolicitationService } from '../../../shared/service/client-solicitation.service';
+import { SolicitationService } from '../../../shared/services/client-solicitation.service';
 
 const MATERIAL_MODULES = [MatTableModule];
 const COMMON_MODULES = [NgIf, CommonModule];

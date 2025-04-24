@@ -29,6 +29,11 @@ export class SidenavComponent {
       icon: 'table_view',
       label: 'Solicitações do Funcionário',
     },
+    {
+      routeLink: 'employee/equipment-category',
+      icon: 'sell',
+      label: 'Categorias de Equipamento',
+    },
   ];
 
   toggleCollapse(): void {

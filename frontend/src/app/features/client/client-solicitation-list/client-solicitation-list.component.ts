@@ -3,7 +3,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
 import { Solicitation } from '../../../shared/models/solicitation';
-import { SolicitationService } from '../../../shared/service/client-solicitation.service';
+import { SolicitationService } from '../../../shared/services/client-solicitation.service';
 
 const MATERIAL_MODULES = [MatTableModule];
 const COMMON_MODULES = [NgIf, CommonModule];
@@ -44,7 +44,7 @@ export class ClientSolicitationListComponent implements OnInit {
   getActionButton(solicitation: Solicitation): { label: string; route: string }[] | null {
     switch (solicitation.status) {
       case 'ORÇADA':
-        return [{ label: 'Aprovar/Rejeitar', route: '/orcamento' }];
+        return [{ label: 'Aprovar/Rejeitar', route: '/client/budget' }];
       case 'REJEITADA':
         return [{ label: 'Resgatar Serviço', route: '/resgatar' }];
       case 'ARRUMADA':

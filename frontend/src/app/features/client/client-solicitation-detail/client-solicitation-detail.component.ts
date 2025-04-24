@@ -3,7 +3,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { ActivatedRoute } from '@angular/router';
 import { Solicitation } from '../../../shared/models/solicitation';
-import { SolicitationService } from '../../../shared/service/client-solicitation.service';
+import { SolicitationService } from '../../../shared/services/client-solicitation.service';
 
 @Component({
   selector: 'app-client-service',
