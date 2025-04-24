@@ -9,4 +9,9 @@ export const employeeRoutes: Routes = [
     path: 'employee-budget',
     loadComponent: () => import('./employee-budget/employee-budget.component').then(m => m.EmployeeBudgetComponent),
   },
+  {
+    path: 'employee-solicitations',
+    loadComponent: () =>
+      import('./employee-solicitations/employee-solicitations.component').then(m => m.EmployeeSolicitationsComponent),
+  },
 ];

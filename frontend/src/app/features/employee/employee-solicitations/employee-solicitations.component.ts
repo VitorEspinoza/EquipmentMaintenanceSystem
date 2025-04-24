@@ -27,10 +27,30 @@ export class EmployeeSolicitationsComponent implements OnInit {
   currentEmployee = 'Ian Bailone Almeida';
 
   ngOnInit(): void {
-    this.solicitationService.getSolicitations().subscribe(solicitations => {
-      this.solicitations = solicitations;
-      this.applyFilter();
-    });
+    this.solicitations = [
+      { id: 1, equipment: 'Impressora HP', status: 'ABERTA', dateTime: '2025-04-10' },
+      { id: 2, equipment: 'Monitor Samsung', status: 'ORÇADA', dateTime: '2025-04-08' },
+      { id: 3, equipment: 'Teclado Mecânico', status: 'REJEITADA', dateTime: '2025-04-07' },
+      { id: 4, equipment: 'Mouse Logitech', status: 'APROVADA', dateTime: '2025-04-06' },
+      {
+        id: 5,
+        equipment: 'HD Externo 1TB',
+        status: 'REDIRECIONADA',
+        dateTime: '2025-04-05',
+        redirectedTo: 'Ian Bailone Almeida',
+      },
+      { id: 6, equipment: 'Projetor Epson', status: 'ARRUMADA', dateTime: '2025-04-04' },
+      { id: 7, equipment: 'Placa Mãe ASUS', status: 'PAGA', dateTime: '2025-04-03' },
+      { id: 8, equipment: 'Roteador TP-Link', status: 'FINALIZADA', dateTime: '2025-04-02' },
+      {
+        id: 9,
+        equipment: 'Scanner Canon',
+        status: 'REDIRECIONADA',
+        dateTime: '2025-04-01',
+        redirectedTo: 'Outro Funcionário',
+      },
+    ];
+    this.applyFilter();
   }
 
   applyFilter(): void {

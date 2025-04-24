@@ -1,5 +1,5 @@
 export interface Solicitation {
-  redirectedTo: any;
+  redirectedTo?: any;
   id: number;
   dateTime: string;
   equipment: string;
