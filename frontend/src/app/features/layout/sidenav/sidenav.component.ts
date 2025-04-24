@@ -15,29 +15,24 @@ export class SidenavComponent {
 
   items = [
     {
-      routeLink: 'login',
+      routeLink: 'client/solicitations',
+      icon: 'table_view',
+      label: 'Solicitações do Cliente',
+    },
+    {
+      routeLink: 'employee',
       icon: 'home',
-      label: 'teste 1',
+      label: 'Home do Funcionário',
     },
     {
-      routeLink: '#',
-      icon: 'bed',
-      label: 'teste 2',
+      routeLink: 'employee/solicitations',
+      icon: 'table_view',
+      label: 'Solicitações do Funcionário',
     },
     {
-      routeLink: '#',
-      icon: 'tv',
-      label: 'teste 3',
-    },
-    {
-      routeLink: '#',
-      icon: 'chair',
-      label: 'teste 4',
-    },
-    {
-      routeLink: '#',
-      icon: 'grass',
-      label: 'teste 5',
+      routeLink: 'employee/equipment-category',
+      icon: 'sell',
+      label: 'Categorias de Equipamento',
     },
   ];
 

@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
 import { authRoutes } from '../app/features/auth/auth.routes';
+import { clientRoutes } from './features/client/client.routes';
+import { employeeRoutes } from './features/employee/employee.routes';
 import { LayoutComponent } from './features/layout/layout/layout.component';
 
 export const routes: Routes = [
@@ -7,6 +9,6 @@ export const routes: Routes = [
   {
     path: '',
     component: LayoutComponent,
-    children: [], // Aqui dentro entram as rotas com layout, por ex: ...clientRoutes
+    children: [...clientRoutes, ...employeeRoutes],
   },
 ];

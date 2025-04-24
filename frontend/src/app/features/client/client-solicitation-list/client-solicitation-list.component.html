@@ -1,0 +1,53 @@
+<div class="p-12 bg-white shadow-md rounded-lg flex flex-col">
+  <h2 class="text-2xl font-semibold text-gray-800 mb-4 text-center">Página Inicial do Cliente</h2>
+
+  <div class="overflow-x-auto">
+    <table mat-table [dataSource]="solicitations" class="mat-elevation-z8 w-full">
+      <!-- Data/Hora -->
+      <ng-container matColumnDef="dateTime">
+        <th mat-header-cell *matHeaderCellDef class="bg-gray-100 text-gray-700">Data/Hora</th>
+        <td mat-cell *matCellDef="let solicitation" class="border-b p-2">
+          {{ solicitation.dateTime | date: 'dd/MM/yyyy HH:mm' }}
+        </td>
+      </ng-container>
+
+      <!-- Descrição Equipamento -->
+      <ng-container matColumnDef="equipment">
+        <th mat-header-cell *matHeaderCellDef class="bg-gray-100 text-gray-700">Equipamento</th>
+        <td mat-cell *matCellDef="let solicitation" class="border-b p-2">
+          {{ solicitation.equipment | slice: 0 : 30 }}
+        </td>
+      </ng-container>
+
+      <!-- Estado -->
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef class="bg-gray-100 text-gray-700">Estado</th>
+        <td mat-cell *matCellDef="let solicitation" class="border-b p-2">
+          <span class="px-3 py-1 rounded-full text-sm font-medium" [ngClass]="getStatusClass(solicitation.status)">
+            {{ solicitation.status }}
+          </span>
+        </td>
+      </ng-container>
+
+      <!-- Ações -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef class="bg-gray-100 text-gray-700">Ação</th>
+        <td mat-cell *matCellDef="let solicitation" class="border-b p-2 text-center">
+          <ng-container *ngFor="let action of getActionButton(solicitation)">
+            <button
+              mat-stroked-button
+              color="primary"
+              class="cursor-pointer text-xs px-3 py-1"
+              [routerLink]="action.route"
+            >
+              {{ action.label }}
+            </button>
+          </ng-container>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="['dateTime', 'equipment', 'status', 'actions']" class="text-left"></tr>
+      <tr mat-row *matRowDef="let row; columns: ['dateTime', 'equipment', 'status', 'actions']"></tr>
+    </table>
+  </div>
+</div>
