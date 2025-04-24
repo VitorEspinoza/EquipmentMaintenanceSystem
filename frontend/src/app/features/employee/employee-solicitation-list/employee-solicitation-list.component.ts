@@ -11,12 +11,12 @@ const COMMON_MODULES = [CommonModule, NgIf, FormsModule];
 const ROUTING_MODULES = [RouterModule];
 
 @Component({
-  selector: 'app-employee-solicitations',
+  selector: 'app-employee-solicitation-list',
   imports: [...MATERIAL_MODULES, ...COMMON_MODULES, ...ROUTING_MODULES],
-  templateUrl: './employee-solicitations.component.html',
-  styleUrl: './employee-solicitations.component.css',
+  templateUrl: './employee-solicitation-list.component.html',
+  styleUrl: './employee-solicitation-list.component.css',
 })
-export class EmployeeSolicitationsComponent implements OnInit {
+export class EmployeeSolicitationListComponent implements OnInit {
   private solicitationService = inject(SolicitationService);
 
   solicitations: Solicitation[] = [];
@@ -75,15 +75,15 @@ export class EmployeeSolicitationsComponent implements OnInit {
     }
   }
 
-  getActionButton(s: Solicitation): { label: string; route: string } | null {
-    switch (s.status) {
+  getActionButton(solicitation: Solicitation): { label: string; route: string } | null {
+    switch (solicitation.status) {
       case 'ABERTA':
-        return { label: 'Efetuar orçamento', route: '/orcamento/${s.id}' };
+        return { label: 'Efetuar orçamento', route: `/employee/budget/${solicitation.id}` };
       case 'APROVADA':
       case 'REDIRECIONADA':
-        return { label: 'Efetuar manutenção', route: '/manutencao/${s.id}' };
+        return { label: 'Efetuar manutenção', route: `/manutencao/${solicitation.id}` };
       case 'PAGA':
-        return { label: 'Finalizar solicitação', route: '/finalizar/${s.id}' };
+        return { label: 'Finalizar solicitação', route: `/finalizar/${solicitation.id}` };
       default:
         return null;
     }

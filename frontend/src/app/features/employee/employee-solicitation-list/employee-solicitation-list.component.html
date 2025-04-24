@@ -19,24 +19,26 @@
 
   <div *ngIf="filteredSolicitations.length > 0; else noResults">
     <div
-      *ngFor="let s of filteredSolicitations"
+      *ngFor="let solicitation of filteredSolicitations"
       class="p-4 rounded shadow flex justify-between items-center mb-3"
-      [ngClass]="getStatusClass(s.status)"
+      [ngClass]="getStatusClass(solicitation.status)"
     >
       <div>
-        <p><strong>ID:</strong> {{ s.id }}</p>
-        <p><strong>Equipamento:</strong> {{ s.equipment }}</p>
-        <p><strong>Data:</strong> {{ s.dateTime | date: 'shortDate' }}</p>
-        <p><strong>Status:</strong> {{ s.status }}</p>
-        <p *ngIf="s.status === 'REDIRECIONADA'"><strong>Redirecionada para:</strong> {{ s.redirectedTo }}</p>
+        <p><strong>ID:</strong> {{ solicitation.id }}</p>
+        <p><strong>Equipamento:</strong> {{ solicitation.equipment }}</p>
+        <p><strong>Data:</strong> {{ solicitation.dateTime | date: 'shortDate' }}</p>
+        <p><strong>Status:</strong> {{ solicitation.status }}</p>
+        <p *ngIf="solicitation.status === 'REDIRECIONADA'">
+          <strong>Redirecionada para:</strong> {{ solicitation.redirectedTo }}
+        </p>
       </div>
 
-      <div *ngIf="getActionButton(s)" class="ml-4">
+      <div *ngIf="getActionButton(solicitation)" class="ml-4">
         <a
-          [routerLink]="getActionButton(s)?.route"
+          [routerLink]="getActionButton(solicitation)?.route"
           class="bg-black text-white px-4 py-2 rounded hover:opacity-90 transition"
         >
-          {{ getActionButton(s)?.label }}
+          {{ getActionButton(solicitation)?.label }}
         </a>
       </div>
     </div>

@@ -30,7 +30,7 @@ export class EmployeeBudgetComponent implements OnInit {
   dateTime = new Date();
 
   ngOnInit(): void {
-    const solicitationId = Number(this.route.snapshot.paramMap.get('id'));
+    const solicitationId = Number(this.route.snapshot.paramMap.get('solicitationId'));
     this.getSolicitation(solicitationId);
   }
 

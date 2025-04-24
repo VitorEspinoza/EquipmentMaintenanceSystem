@@ -41,8 +41,8 @@ export class ClientSolicitationListComponent implements OnInit {
     }
   }
 
-  getActionButton(status: string): { label: string; route: string }[] | null {
-    switch (status) {
+  getActionButton(solicitation: Solicitation): { label: string; route: string }[] | null {
+    switch (solicitation.status) {
       case 'ORÇADA':
         return [{ label: 'Aprovar/Rejeitar', route: '/orcamento' }];
       case 'REJEITADA':
@@ -50,7 +50,9 @@ export class ClientSolicitationListComponent implements OnInit {
       case 'ARRUMADA':
         return [{ label: 'Pagar Serviço', route: '/pagamento' }];
       default:
-        return status !== 'APROVADA' ? [{ label: 'Visualizar Serviço', route: '/visualizar' }] : [];
+        return status !== 'APROVADA'
+          ? [{ label: 'Visualizar Serviço', route: `/client/solicitation/${solicitation.id}` }]
+          : [];
     }
   }
 }

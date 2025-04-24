@@ -35,7 +35,9 @@ export class EmployeeHomeComponent implements OnInit {
     return equipment.length > 30 ? equipment.substring(0, 30) + '...' : equipment;
   }
 
-  getActionButton(status: string): { label: string; route: string }[] | null {
-    return status === 'ABERTA' ? [{ label: 'Efetuar Orçamento', route: '/orcamento' }] : null;
+  getActionButton(solicitation: Solicitation): { label: string; route: string }[] | null {
+    return solicitation.status === 'ABERTA'
+      ? [{ label: 'Efetuar Orçamento', route: `/employee/budget/${solicitation.id}` }]
+      : null;
   }
 }

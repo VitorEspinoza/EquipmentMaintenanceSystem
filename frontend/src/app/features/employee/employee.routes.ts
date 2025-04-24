@@ -2,11 +2,18 @@ import { Routes } from '@angular/router';
 
 export const employeeRoutes: Routes = [
   {
-    path: 'employee-home',
+    path: 'employee',
     loadComponent: () => import('./employee-home/employee-home.component').then(m => m.EmployeeHomeComponent),
   },
   {
-    path: 'employee-budget',
+    path: 'employee/solicitations',
+    loadComponent: () =>
+      import('./employee-solicitation-list/employee-solicitation-list.component').then(
+        m => m.EmployeeSolicitationListComponent
+      ),
+  },
+  {
+    path: 'employee/budget/:solicitationId',
     loadComponent: () => import('./employee-budget/employee-budget.component').then(m => m.EmployeeBudgetComponent),
   },
 ];

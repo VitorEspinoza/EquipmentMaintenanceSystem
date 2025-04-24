@@ -16,7 +16,7 @@
           <td class="py-2 px-4">{{ solicitation.dateTime | date: 'dd/MM/yyyy HH:mm' }}</td>
           <td class="py-2 px-4">{{ getTruncatedDescription(solicitation.equipment) }}</td>
           <td class="py-2 px-4 text-center">
-            <ng-container *ngIf="getActionButton(solicitation.status) as action">
+            <ng-container *ngIf="getActionButton(solicitation) as action">
               <a
                 [routerLink]="action[0].route"
                 class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-700 transition"
