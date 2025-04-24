@@ -12,8 +12,8 @@ const CORE_MODULES = [RouterModule];
 @Component({
   selector: 'app-client-home',
   imports: [...MATERIAL_MODULES, ...CORE_MODULES, ...COMMON_MODULES],
-  templateUrl: './client-home.component.html',
-  styleUrls: ['./client-home.component.css'],
+  templateUrl: './solicitation.component.html',
+  styleUrls: ['./solicitation.component.css'],
 })
 export class ClientHomeComponent implements OnInit {
   private readonly solicitationService = inject(SolicitationService);
