@@ -3,7 +3,9 @@ package br.com.backend.backend.Entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -16,7 +18,7 @@ import java.util.Set;
 @Getter
 public class EquipmentCategory {
 
-    private EquipmentCategory(String name, String description) {
+    public EquipmentCategory(String name, String description) {
         this.name = name;
         this.description = description;
         this.active = true;
@@ -39,10 +41,6 @@ public class EquipmentCategory {
 
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
     private Set<Equipment> equipments;
-
-    public static EquipmentCategory create(String name, String description) {
-        return new EquipmentCategory(name, description);
-    }
 
     public void update(String name, String description) {
         this.name = name;
