@@ -2,8 +2,10 @@ package br.com.backend.backend.Controllers;
 
 import br.com.backend.backend.DTOs.EquipmentCategoryInputDTO;
 import br.com.backend.backend.DTOs.EquipmentCategoryResponseDTO;
+import br.com.backend.backend.DTOs.ResultViewModel;
 import br.com.backend.backend.Entities.EquipmentCategory;
 import br.com.backend.backend.Services.EquipmentCategoryService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,25 +22,25 @@ public class EquipmentCategoryController {
     }
 
     @GetMapping
-    public ResponseEntity<List<EquipmentCategoryResponseDTO>> getAll() {
+    public ResponseEntity<ResultViewModel<List<EquipmentCategoryResponseDTO>>> getAll() {
         var categories = service.getAllCategories();
         return ResponseEntity.ok(categories);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<EquipmentCategoryResponseDTO> getById(@PathVariable Integer id) {
+    public ResponseEntity<ResultViewModel<EquipmentCategoryResponseDTO>> getById(@PathVariable Integer id) {
         var category = service.getCategoryById(id);
         return ResponseEntity.ok(category);
     }
 
     @PostMapping
-    public ResponseEntity<EquipmentCategory> create(@RequestBody EquipmentCategoryInputDTO dto) {
+    public ResponseEntity<ResultViewModel<EquipmentCategoryResponseDTO>> create(@RequestBody EquipmentCategoryInputDTO dto) {
         var created = service.createCategory(dto);
-        return ResponseEntity.ok(created);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<EquipmentCategory> update(@PathVariable Integer id, @RequestBody EquipmentCategoryInputDTO dto) {
+    public ResponseEntity<ResultViewModel<EquipmentCategoryResponseDTO>> update(@PathVariable Integer id, @RequestBody EquipmentCategoryInputDTO dto) {
         var updated = service.updateCategory(id, dto);
         return ResponseEntity.ok(updated);
     }
