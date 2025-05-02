@@ -13,20 +13,4 @@ public record EquipmentCategoryResponseDTO(
         String description,
         Boolean active,
         List<EquipmentDTO> equipments
-) {
-    public static EquipmentCategoryResponseDTO fromEntity(EquipmentCategory category) {
-        return new EquipmentCategoryResponseDTO(
-                category.getId(),
-                category.getName(),
-                category.getDescription(),
-                category.getActive(),
-                category.getEquipments().stream()
-                        .map(equipment -> new EquipmentDTO(
-                                equipment.getId(),
-                                equipment.getDescription(),
-                                equipment.getCategory() != null ? equipment.getCategory().getName() : null
-                        ))
-                        .toList()
-        );
-    }
-}
+){}
