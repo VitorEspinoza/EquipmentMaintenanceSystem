@@ -1,20 +1,33 @@
 package br.com.backend.backend.Mappers;
 
-import br.com.backend.backend.DTOs.EquipmentCategoryInputDTO;
+import br.com.backend.backend.DTOs.EquipmentCategoryRequestDTO;
 import br.com.backend.backend.DTOs.EquipmentCategoryResponseDTO;
+import br.com.backend.backend.DTOs.EquipmentDTO;
+import br.com.backend.backend.Entities.Equipment;
 import br.com.backend.backend.Entities.EquipmentCategory;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-
+import org.mapstruct.factory.Mappers;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = EquipmentMapper.class)
+@Mapper(componentModel = "spring")
 public interface EquipmentCategoryMapper {
+    EquipmentCategoryMapper INSTANCE = Mappers.getMapper(EquipmentCategoryMapper.class);
 
-    EquipmentCategoryResponseDTO toDto(EquipmentCategory category);
+    @Mapping(target = "equipments", source = "equipments")
+    EquipmentCategoryResponseDTO entityToDto(EquipmentCategory equipmentCategory);
 
-    List<EquipmentCategoryResponseDTO> toDtoList(List<EquipmentCategory> categories);
+    @Mapping(target = "category", source = "category.name")
+    EquipmentDTO equipmentToDto(Equipment equipment);
 
-    EquipmentCategory toEntity(EquipmentCategoryInputDTO dto);
+    default EquipmentCategory requestDtoToEntity(EquipmentCategoryRequestDTO requestDTO) {
+        return new EquipmentCategory(requestDTO.name(), requestDTO.description());
+    }
+
+    default List<EquipmentCategoryResponseDTO> entitiesToDtos(List<EquipmentCategory> categoriesList) {
+        return categoriesList.stream()
+                .map(this::entityToDto)
+                .toList();
+    }
 }
