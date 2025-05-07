@@ -20,6 +20,13 @@ import java.util.List;
 @Setter
 public class Account implements UserDetails {
 
+    public Account(String email, String password, String role) {
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.active = true;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -46,4 +53,5 @@ public class Account implements UserDetails {
     public String getUsername() {
         return this.email;
     }
+
 }
