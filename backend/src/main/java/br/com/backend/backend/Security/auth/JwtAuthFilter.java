@@ -6,6 +6,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,15 +22,11 @@ import static br.com.backend.backend.Security.SecurityConstants.BEARER_PREFIX;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtUtils jwtUtils;
     private final AccountService accountService;
-
-    public JwtAuthFilter(JwtUtils jwtUtils, AccountService accountService) {
-        this.jwtUtils = jwtUtils;
-        this.accountService = accountService;
-    }
 
     @Override
     protected void doFilterInternal(

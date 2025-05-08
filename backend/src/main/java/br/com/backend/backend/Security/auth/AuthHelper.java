@@ -4,6 +4,7 @@ import br.com.backend.backend.DTOs.Auth.AuthResponseDTO;
 import br.com.backend.backend.DTOs.ResultViewModel;
 import br.com.backend.backend.Entities.Account;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -12,14 +13,10 @@ import org.springframework.stereotype.Component;
 import static br.com.backend.backend.Security.SecurityConstants.*;
 
 @Component
+@RequiredArgsConstructor
 public class AuthHelper {
     private final JwtUtils jwtUtils;
     // private final RefreshTokenService refreshTokenService;
-
-    public AuthHelper(final JwtUtils jwtUtils /*, final RefreshTokenService refreshTokenService*/) {
-        this.jwtUtils = jwtUtils;
-        // this.refreshTokenService = refreshTokenService;
-    }
 
     public ResponseCookie generateAuthResponse(
             Account account

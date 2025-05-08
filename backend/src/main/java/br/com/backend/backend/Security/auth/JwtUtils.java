@@ -4,6 +4,7 @@ import br.com.backend.backend.Entities.Account;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -19,12 +20,14 @@ import java.util.function.Function;
 @Component
 public class JwtUtils {
 
-    private final SecretKey signingKey;
-    private Long expiration;
+    @Value("${jwt.secret}")
+    private String secret;
 
-    public JwtUtils(@Value("${jwt.secret}") String secret, @Value("${jwt.expiration}") long expiration) {
-        this.signingKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
-        this.expiration = expiration;
+    @Value("${jwt.expiration}")
+    private String expiration;
+
+    private SecretKey getSigningKey() {
+        return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
     public String generateToken(Account account) {
@@ -35,10 +38,11 @@ public class JwtUtils {
                 .claims(claims)
                 .subject(account.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis() + expiration * 1000))
-                .signWith(this.signingKey)
+                .expiration(new Date(System.currentTimeMillis() + Long.parseLong(expiration) * 1000))
+                .signWith(getSigningKey())
                 .compact();
     }
+
     public String generateRefreshToken(Account account) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("id", account.getId());
@@ -48,7 +52,7 @@ public class JwtUtils {
                 .claims(claims)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000))
-                .signWith(this.signingKey)
+                .signWith(getSigningKey())
                 .compact();
     }
 
@@ -68,7 +72,7 @@ public class JwtUtils {
 
     private Claims extractAllClaims(String token) {
         return Jwts.parser()
-                .verifyWith(this.signingKey)
+                .verifyWith(getSigningKey())
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
@@ -82,3 +86,4 @@ public class JwtUtils {
         return extractClaim(token, Claims::getExpiration);
     }
 }
+

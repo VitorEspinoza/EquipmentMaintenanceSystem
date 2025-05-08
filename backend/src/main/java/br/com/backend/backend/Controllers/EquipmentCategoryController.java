@@ -5,6 +5,7 @@ import br.com.backend.backend.DTOs.EquipmentCategoryResponseDTO;
 import br.com.backend.backend.DTOs.ResultViewModel;
 import br.com.backend.backend.Entities.EquipmentCategory;
 import br.com.backend.backend.Services.EquipmentCategoryService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,13 +14,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/categories")
+@RequiredArgsConstructor
 public class EquipmentCategoryController {
 
     private final EquipmentCategoryService service;
-
-    public EquipmentCategoryController(EquipmentCategoryService service) {
-        this.service = service;
-    }
 
     @GetMapping
     public ResponseEntity<ResultViewModel<List<EquipmentCategoryResponseDTO>>> getAll() {

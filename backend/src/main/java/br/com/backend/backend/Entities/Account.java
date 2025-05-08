@@ -54,4 +54,9 @@ public class Account implements UserDetails {
         return this.email;
     }
 
+    @Override
+    public String getPassword() {
+        return this.password;
+    }
+
 }
