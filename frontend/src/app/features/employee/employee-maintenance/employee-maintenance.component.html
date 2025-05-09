@@ -1,15 +1,56 @@
-<div class="p-4">
-  <h1 class="text-xl font-bold mb-4">Detalhes da Solicitação</h1>
+<div class="center-square-container">
+  <mat-card class="budget-approve.component-card">
+    <mat-card-header style="display: flex; justify-content: center; align-items: center">
+      <mat-card-title style="text-align: center"><strong>Detalhes da Solicitação</strong></mat-card-title>
+    </mat-card-header>
 
-  <ng-container *ngIf="solicitation">
-    <p><strong>Equipamento:</strong> {{ solicitation.equipment }}</p>
-    <p><strong>Defeito:</strong> {{ solicitation.defectDescription }}</p>
-    <p><strong>Status:</strong> {{ solicitation.status }}</p>
-    <p><strong>Data/Hora:</strong> {{ solicitation.dateTime | date: 'short' }}</p>
+    <mat-card-content>
+      <div class="info-item">
+        <p>Equipamento: Notebook Lenovo G15</p>
+      </div>
+      <div class="info-item">
+        <p>Cliente: Vitor Espinoza</p>
+      </div>
+      <div class="info-item">
+        <p>Defeito: Teclado parou de funcionar</p>
+      </div>
+      <div class="info-item">
+        <p>Data/Hora: 08/05/2025 22:20</p>
+      </div>
+      <div class="info-item">
+        <p><strong>Preço Orçado:</strong> <span class="highlight"> R$225,87</span></p>
+      </div>
+      <div class="info-item">
+        <p>Status Atual: Efetuar Manutenção</p>
+      </div>
+      <div class="info-item" *ngIf="solicitation?.redirectedTo">
+        <p>Redirecionado para: {{ solicitation?.redirectedTo }}</p>
+      </div>
+    </mat-card-content>
 
-    <div class="flex gap-4 mt-6">
-      <button mat-raised-button color="primary" (click)="performMaintenace()">Efetuar Manutenção</button>
-      <button mat-raised-button color="accent" (click)="redirectMaintenace()">Redirecionar Manutenção</button>
-    </div>
-  </ng-container>
+    <mat-divider></mat-divider>
+
+    <mat-card-actions
+      class="action-buttons"
+      style="display: flex; justify-content: center; align-items: center; gap: 10px"
+    >
+      <button mat-flat-button color="primary" (click)="performMaintenace()">Efetuar Manutenção</button>
+      <button mat-flat-button color="accent" (click)="redirectMaintenace()">Redirecionar Manutenção</button>
+    </mat-card-actions>
+  </mat-card>
+
+  <mat-card class="observacoes-card" *ngIf="solicitation?.history?.length">
+    <mat-card-header>
+      <mat-card-title>Histórico de Estados</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div *ngFor="let entry of solicitation?.history">
+        <p class="text-sm text-gray-800">
+          <strong>{{ entry.changeDate | date: 'dd/MM/yyyy HH:mm' }}</strong> — {{ entry.previousState }} →
+          {{ entry.newState }} por {{ entry.updatedBy }}
+        </p>
+      </div>
+    </mat-card-content>
+  </mat-card>
 </div>

@@ -1,26 +1,28 @@
-<div class="flex flex-col justify-between h-full">
-  <h2 class="text-lg font-bold">Efetuar Manutenção</h2>
+<div style="overflow: hidden" class="flex flex-col justify-between h-full">
+  <div class="w-full mb-4">
+    <h2>Efetuar Manutenção</h2>
+  </div>
 
-  <span class="text-sm text-gray-800 mt-4"> Descreva a manutenção realizada: </span>
+  <span class="text-sm text-gray-800 mb-1">Descrição da Manutenção:</span>
   <textarea
     [formControl]="maintenceDescription"
-    class="border p-2 rounded-md w-full resize-none"
-    placeholder="Descrição da manutenção"
-    rows="4"
+    class="border p-2 rounded-md w-full resize-none mb-4"
+    placeholder="Descreva a manutenção realizada"
+    rows="3"
   ></textarea>
 
-  <span class="text-sm text-gray-800 mt-4"> Orientações para o cliente: </span>
+  <span class="text-sm text-gray-800 mb-1">Orientações ao Cliente:</span>
   <textarea
     [formControl]="clientGuidance"
     class="border p-2 rounded-md w-full resize-none"
-    placeholder="Orientações para o cliente"
-    rows="4"
+    placeholder="Informe orientações ao cliente"
+    rows="3"
   ></textarea>
 
   <mat-dialog-actions>
     <div class="mt-5 mb-2 w-full flex justify-between">
-      <button mat-button class="w-[49%] btn-actions" (click)="cancel()">Cancelar</button>
-      <button mat-button class="export-button btn-actions w-[49%]" (click)="submit()">Salvar</button>
+      <button mat-button class="w-[49%] btn-actions" type="button" (click)="cancel()">Cancelar</button>
+      <button mat-button class="export-button btn-actions w-[49%]" (click)="submit()">Confirmar</button>
     </div>
   </mat-dialog-actions>
 </div>

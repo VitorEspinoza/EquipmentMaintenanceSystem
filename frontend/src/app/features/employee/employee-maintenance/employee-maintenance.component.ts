@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialog } from '@angular/material/dialog';
@@ -16,7 +16,7 @@ import { Solicitation } from '../../../shared/models/solicitation';
   templateUrl: './employee-maintenance.component.html',
   styleUrl: './employee-maintenance.component.css',
 })
-export class EmployeeMaintenanceComponent {
+export class EmployeeMaintenanceComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly dialog = inject(MatDialog);
@@ -25,9 +25,11 @@ export class EmployeeMaintenanceComponent {
 
   solicitation!: Solicitation;
 
-  NgOnInit(): void {
+  ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
+    console.log('Id da rota', id);
     this.solicitationService.getSolicitationById(id).subscribe(s => {
+      console.log('Solicitação recebida', s);
       if (s) this.solicitation = s;
     });
   }
