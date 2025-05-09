@@ -1,0 +1,66 @@
+<div class="p-4 md:p-8">
+  <h2 class="text-xl font-bold mb-4">Gerenciar Funcionários</h2>
+
+  <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()" class="grid gap-4 md:grid-cols-2">
+    <mat-form-field>
+      <mat-label>Nome</mat-label>
+      <input matInput formControlName="name" required />
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>E-mail</mat-label>
+      <input matInput formControlName="email" required type="email" />
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Data de Nascimento</mat-label>
+      <input matInput formControlName="birthDate" type="date" required />
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Senha</mat-label>
+      <input matInput formControlName="password" type="password" required />
+    </mat-form-field>
+
+    <div class="md:col-span-2">
+      <button mat-raised-button color="primary" type="submit">
+        {{ selectedEmployee ? 'Atualizar' : 'Adicionar' }} Funcionário
+      </button>
+    </div>
+  </form>
+
+  <div class="mt-8">
+    <h3 class="text-lg font-semibold mb-2">Lista de Funcionários</h3>
+    <table mat-table [dataSource]="employees" class="w-full mat-elevation-z2">
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Nome</th>
+        <td mat-cell *matCellDef="let emp">{{ emp.name }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="email">
+        <th mat-header-cell *matHeaderCellDef>E-mail</th>
+        <td mat-cell *matCellDef="let emp">{{ emp.email }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="birthDate">
+        <th mat-header-cell *matHeaderCellDef>Nascimento</th>
+        <td mat-cell *matCellDef="let emp">{{ emp.birthDate | date }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Ações</th>
+        <td mat-cell *matCellDef="let emp">
+          <button mat-icon-button color="accent" (click)="editEmployee(emp)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="deleteEmployee(emp.id)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="['name', 'email', 'birthDate', 'actions']"></tr>
+      <tr mat-row *matRowDef="let row; columns: ['name', 'email', 'birthDate', 'actions']"></tr>
+    </table>
+  </div>
+</div>
