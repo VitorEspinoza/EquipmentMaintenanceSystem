@@ -1,0 +1,15 @@
+<div class="p-4">
+  <h1 class="text-xl font-bold mb-4">Detalhes da Solicitação</h1>
+
+  <ng-container *ngIf="solicitation">
+    <p><strong>Equipamento:</strong> {{ solicitation.equipment }}</p>
+    <p><strong>Defeito:</strong> {{ solicitation.defectDescription }}</p>
+    <p><strong>Status:</strong> {{ solicitation.status }}</p>
+    <p><strong>Data/Hora:</strong> {{ solicitation.dateTime | date: 'short' }}</p>
+
+    <div class="flex gap-4 mt-6">
+      <button mat-raised-button color="primary" (click)="performMaintenace()">Efetuar Manutenção</button>
+      <button mat-raised-button color="accent" (click)="redirectMaintenace()">Redirecionar Manutenção</button>
+    </div>
+  </ng-container>
+</div>
