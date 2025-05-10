@@ -19,7 +19,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { Router, RouterModule } from '@angular/router';
-import { NgxMaskDirective, NgxMaskPipe } from 'ngx-mask';
+import { NgxMaskDirective } from 'ngx-mask';
 import { catchError, map, Observable, of, startWith, switchMap } from 'rxjs';
 import { AddressService } from '../../../shared/services/address.service';
 import { City } from '../models/city';
@@ -39,7 +39,7 @@ const MATERIAL_MODULES = [
 const FORM_MODULES = [ReactiveFormsModule, FormsModule];
 const COMMON_MODULES = [NgIf, CommonModule];
 const CORE_MODULES = [RouterModule];
-const NGXCONFIG = [NgxMaskDirective, NgxMaskPipe];
+const NGXCONFIG = [NgxMaskDirective];
 
 @Component({
   selector: 'app-register',

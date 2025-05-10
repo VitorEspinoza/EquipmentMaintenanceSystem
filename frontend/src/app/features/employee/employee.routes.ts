@@ -22,7 +22,7 @@ export const employeeRoutes: Routes = [
       import('./equipment-category/equipment-category.component').then(m => m.EquipmentCategoryComponent),
   },
   {
-    path: 'employee/crud',
-    loadComponent: () => import('./crud/crud.component').then(m => m.CrudComponent),
+    path: 'employee/manage',
+    loadComponent: () => import('./manage/manage.component').then(m => m.ManageComponent),
   },
 ];
