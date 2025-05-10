@@ -55,7 +55,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                     SecurityContextHolder.getContext().setAuthentication(authToken);
-
                 } else {
                     log.warn("[JwtAuthFilter] Invalid JWT token for username={}", username);
                 }
@@ -64,6 +63,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             log.error("[JwtAuthFilter] Error parsing/validating JWT token: {}", e.getMessage());
         }
 
-        filterChain.doFilter(request, response);
+        filterChain.doFilter(request,response);
     }
 }

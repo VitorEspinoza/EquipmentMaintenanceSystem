@@ -25,10 +25,10 @@ public class AuthService {
 
     public ResponseCookie login(AuthRequestDTO authRequestDTO) {
         authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authRequestDTO.email(), authRequestDTO.password())
+                new UsernamePasswordAuthenticationToken(authRequestDTO.getEmail(), authRequestDTO.getPassword())
         );
 
-        Account account = accountService.getByEmail(authRequestDTO.email());
+        Account account = accountService.getByEmail(authRequestDTO.getEmail());
         return authHelper.generateAuthResponse(account);
     }
 }

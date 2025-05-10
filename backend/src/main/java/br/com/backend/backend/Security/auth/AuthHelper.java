@@ -21,7 +21,13 @@ public class AuthHelper {
     public ResponseCookie generateAuthResponse(
             Account account
     ) {
-        String accessToken = jwtUtils.generateToken(account);
+        JwtPayload payload = new JwtPayload(
+                account.getId().toString(),
+                account.getEmail(),
+                account.getRole()
+        );
+
+        String accessToken = jwtUtils.generateToken(payload);
         // String refreshToken = jwtUtils.generateRefreshToken(account);
 
         // refreshTokenService.saveRefreshToken(account.getUsername(), refreshToken);

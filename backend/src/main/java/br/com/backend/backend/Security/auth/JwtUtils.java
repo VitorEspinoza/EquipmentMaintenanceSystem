@@ -30,25 +30,25 @@ public class JwtUtils {
         return Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String generateToken(Account account) {
+    public String generateToken(JwtPayload payload) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("id", account.getId());
-        claims.put("roles", List.of(account.getRole()));
+        claims.put("id", payload.id());
+        claims.put("roles", List.of(payload.role()));
         return Jwts.builder()
                 .claims(claims)
-                .subject(account.getUsername())
+                .subject(payload.email())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + Long.parseLong(expiration) * 1000))
                 .signWith(getSigningKey())
                 .compact();
     }
 
-    public String generateRefreshToken(Account account) {
+    public String generateRefreshToken(JwtPayload payload) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("id", account.getId());
-        claims.put("roles", List.of(account.getRole()));
+        claims.put("id", payload.id());
+        claims.put("roles", List.of(payload.role()));
         return Jwts.builder()
-                .subject(account.getUsername())
+                .subject(payload.email())
                 .claims(claims)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + 7 * 24 * 60 * 60 * 1000))
