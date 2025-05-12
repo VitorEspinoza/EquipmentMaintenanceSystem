@@ -1,20 +1,16 @@
 package br.com.backend.backend.Entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(name = "equipment_category")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-
 @Getter
 public class EquipmentCategory {
 

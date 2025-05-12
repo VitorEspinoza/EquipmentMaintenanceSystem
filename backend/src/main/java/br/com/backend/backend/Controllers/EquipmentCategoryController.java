@@ -1,9 +1,8 @@
 package br.com.backend.backend.Controllers;
 
-import br.com.backend.backend.DTOs.EquipmentCategoryInputDTO;
+import br.com.backend.backend.DTOs.EquipmentCategoryRequestDTO;
 import br.com.backend.backend.DTOs.EquipmentCategoryResponseDTO;
 import br.com.backend.backend.DTOs.ResultViewModel;
-import br.com.backend.backend.Entities.EquipmentCategory;
 import br.com.backend.backend.Services.EquipmentCategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -32,13 +31,14 @@ public class EquipmentCategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<ResultViewModel<EquipmentCategoryResponseDTO>> create(@RequestBody EquipmentCategoryInputDTO dto) {
+    public ResponseEntity<ResultViewModel<EquipmentCategoryResponseDTO>> create(@RequestBody EquipmentCategoryRequestDTO dto) {
         var created = service.createCategory(dto);
+
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ResultViewModel<EquipmentCategoryResponseDTO>> update(@PathVariable Integer id, @RequestBody EquipmentCategoryInputDTO dto) {
+    public ResponseEntity<ResultViewModel<EquipmentCategoryResponseDTO>> update(@PathVariable Integer id, @RequestBody EquipmentCategoryRequestDTO dto) {
         var updated = service.updateCategory(id, dto);
         return ResponseEntity.ok(updated);
     }
