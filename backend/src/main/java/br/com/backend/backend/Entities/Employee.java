@@ -12,6 +12,12 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class Employee {
 
+    public Employee (Account account, String name, LocalDate birthDate) {
+        this.account = account;
+        this.name = name;
+        this.birthDate = birthDate;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

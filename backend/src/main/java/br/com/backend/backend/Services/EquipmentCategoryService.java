@@ -7,6 +7,9 @@ import br.com.backend.backend.Exceptions.Custom.CategoryAlreadyExists;
 import br.com.backend.backend.Exceptions.Custom.EquipmentCategoryNotFoundException;
 import br.com.backend.backend.Mappers.EquipmentCategoryMapper;
 import br.com.backend.backend.Repositories.EquipmentCategoryRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,17 +17,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class EquipmentCategoryService {
 
     private final EquipmentCategoryRepository repository;
-
     private final EquipmentCategoryMapper mapper;
-
-    public EquipmentCategoryService(EquipmentCategoryRepository repository, EquipmentCategoryMapper mapper) {
-        this.repository = repository;
-        this.mapper = mapper;
-    }
-
 
     @Transactional(readOnly = true)
     public ResultViewModel<List<EquipmentCategoryResponseDTO>> getAllCategories() {
