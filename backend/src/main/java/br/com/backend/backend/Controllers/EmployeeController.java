@@ -37,7 +37,7 @@ public class EmployeeController {
             @RequestParam(name = "sort", required = false, defaultValue = "DESC") Sort.Direction sort,
             @RequestParam(name = "name", required = false) String name,
             @RequestParam(name = "email", required = false) String email,
-            @RequestParam(name = "role", required = false) String role,
+            @RequestParam(name = "role", required = false, defaultValue = "EMPLOYEE") String role,
             @RequestParam(name = "active", required = false,defaultValue = "true") Boolean active
     ) {
         return ResponseEntity.ok().body(employeeService.getAll(pageNumber,pageSize, orderBy, sort, name, email, role, active));
