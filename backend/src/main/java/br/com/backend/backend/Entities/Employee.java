@@ -20,7 +20,7 @@ public class Employee {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_account", nullable = false)
@@ -31,4 +31,15 @@ public class Employee {
 
     @Column(name = "birth_date")
     private LocalDate birthDate;
+
+    public void update(String name, String email, String role, LocalDate birthDate) {
+        this.name = name;
+        this.birthDate = birthDate;
+        this.account.setEmail(email);
+        this.account.setRole(role);
+    }
+
+    public void inactivate() {
+        this.account.setActive(false);
+    }
 }

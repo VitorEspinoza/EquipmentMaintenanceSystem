@@ -15,7 +15,6 @@ import java.util.List;
 public interface EquipmentCategoryMapper {
     EquipmentCategoryMapper INSTANCE = Mappers.getMapper(EquipmentCategoryMapper.class);
 
-    @Mapping(target = "equipments", source = "equipments")
     EquipmentCategoryResponseDTO entityToDto(EquipmentCategory equipmentCategory);
 
     @Mapping(target = "category", source = "category.name")
