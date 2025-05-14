@@ -17,13 +17,19 @@ import { Solicitation } from '../../../shared/models/solicitation';
   styleUrl: './employee-maintenance.component.css',
 })
 export class EmployeeMaintenanceComponent implements OnInit {
+  redirectMaintenace() {
+    throw new Error('Method not implemented.');
+  }
+  solicitation!: Solicitation;
+
+  readonly employees: ['Ian Bailone Almeida', 'Gabriel Veiga', 'Vitor Espinoza'] | undefined;
+
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly dialog = inject(MatDialog);
   private readonly solicitationService = inject(SolicitationService);
   private readonly notificationsService = inject(NotificationService);
-
-  solicitation!: Solicitation;
+  loggedInEmployee: string | undefined;
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
@@ -35,30 +41,14 @@ export class EmployeeMaintenanceComponent implements OnInit {
   }
 
   performMaintenace(): void {
-    const dialogRef = this.dialog.open(PerformMaintenaceModalComponent, { data: {} });
+    const dialogRef = this.dialog.open(PerformMaintenaceModalComponent);
 
     dialogRef.afterClosed().subscribe(result => {
-      if (!result || !this.solicitation) return;
-
-      this.solicitation.status = 'ARRUMADA';
-
-      this.solicitation.history.push({
-        id: Date.now(),
-        previousState: this.solicitation.status,
-        newState: 'ARRUMADA',
-        changeDate: new Date().toISOString(),
-        updatedByClient: false,
-        updatedBy: 'Ian Bailone',
-      });
-
-      this.solicitationService.updateSolicitation(this.solicitation).subscribe(() => {
-        this.notificationsService.success('Manutenção registrada com sucesso! ');
-        this.router.navigate(['solicitations']);
-      });
+      if (result) {
+        this.notificationsService.success('Manutenção realizada com sucesso!');
+      } else {
+        this.notificationsService.info('Manutenção cancelada');
+      }
     });
-  }
-
-  redirectMaintenace(): void {
-    this.router.navigate(['/redirect/${this.solicitation?.id}']);
   }
 }

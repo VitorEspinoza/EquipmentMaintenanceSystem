@@ -6,25 +6,28 @@
 
     <mat-card-content>
       <div class="info-item">
-        <p>Equipamento: Notebook Lenovo G15</p>
+        <p><strong>Equipamento:</strong> {{ 'Notebook Dell G15.' }}</p>
       </div>
       <div class="info-item">
-        <p>Cliente: Vitor Espinoza</p>
+        <p><strong>Cliente</strong> {{ 'Gabriel Antônio Veiga' }}</p>
       </div>
       <div class="info-item">
-        <p>Defeito: Teclado parou de funcionar</p>
+        <p><strong>Defeito:</strong> {{ 'A tela está com pixels mortos.' }}</p>
       </div>
       <div class="info-item">
-        <p>Data/Hora: 08/05/2025 22:20</p>
+        <p><strong>Data/Hora</strong>: {{ '13/05/2023 - 21:23' }}</p>
       </div>
       <div class="info-item">
-        <p><strong>Preço Orçado:</strong> <span class="highlight"> R$225,87</span></p>
+        <p>
+          <strong>Preço Orçado: </strong> <span class="highlight">R${{ '120.00' }}</span>
+        </p>
       </div>
       <div class="info-item">
-        <p>Status Atual: Efetuar Manutenção</p>
+        <p><strong>Status Atual</strong>: {{ 'ORÇADO' }}</p>
       </div>
+
       <div class="info-item" *ngIf="solicitation?.redirectedTo">
-        <p>Redirecionado para: {{ solicitation?.redirectedTo }}</p>
+        <p><strong>Redirecionado para:</strong> {{ solicitation.redirectedTo }}</p>
       </div>
     </mat-card-content>
 
