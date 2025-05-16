@@ -28,8 +28,8 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-  <button mat-button (click)="cancelar()">Cancelar</button>
-  <button mat-flat-button color="primary" [disabled]="!options.includes(myControl.value!)" (click)="confirmar()">
+  <button mat-button (click)="cancel()">Cancelar</button>
+  <button mat-flat-button color="primary" [disabled]="!options.includes(myControl.value!)" (click)="confirm()">
     Confirmar
   </button>
 </mat-dialog-actions>

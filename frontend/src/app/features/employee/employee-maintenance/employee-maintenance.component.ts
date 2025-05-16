@@ -35,6 +35,18 @@ export class EmployeeMaintenanceComponent implements OnInit {
     });
   }
 
+  redirectMaintenace(): void {
+    const dialogRef = this.dialog.open(RedirectMaintenanceModalComponent);
+
+    dialogRef.afterClosed().subscribe((selectedEmployee: string | undefined) => {
+      if (selectedEmployee) {
+        this.notificationsService.success('Serviço redirecionado para ....');
+      } else {
+        this.notificationsService.info('Redirecionamento cancelado!');
+      }
+    });
+  }
+
   performMaintenace(): void {
     const dialogRef = this.dialog.open(PerformMaintenaceModalComponent);
 
@@ -43,18 +55,6 @@ export class EmployeeMaintenanceComponent implements OnInit {
         this.notificationsService.success('Manutenção realizada com sucesso!');
       } else {
         this.notificationsService.info('Manutenção cancelada');
-      }
-    });
-  }
-
-  redirectMaintenace(): void {
-    const dialogRef = this.dialog.open(RedirectMaintenanceModalComponent);
-
-    dialogRef.afterClosed().subscribe((selectedEmployee: string | undefined) => {
-      if (selectedEmployee) {
-        this.notificationsService.success(`Serviço redirecionado para ${selectedEmployee}`);
-      } else {
-        this.notificationsService.info('Redirecionamento cancelado');
       }
     });
   }

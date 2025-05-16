@@ -27,7 +27,7 @@ export class RedirectMaintenanceModalComponent {
   @ViewChild('input') input!: ElementRef<HTMLInputElement>;
 
   myControl = new FormControl('');
-  options: string[] = ['Ian Bailone Almeida', 'Gabriel Veiga', 'Vitor Espinoza'];
+  options: string[] = ['Ian Bailone Almeida', 'Vitor Espinoza', 'Gabriel Veiga'];
   filteredOptions: string[] = [...this.options];
 
   private dialogRef = inject(MatDialogRef<RedirectMaintenanceModalComponent>);
@@ -41,11 +41,11 @@ export class RedirectMaintenanceModalComponent {
     this.filteredOptions = this.options.filter(option => option.toLowerCase().includes(filterValue));
   }
 
-  confirmar(): void {
+  confirm(): void {
     this.dialogRef.close(this.myControl.value);
   }
 
-  cancelar(): void {
+  cancel(): void {
     this.dialogRef.close();
   }
 }
