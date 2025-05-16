@@ -114,7 +114,29 @@ export class SolicitationService {
       redirectedTo: null,
       history: [],
     },
+    {
+      id: 6,
+      idClient: 1,
+      dateTime: '2024-05-15T11:00:00',
+      equipment: 'Teclado Mecânico',
+      status: 'ARRUMADA',
+      budgetPrice: 250,
+      defectDescription: 'Teclas com resposta lenta',
+      rejectionReason: '',
+      redirectedTo: null,
+      history: [
+        {
+          id: 6,
+          previousState: 'ORÇADA',
+          newState: 'ARRUMADA',
+          changeDate: '2024-05-14T09:30:00',
+          updatedBy: 'Gusttavo Lima',
+          updatedByClient: false,
+        },
+      ],
+    },
   ];
+
 
   getSolicitations(): Observable<Solicitation[]> {
     return of(this.solicitations);
@@ -128,4 +150,9 @@ export class SolicitationService {
   updateSolicitation(solicitation: Solicitation): Observable<void> {
     return this.crudService.put<void>(`${this.authPrefix}/${solicitation.id}`, solicitation);
   }
+
+  isReadyForPayment(solicitation: Solicitation): boolean {
+    return solicitation.status === 'ARRUMADA';
+  }
+  
 }

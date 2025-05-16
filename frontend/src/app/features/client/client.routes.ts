@@ -19,4 +19,8 @@ export const clientRoutes: Routes = [
     path: 'client/budget',
     loadComponent: () => import('./budget/budget-approve/budget-approve.component').then(m => m.BudgetApproveComponent),
   },
+  {
+    path: 'client/payment/:id',
+    loadComponent: () => import('./client-payment/client-payment.component').then(m => m.ClientPaymentComponent),
+  },
 ];

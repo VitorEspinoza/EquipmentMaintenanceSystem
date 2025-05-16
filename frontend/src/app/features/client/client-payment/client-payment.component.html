@@ -1,0 +1,27 @@
+<div *ngIf="solicitation" class="p-4 max-w-xl mx-auto">
+    <h2 class="text-xl font-bold mb-4">Confirmação de Pagamento</h2>
+  
+    <div class="border p-4 rounded bg-white shadow mb-4">
+      <p><strong>Equipamento:</strong> {{ solicitation.equipment }}</p>
+      <p><strong>Defeito:</strong> {{ solicitation.defectDescription }}</p>
+      <p><strong>Status:</strong> {{ solicitation.status }}</p>
+      <div class="bg-yellow-100 text-yellow-800 text-lg font-bold rounded px-4 py-2 mt-4 text-center">
+        Valor a Pagar: R$ {{ solicitation.budgetPrice | number: '1.2-2' }}
+      </div>
+    </div>
+  
+    <button
+    *ngIf="solicitation?.status === 'ARRUMADA'"
+    (click)="confirmPayment()"
+    [disabled]="paymentConfirmed"
+    class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded w-full"
+  >
+    Confirmar Pagamento
+  </button>
+
+    <div *ngIf="paymentConfirmed" class="mt-4 p-4 bg-green-100 text-green-800 rounded text-center font-semibold">
+      Pagamento confirmado com sucesso!
+    </div>
+  </div>
+  
+  

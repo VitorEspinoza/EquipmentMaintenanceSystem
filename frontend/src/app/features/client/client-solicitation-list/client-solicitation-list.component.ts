@@ -48,7 +48,7 @@ export class ClientSolicitationListComponent implements OnInit {
       case 'REJEITADA':
         return [{ label: 'Resgatar Serviço', route: '/resgatar' }];
       case 'ARRUMADA':
-        return [{ label: 'Pagar Serviço', route: '/pagamento' }];
+          return [{ label: 'Pagar Serviço', route: `/client/payment/${solicitation.id}` }];        
       default:
         return status !== 'APROVADA'
           ? [{ label: 'Visualizar Serviço', route: `/client/solicitation/${solicitation.id}` }]

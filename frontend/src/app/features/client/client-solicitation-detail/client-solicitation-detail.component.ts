@@ -4,6 +4,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { ActivatedRoute } from '@angular/router';
 import { Solicitation } from '../../../shared/models/solicitation';
 import { SolicitationService } from '../../../shared/services/client-solicitation.service';
+import { Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-client-service',
@@ -15,6 +17,7 @@ import { SolicitationService } from '../../../shared/services/client-solicitatio
 export class ClientSolicitationDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private solicitationService = inject(SolicitationService);
+  private router = inject(Router);
 
   requestId: string | null = null;
   requestData?: Solicitation;
@@ -50,18 +53,19 @@ export class ClientSolicitationDetailComponent implements OnInit {
   }
 
   onPayment() {
-    throw new Error('Method not implemented.');
+    if (!this.requestId) return;
+    this.router.navigate(['/client/payment', this.requestId]);
   }
 
   getStatusClass(status: string): string {
     const map: Record<string, string> = {
-      ABERTA: 'bg-gray-500 text-white',
+      ABERTA: 'bg-indigo-400 text-white',   
       ORÇADA: 'bg-yellow-800 text-white',
       REJEITADA: 'bg-red-600 text-white',
       APROVADA: 'bg-yellow-500 text-white',
       REDIRECIONADA: 'bg-purple-600 text-white',
       ARRUMADA: 'bg-blue-500 text-white',
-      PAGA: 'bg-orange-500 text-white',
+      PAGA: 'bg-green-800 text-white',
       FINALIZADA: 'bg-green-600 text-white',
     };
 
