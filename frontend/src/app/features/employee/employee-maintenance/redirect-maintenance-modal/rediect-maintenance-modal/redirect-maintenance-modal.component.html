@@ -7,8 +7,9 @@
 
   <form class="example-form">
     <mat-form-field class="example-full-width" appearance="fill">
-      <mat-label>funcionário</mat-label>
+      <mat-label>Funcionário</mat-label>
       <input
+        #input
         type="text"
         placeholder="Selecione um funcionário"
         matInput
@@ -19,7 +20,7 @@
       />
       <mat-autocomplete requireSelection #auto="matAutocomplete">
         @for (option of filteredOptions; track option) {
-          <mat-option [value]="option">{{ option }} </mat-option>
+          <mat-option [value]="option">{{ option }}</mat-option>
         }
       </mat-autocomplete>
     </mat-form-field>
@@ -27,8 +28,8 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-  <button mat-button (click)="cancel()">Cancelar</button>
-  <button mat-raised-button color="primary" [disabled]="!options.includes(myControl.value!)" (click)="confirm()">
+  <button mat-button (click)="cancelar()">Cancelar</button>
+  <button mat-flat-button color="primary" [disabled]="!options.includes(myControl.value!)" (click)="confirmar()">
     Confirmar
   </button>
 </mat-dialog-actions>

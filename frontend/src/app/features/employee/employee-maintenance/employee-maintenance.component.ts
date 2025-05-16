@@ -9,6 +9,7 @@ import { SolicitationService } from '../../../shared/services/client-solicitatio
 import { NotificationService } from '../../../core/services/notification.service';
 import { PerformMaintenaceModalComponent } from './perform-maintenance-modal/perform-maintenance-modal.component';
 import { Solicitation } from '../../../shared/models/solicitation';
+import { RedirectMaintenanceModalComponent } from './redirect-maintenance-modal/rediect-maintenance-modal/redirect-maintenance-modal.component';
 
 @Component({
   selector: 'app-employee-maintenance',
@@ -17,11 +18,7 @@ import { Solicitation } from '../../../shared/models/solicitation';
   styleUrl: './employee-maintenance.component.css',
 })
 export class EmployeeMaintenanceComponent implements OnInit {
-  redirectMaintenace() {
-    throw new Error('Method not implemented.');
-  }
   solicitation!: Solicitation;
-
   readonly employees: ['Ian Bailone Almeida', 'Gabriel Veiga', 'Vitor Espinoza'] | undefined;
 
   private readonly route = inject(ActivatedRoute);
@@ -33,9 +30,7 @@ export class EmployeeMaintenanceComponent implements OnInit {
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
-    console.log('Id da rota', id);
     this.solicitationService.getSolicitationById(id).subscribe(s => {
-      console.log('Solicitação recebida', s);
       if (s) this.solicitation = s;
     });
   }
@@ -48,6 +43,18 @@ export class EmployeeMaintenanceComponent implements OnInit {
         this.notificationsService.success('Manutenção realizada com sucesso!');
       } else {
         this.notificationsService.info('Manutenção cancelada');
+      }
+    });
+  }
+
+  redirectMaintenace(): void {
+    const dialogRef = this.dialog.open(RedirectMaintenanceModalComponent);
+
+    dialogRef.afterClosed().subscribe((selectedEmployee: string | undefined) => {
+      if (selectedEmployee) {
+        this.notificationsService.success(`Serviço redirecionado para ${selectedEmployee}`);
+      } else {
+        this.notificationsService.info('Redirecionamento cancelado');
       }
     });
   }

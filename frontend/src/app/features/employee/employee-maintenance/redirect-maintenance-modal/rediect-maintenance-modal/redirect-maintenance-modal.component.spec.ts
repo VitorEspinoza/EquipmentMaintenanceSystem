@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { RedirectMaintenanceModalComponent } from './redirect-maintenance-modal.component';
 
-describe('RedirectMaintenanceModalComponent', () => {
+describe('RediectMaintenanceModalComponent', () => {
   let component: RedirectMaintenanceModalComponent;
   let fixture: ComponentFixture<RedirectMaintenanceModalComponent>;
 

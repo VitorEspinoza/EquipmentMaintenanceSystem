@@ -1,17 +1,17 @@
-import { Component, ElementRef, inject, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatButtonModule } from '@angular/material/button';
+import { Component, ElementRef, ViewChild, inject } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-redirect-maintenance-modal',
-  standalone: true,
   templateUrl: './redirect-maintenance-modal.component.html',
-  styleUrls: ['./redirect-maintenance-modal.component.css'],
+  styleUrl: './redirect-maintenance-modal.component.css',
+  standalone: true,
   imports: [
     CommonModule,
     FormsModule,
@@ -27,7 +27,7 @@ export class RedirectMaintenanceModalComponent {
   @ViewChild('input') input!: ElementRef<HTMLInputElement>;
 
   myControl = new FormControl('');
-  options: string[] = ['Ian Bailone Almeida', 'Vitor Espinoza', 'Gabriel Veiga'];
+  options: string[] = ['Ian Bailone Almeida', 'Gabriel Veiga', 'Vitor Espinoza'];
   filteredOptions: string[] = [...this.options];
 
   private dialogRef = inject(MatDialogRef<RedirectMaintenanceModalComponent>);
@@ -37,15 +37,15 @@ export class RedirectMaintenanceModalComponent {
   }
 
   filter(): void {
-    const filterValue = this.input.nativeElement.value.toLocaleLowerCase();
+    const filterValue = this.input.nativeElement.value.toLowerCase();
     this.filteredOptions = this.options.filter(option => option.toLowerCase().includes(filterValue));
   }
 
-  confirm(): void {
+  confirmar(): void {
     this.dialogRef.close(this.myControl.value);
   }
 
-  cancel(): void {
+  cancelar(): void {
     this.dialogRef.close();
   }
 }
