@@ -1,32 +1,51 @@
-import { Component, inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { Component, ElementRef, inject, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-redirect-maintenance-modal',
   standalone: true,
   templateUrl: './redirect-maintenance-modal.component.html',
   styleUrls: ['./redirect-maintenance-modal.component.css'],
-  imports: [CommonModule, MatDialogModule, MatFormFieldModule, MatSelectModule, MatButtonModule, FormsModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatAutocompleteModule,
+    MatDialogModule,
+    MatButtonModule,
+  ],
 })
 export class RedirectMaintenanceModalComponent {
-  data = inject(MAT_DIALOG_DATA);
-  dialogRef = inject(MatDialogRef<RedirectMaintenanceModalComponent>);
+  @ViewChild('input') input!: ElementRef<HTMLInputElement>;
 
-  selectedEmployee: string | null = null;
+  myControl = new FormControl('');
+  options: string[] = ['Ian Bailone Almeida', 'Vitor Espinoza', 'Gabriel Veiga'];
+  filteredOptions: string[] = [...this.options];
 
-  confirmRedirect() {
-    if (this.selectedEmployee) {
-      this.dialogRef.close(this.selectedEmployee);
-    }
+  private dialogRef = inject(MatDialogRef<RedirectMaintenanceModalComponent>);
+
+  constructor() {
+    this.filteredOptions = this.options.slice();
   }
 
-  cancel() {
-    this.dialogRef.close(null);
+  filter(): void {
+    const filterValue = this.input.nativeElement.value.toLocaleLowerCase();
+    this.filteredOptions = this.options.filter(option => option.toLowerCase().includes(filterValue));
+  }
+
+  confirm(): void {
+    this.dialogRef.close(this.myControl.value);
+  }
+
+  cancel(): void {
+    this.dialogRef.close();
   }
 }
