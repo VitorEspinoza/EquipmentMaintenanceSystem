@@ -1,6 +1,7 @@
 package br.com.backend.backend.DTOs.Employee;
 
-import br.com.backend.backend.DTOs.Account.AccountDTO;
+import br.com.backend.backend.DTOs.Account.CreateAccountDTO;
+import br.com.backend.backend.DTOs.Account.UpdateAccountDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,9 +13,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Getter
 @Setter
-public class EmployeeDTO {
-    private Integer id;
-    private String name;
-    private AccountDTO account;
+public class UpdateEmployeeDTO {
+    private UpdateAccountDTO account;
+    private String nome;
     private LocalDate birthDate;
 }

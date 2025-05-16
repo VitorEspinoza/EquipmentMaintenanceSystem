@@ -31,9 +31,7 @@ public class AccountService {
 
     public AccountDTO create(CreateAccountDTO dto) {
 
-        Optional<Account> accountWithEmailExists = accountRepository.findByEmail(dto.getEmail());
-
-        if(accountWithEmailExists.isPresent()) {
+        if(emailAccountAlreadyInUse(dto.getEmail())) {
             throw new AccountAlreadyExists("email");
         }
 
@@ -43,5 +41,10 @@ public class AccountService {
         Account savedAccount = accountRepository.save(accountCreate);
 
         return accountMapper.toDto(savedAccount);
+    }
+
+    public boolean emailAccountAlreadyInUse(String email) {
+        Optional<Account> accountWithEmailExists = accountRepository.findByEmail(email);
+        return accountWithEmailExists.isPresent();
     }
 }
