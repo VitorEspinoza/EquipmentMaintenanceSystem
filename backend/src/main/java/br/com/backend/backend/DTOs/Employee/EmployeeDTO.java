@@ -1,6 +1,7 @@
 package br.com.backend.backend.DTOs.Employee;
 
 import br.com.backend.backend.DTOs.Account.AccountDTO;
+import br.com.backend.backend.Entities.Employee;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,8 +14,21 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class EmployeeDTO {
-    private Integer id;
+    private Integer idEmployee;
+    private Integer idAccount;
     private String name;
-    private AccountDTO account;
+    private String email;
+    private String role;
     private LocalDate birthDate;
+
+    public static EmployeeDTO fromEntity(Employee employee) {
+        return new EmployeeDTO(
+                employee.getId(),
+                employee.getAccount().getId(),
+                employee.getName(),
+                employee.getAccount().getEmail(),
+                employee.getAccount().getRole(),
+                employee.getBirthDate()
+        );
+    }
 }
