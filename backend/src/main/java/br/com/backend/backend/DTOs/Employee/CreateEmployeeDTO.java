@@ -13,7 +13,8 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class CreateEmployeeDTO {
-    private CreateAccountDTO account;
+    private String email;
+    private String password;
     private String nome;
     private LocalDate birthDate;
 }

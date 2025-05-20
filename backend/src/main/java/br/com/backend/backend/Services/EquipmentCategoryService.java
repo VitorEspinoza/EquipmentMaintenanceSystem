@@ -5,11 +5,8 @@ import br.com.backend.backend.DTOs.EquipmentCategoryResponseDTO;
 import br.com.backend.backend.DTOs.ResultViewModel;
 import br.com.backend.backend.Exceptions.Custom.CategoryAlreadyExists;
 import br.com.backend.backend.Exceptions.Custom.EquipmentCategoryNotFoundException;
-import br.com.backend.backend.Mappers.EquipmentCategoryMapper;
 import br.com.backend.backend.Repositories.EquipmentCategoryRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,13 +18,16 @@ import java.util.List;
 public class EquipmentCategoryService {
 
     private final EquipmentCategoryRepository repository;
-    private final EquipmentCategoryMapper mapper;
 
     @Transactional(readOnly = true)
     public ResultViewModel<List<EquipmentCategoryResponseDTO>> getAllCategories() {
         var categories = repository.findAll();
 
-        return ResultViewModel.success(mapper.entitiesToDtos(categories));
+        return ResultViewModel.success(
+                categories.stream()
+                        .map(EquipmentCategoryResponseDTO::fromEntity)
+                        .toList()
+        );
     }
 
     @Transactional(readOnly = true)
@@ -35,7 +35,7 @@ public class EquipmentCategoryService {
         var category = repository.findById(id).orElseThrow(() -> new EquipmentCategoryNotFoundException(id));
 
 
-        return ResultViewModel.success(mapper.entityToDto(category));
+        return ResultViewModel.success(EquipmentCategoryResponseDTO.fromEntity(category));
     }
 
     @Transactional
@@ -46,23 +46,10 @@ public class EquipmentCategoryService {
             throw new CategoryAlreadyExists(categoryName);
         }
 
-        var category = mapper.requestDtoToEntity(dto);
+        var category = dto.toEntity();
         var savedCategory = repository.save(category);
 
-
-        ObjectMapper mappesr = new ObjectMapper();
-
-        try {
-            var valorMapeado = mapper.entityToDto(savedCategory);
-            var id = savedCategory.getId();
-            var teste = mappesr.convertValue(valorMapeado, EquipmentCategoryResponseDTO.class);
-            var sda = 2;
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return ResultViewModel.success(mapper.entityToDto(savedCategory));
+        return ResultViewModel.success(EquipmentCategoryResponseDTO.fromEntity(savedCategory));
     }
 
     @Transactional
@@ -72,7 +59,7 @@ public class EquipmentCategoryService {
         category.update(dto.name(), dto.description());
         var updatedCategory = repository.save(category);
 
-        return ResultViewModel.success(mapper.entityToDto(updatedCategory));
+        return ResultViewModel.success(EquipmentCategoryResponseDTO.fromEntity(updatedCategory));
     }
 
     @Transactional

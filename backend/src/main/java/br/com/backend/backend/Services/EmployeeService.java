@@ -1,6 +1,7 @@
 package br.com.backend.backend.Services;
 
 import br.com.backend.backend.DTOs.Account.AccountDTO;
+import br.com.backend.backend.DTOs.Account.CreateAccountDTO;
 import br.com.backend.backend.DTOs.Employee.CreateEmployeeDTO;
 import br.com.backend.backend.DTOs.Employee.EmployeeDTO;
 import br.com.backend.backend.DTOs.Employee.UpdateEmployeeDTO;
@@ -11,7 +12,6 @@ import br.com.backend.backend.Entities.Employee;
 import br.com.backend.backend.Exceptions.Custom.AccountAlreadyExists;
 import br.com.backend.backend.Exceptions.Custom.EmployeeNotFoundException;
 import br.com.backend.backend.Filters.EmployeeSpecifications;
-import br.com.backend.backend.Mappers.EmployeeMapper;
 import br.com.backend.backend.Repositories.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,22 +32,22 @@ public class EmployeeService {
 
     private final EmployeeRepository employeeRepository;
     private final AccountService accountService;
-    private final EmployeeMapper employeeMapper;
 
     public ResultViewModel<EmployeeDTO> create(CreateEmployeeDTO createEmployeeDTO) {
-        AccountDTO accountDTO = accountService.create(createEmployeeDTO.getAccount());
+        CreateAccountDTO accountCreate = new CreateAccountDTO(createEmployeeDTO.getEmail(), createEmployeeDTO.getPassword(), "EMPLOYEE");
+        AccountDTO accountDTO = accountService.create(accountCreate);
         log.info("Account created ID: {}", accountDTO.getId());
         Account account = accountService.getById(accountDTO.getId());
 
         Employee createEmploye = new Employee(account, createEmployeeDTO.getNome(), createEmployeeDTO.getBirthDate());
         Employee createdEmployee = employeeRepository.save(createEmploye);
 
-        return ResultViewModel.success(employeeMapper.toDto(createdEmployee));
+        return ResultViewModel.success(EmployeeDTO.fromEntity(createdEmployee));
     }
 
     public ResultViewModel<EmployeeDTO> getById(Integer idEmployee) {
         Employee employee = findById(idEmployee);
-        return ResultViewModel.success(employeeMapper.toDto(employee));
+        return ResultViewModel.success(EmployeeDTO.fromEntity(employee));
     }
 
     public Employee findById(Integer idEmployee) {
@@ -60,13 +60,13 @@ public class EmployeeService {
     public ResultViewModel<EmployeeDTO> update(Integer idEmployee, UpdateEmployeeDTO dto) {
         Employee employee = findById(idEmployee);
 
-        if(accountService.emailAccountAlreadyInUse(dto.getAccount().getEmail())) {
+        if(accountService.emailAccountAlreadyInUse(dto.getEmail())) {
             throw new AccountAlreadyExists("email");
         }
 
-        employee.update(dto.getNome(), dto.getAccount().getEmail(), dto.getAccount().getRole(), dto.getBirthDate());
+        employee.update(dto.getNome(), dto.getEmail(), dto.getRole(), dto.getBirthDate());
         employeeRepository.save(employee);
-        return ResultViewModel.success(employeeMapper.toDto(employee));
+        return ResultViewModel.success(EmployeeDTO.fromEntity(employee));
     }
 
     public void logicalDelete(Integer idEmployee) {
@@ -99,7 +99,7 @@ public class EmployeeService {
 
         // Mapeamento para DTO
         List<EmployeeDTO> content = page.getContent().stream()
-                .map(employeeMapper::toDto)
+                .map(EmployeeDTO::fromEntity)
                 .toList();
 
         PageDTO<EmployeeDTO> pageDTO = new PageDTO<>();
