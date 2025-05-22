@@ -14,6 +14,14 @@ import lombok.Setter;
 @Setter
 public class Client {
 
+    public Client(Account account, Address address, String name, String cpf, String phone) {
+        this.account = account;
+        this.address = address;
+        this.name = name;
+        this.cpf = cpf;
+        this.phone = phone;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
