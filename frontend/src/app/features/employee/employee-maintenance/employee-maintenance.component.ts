@@ -41,8 +41,6 @@ export class EmployeeMaintenanceComponent implements OnInit {
     dialogRef.afterClosed().subscribe((selectedEmployee: string | undefined) => {
       if (selectedEmployee) {
         this.notificationsService.success('Serviço redirecionado para ....');
-      } else {
-        this.notificationsService.info('Redirecionamento cancelado!');
       }
     });
   }
@@ -53,8 +51,6 @@ export class EmployeeMaintenanceComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
         this.notificationsService.success('Manutenção realizada com sucesso!');
-      } else {
-        this.notificationsService.info('Manutenção cancelada');
       }
     });
   }
