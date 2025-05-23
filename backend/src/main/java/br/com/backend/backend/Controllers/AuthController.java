@@ -1,7 +1,6 @@
 package br.com.backend.backend.Controllers;
 
 import br.com.backend.backend.DTOs.Auth.AuthRequestDTO;
-import br.com.backend.backend.DTOs.Auth.AuthResponseDTO;
 import br.com.backend.backend.DTOs.ResultViewModel;
 import br.com.backend.backend.Services.AuthService;
 import lombok.RequiredArgsConstructor;
@@ -23,13 +22,11 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<ResultViewModel<AuthResponseDTO>> login(@RequestBody AuthRequestDTO dto) {
+    public ResponseEntity<ResultViewModel<String>> login(@RequestBody AuthRequestDTO dto) {
         ResponseCookie cookie = authService.login(dto);
-        log.info("Generated cookie: {}", cookie); // <-- se explodir aqui, o problema está no toString()
-
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
-                .body(new ResultViewModel<>(new AuthResponseDTO("Login successful")));
+                .body(ResultViewModel.success("Login successful"));
     }
 
 }
