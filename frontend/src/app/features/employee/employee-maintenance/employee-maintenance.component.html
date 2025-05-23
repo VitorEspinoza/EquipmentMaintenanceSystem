@@ -1,7 +1,7 @@
-<div class="center-square-container">
-  <mat-card class="budget-approve.component-card">
-    <mat-card-header style="display: flex; justify-content: center; align-items: center">
-      <mat-card-title style="text-align: center"><strong>Detalhes da Solicitação</strong></mat-card-title>
+<div class="max-w-4xl mx-auto p-6 bg-gray-50 rounded shadow-md">
+  <mat-card class="mat-elevation-z3 mb-6">
+    <mat-card-header class="justify-center">
+      <mat-card-title class="text-xl font-bold text-center">Detalhes da Solicitação</mat-card-title>
     </mat-card-header>
 
     <mat-card-content>
@@ -9,23 +9,22 @@
         <p><strong>Equipamento:</strong> {{ 'Notebook Dell G15.' }}</p>
       </div>
       <div class="info-item">
-        <p><strong>Cliente</strong> {{ 'Gabriel Antônio Veiga' }}</p>
+        <p><strong>Cliente:</strong> {{ 'Gabriel Antônio Veiga' }}</p>
       </div>
       <div class="info-item">
         <p><strong>Defeito:</strong> {{ 'A tela está com pixels mortos.' }}</p>
       </div>
       <div class="info-item">
-        <p><strong>Data/Hora</strong>: {{ '13/05/2023 - 21:23' }}</p>
+        <p><strong>Data/Hora:</strong> {{ '13/05/2023 - 21:23' }}</p>
       </div>
       <div class="info-item">
         <p>
-          <strong>Preço Orçado: </strong> <span class="highlight">R${{ '120.00' }}</span>
+          <strong>Preço Orçado:</strong> <span class="highlight text-green-600">R${{ '120.00' }}</span>
         </p>
       </div>
       <div class="info-item">
-        <p><strong>Status Atual</strong>: {{ 'ORÇADO' }}</p>
+        <p><strong>Status Atual:</strong> {{ 'ORÇADO' }}</p>
       </div>
-
       <div class="info-item" *ngIf="solicitation?.redirectedTo">
         <p><strong>Redirecionado para:</strong> {{ solicitation.redirectedTo }}</p>
       </div>
@@ -33,23 +32,20 @@
 
     <mat-divider></mat-divider>
 
-    <mat-card-actions
-      class="action-buttons"
-      style="display: flex; justify-content: center; align-items: center; gap: 10px"
-    >
+    <mat-card-actions class="flex justify-center gap-4 mt-4">
       <button mat-flat-button color="primary" (click)="performMaintenace()">Efetuar Manutenção</button>
       <button mat-flat-button color="accent" (click)="redirectMaintenace()">Redirecionar Manutenção</button>
     </mat-card-actions>
   </mat-card>
 
-  <mat-card class="observacoes-card" *ngIf="solicitation?.history?.length">
+  <mat-card class="mat-elevation-z3" *ngIf="solicitation?.history?.length">
     <mat-card-header>
-      <mat-card-title>Histórico de Estados</mat-card-title>
+      <mat-card-title class="text-lg font-semibold">Histórico de Estados</mat-card-title>
     </mat-card-header>
 
-    <mat-card-content>
+    <mat-card-content class="space-y-2">
       <div *ngFor="let entry of solicitation?.history">
-        <p class="text-sm text-gray-800">
+        <p class="text-sm text-gray-700">
           <strong>{{ entry.changeDate | date: 'dd/MM/yyyy HH:mm' }}</strong> — {{ entry.previousState }} →
           {{ entry.newState }} por {{ entry.updatedBy }}
         </p>
