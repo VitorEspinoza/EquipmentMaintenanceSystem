@@ -3,32 +3,30 @@
     <mat-card-header style="display: flex; justify-content: center; align-items: center">
       <mat-card-title style="text-align: center"><strong>Detalhes do Serviço</strong></mat-card-title>
     </mat-card-header>
+
     <mat-card-content>
       <div class="info-item">
-        <p>Equipamento: Notebook Dell Inspiron 15</p>
+        <p><strong>Equipamento:</strong> {{ budgetRequest.equipamento }}</p>
       </div>
       <div class="info-item">
-        <p>Categoria: Notebook</p>
+        <p><strong>Categoria:</strong> {{ budgetRequest.categoria }}</p>
       </div>
       <div class="info-item">
-        <p>Defeito: Não liga.</p>
+        <p><strong>Defeito:</strong> {{ budgetRequest.defeito }}</p>
       </div>
       <div class="info-item">
-        <p>Data/Hora: 11/04/2025 10:45</p>
+        <p><strong>Data/Hora:</strong> {{ budgetRequest.dataHora }}</p>
       </div>
       <div class="info-item">
-        <p><strong>Preço Orçado:</strong> <span class="highlight">R$ 735,90</span></p>
+        <p><strong>Preço Orçado:</strong> <span class="highlight">R$ {{ budgetRequest.precoOrcado }}</span></p>
       </div>
     </mat-card-content>
 
     <mat-divider></mat-divider>
 
-    <mat-card-actions
-      class="action-buttons"
-      style="display: flex; justify-content: center; align-items: center; gap: 10px"
-    >
-      <button mat-flat-button color="primary" (click)="aprovarServico()">Aprovar Serviço</button>
-      <button mat-flat-button color="warn" (click)="rejeitarServico()">Rejeitar Serviço</button>
+    <mat-card-actions class="action-buttons" style="display: flex; justify-content: center; gap: 10px">
+      <button mat-flat-button color="primary" (click)="onApprove()">Aprovar Serviço</button>
+      <button mat-flat-button color="warn" (click)="onReject()">Rejeitar Serviço</button>
     </mat-card-actions>
   </mat-card>
 
@@ -36,9 +34,8 @@
     <mat-card-header>
       <mat-card-title>Observações</mat-card-title>
     </mat-card-header>
-
     <mat-card-content>
-      <p>Cliente informou defeito na placa-mãe.</p>
+      <p>{{ observations }}</p>
     </mat-card-content>
   </mat-card>
 </div>
