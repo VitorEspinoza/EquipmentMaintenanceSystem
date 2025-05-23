@@ -1,8 +1,8 @@
-package br.com.backend.backend.DTOs;
+package br.com.backend.backend.DTOs.EquipmentCategory;
 
+import br.com.backend.backend.DTOs.Equipment.EquipmentDTO;
 import br.com.backend.backend.Entities.EquipmentCategory;
 
-import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 

@@ -1,6 +1,6 @@
 package br.com.backend.backend.Services;
 
-import br.com.backend.backend.DTOs.CreateAddressDTO;
+import br.com.backend.backend.DTOs.Address.CreateAddressDTO;
 import br.com.backend.backend.Entities.Address;
 import br.com.backend.backend.Repositories.AddressRepository;
 import lombok.RequiredArgsConstructor;

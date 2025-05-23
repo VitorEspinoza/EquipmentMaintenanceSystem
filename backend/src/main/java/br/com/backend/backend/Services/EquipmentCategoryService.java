@@ -1,13 +1,12 @@
 package br.com.backend.backend.Services;
 
-import br.com.backend.backend.DTOs.EquipmentCategoryRequestDTO;
-import br.com.backend.backend.DTOs.EquipmentCategoryResponseDTO;
+import br.com.backend.backend.DTOs.EquipmentCategory.EquipmentCategoryRequestDTO;
+import br.com.backend.backend.DTOs.EquipmentCategory.EquipmentCategoryResponseDTO;
 import br.com.backend.backend.DTOs.ResultViewModel;
 import br.com.backend.backend.Exceptions.Custom.CategoryAlreadyExists;
 import br.com.backend.backend.Exceptions.Custom.EquipmentCategoryNotFoundException;
 import br.com.backend.backend.Repositories.EquipmentCategoryRepository;
 import lombok.RequiredArgsConstructor;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

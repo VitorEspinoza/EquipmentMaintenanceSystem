@@ -1,4 +1,4 @@
-package br.com.backend.backend.DTOs;
+package br.com.backend.backend.DTOs.Address;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
