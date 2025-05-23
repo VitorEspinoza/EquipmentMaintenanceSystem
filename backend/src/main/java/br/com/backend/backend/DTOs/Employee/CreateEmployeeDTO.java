@@ -15,6 +15,6 @@ import java.time.LocalDate;
 public class CreateEmployeeDTO {
     private String email;
     private String password;
-    private String nome;
+    private String name;
     private LocalDate birthDate;
 }

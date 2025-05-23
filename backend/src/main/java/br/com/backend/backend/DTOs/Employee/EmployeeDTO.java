@@ -14,7 +14,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class EmployeeDTO {
-    private Integer idEmployee;
+    private Integer id;
     private Integer idAccount;
     private String name;
     private String email;
