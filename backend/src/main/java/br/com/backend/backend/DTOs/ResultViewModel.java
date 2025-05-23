@@ -1,5 +1,6 @@
 package br.com.backend.backend.DTOs;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.Collections;
 
 @Getter
 public class ResultViewModel<T> {
+    @JsonProperty("isSuccess")
     private final boolean isSuccess;
 
     private final List<String> errors;

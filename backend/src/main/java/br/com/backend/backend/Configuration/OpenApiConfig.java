@@ -18,13 +18,6 @@ public class OpenApiConfig {
                 .info(new Info()
                         .title("Equipment Maintenance System")
                         .version("1.0.0")
-                        .description("API documentation for the equipment maintenance system"))
-                .addSecurityItem(new SecurityRequirement().addList("bearerAuth"))
-                .components(new Components().addSecuritySchemes("bearerAuth",
-                        new SecurityScheme()
-                                .name("Authorization")
-                                .type(SecurityScheme.Type.HTTP)
-                                .scheme("bearer")
-                                .bearerFormat("JWT")));
+                        .description("API documentation for the equipment maintenance system"));
     }
 }

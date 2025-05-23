@@ -39,7 +39,7 @@ public class EmployeeService {
         log.info("Account created ID: {}", accountDTO.getId());
         Account account = accountService.getById(accountDTO.getId());
 
-        Employee createEmploye = new Employee(account, createEmployeeDTO.getNome(), createEmployeeDTO.getBirthDate());
+        Employee createEmploye = new Employee(account, createEmployeeDTO.getName(), createEmployeeDTO.getBirthDate());
         Employee createdEmployee = employeeRepository.save(createEmploye);
 
         return ResultViewModel.success(EmployeeDTO.fromEntity(createdEmployee));
