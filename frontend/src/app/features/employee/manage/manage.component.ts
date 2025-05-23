@@ -15,7 +15,11 @@ import { MatTable, MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
 import moment from 'moment';
 import { NgxMaskDirective } from 'ngx-mask';
+import { NotificationService } from '../../../core/services/notification.service';
+import { ApiResponse } from '../../../shared/models/ApiResponse';
+import { Page } from '../../../shared/models/page';
 import { Employee } from '../models/Employee';
+import { EmployeeService } from '../services/employee.service';
 
 const MATERIAL_MODULES = [
   MatFormFieldModule,
@@ -56,6 +60,8 @@ export const MY_DATE_FORMATS = {
 })
 export class ManageComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
+  private readonly employeeService = inject(EmployeeService);
+  private readonly notificationService = inject(NotificationService);
 
   employees: Employee[] = [];
   selectedEmployee: Employee | null = null;
@@ -70,15 +76,26 @@ export class ManageComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       birthDate: [null, Validators.required],
       password: ['', Validators.required],
+      role: ['EMPLOYEE'],
     });
 
-    // Inserindo um funcionário inicial
-    this.employees.push({
-      id: 1,
-      name: 'Admin',
-      email: 'admin@example.com',
-      birthDate: new Date(1990, 1, 1),
-      password: 'admin123',
+    this.loadEmployees();
+  }
+
+  loadEmployees(): void {
+    this.employeeService.getAll().subscribe({
+      next: (response: ApiResponse<Page<Employee>>) => {
+        console.log('response:', response);
+        if (response.isSuccess) {
+          this.employees = response.data.content;
+        } else {
+          this.notificationService.error('Erro', response.errors.join(', ') || 'Falha ao carregar funcionários');
+        }
+      },
+      error: err => {
+        console.error('Erro ao carregar funcionários:', err);
+        this.notificationService.error('Erro', 'Erro de comunicação com o servidor');
+      },
     });
   }
 
@@ -98,18 +115,41 @@ export class ManageComponent implements OnInit {
     }
 
     if (emp.id) {
-      const index = this.employees.findIndex(e => e.id === emp.id);
-      if (index !== -1) {
-        console.log('Atualizando o funcionário:', emp);
-        this.employees[index] = emp;
-        this.employees = [...this.employees];
-      } else {
-        console.error('Funcionário não encontrado para atualização.');
-      }
+      this.employeeService.update(emp).subscribe({
+        next: updatedEmp => {
+          const index = this.employees.findIndex(e => e.id === updatedEmp.id);
+          if (index !== -1) {
+            console.log('Atualizando o funcionário:', updatedEmp);
+            this.employees[index] = updatedEmp;
+            this.employees = [...this.employees];
+            this.notificationService.success('Sucesso', 'Funcionário atualizado!');
+          } else {
+            console.error('Funcionário não encontrado para atualização.');
+          }
+        },
+        error: () => {
+          this.notificationService.error('Error', 'Erro ao atualizar funcionário');
+        },
+      });
     } else {
-      emp.id = this.generateId();
+      this.employeeService.create(emp).subscribe({
+        next: (response: ApiResponse<Employee>) => {
+          console.log('response:', response);
+          if (response.isSuccess) {
+            console.log('Funcionário criado com sucesso:', response.data);
+            const createdEmp = response.data;
+            this.notificationService.success('Sucesso', 'Funcionário criado!');
+            this.employees = [...this.employees, createdEmp];
+          } else {
+            this.notificationService.error('Erro', response.errors.join(', ') || 'Falha ao criar funcionário');
+          }
+        },
+        error: () => {
+          this.notificationService.error('Erro', 'Erro de comunicação com o servidor');
+        },
+      });
+
       console.log('Adicionando novo funcionário:', emp);
-      this.employees = [...this.employees, emp];
     }
 
     console.log('Lista de Funcionários:', this.employees);
@@ -135,10 +175,6 @@ export class ManageComponent implements OnInit {
     }
 
     this.employees = this.employees.filter(e => e.id !== id);
-  }
-
-  generateId(): number {
-    return Math.max(...this.employees.map(e => e.id), 0) + 1;
   }
 
   formatDate(event: any) {
