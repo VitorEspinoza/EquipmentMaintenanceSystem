@@ -4,6 +4,7 @@ import br.com.backend.backend.Entities.Account;
 import br.com.backend.backend.Services.AccountService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
+import static br.com.backend.backend.Security.SecurityConstants.ACCESS_TOKEN_COOKIE;
 import static br.com.backend.backend.Security.SecurityConstants.BEARER_PREFIX;
 
 @Slf4j
@@ -35,13 +37,21 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
 
-        final String authHeader = request.getHeader("Authorization");
-        if (authHeader == null || !authHeader.startsWith(BEARER_PREFIX)) {
+        String token = null;
+
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if (ACCESS_TOKEN_COOKIE.equals(cookie.getName())) { // nome do seu cookie
+                    token = cookie.getValue();
+                    break;
+                }
+            }
+        }
+
+        if (token == null) {
             filterChain.doFilter(request, response);
             return;
         }
-
-        final String token = authHeader.substring(7);
 
         try {
             final String username = jwtUtils.extractUsername(token);
@@ -63,6 +73,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             log.error("[JwtAuthFilter] Error parsing/validating JWT token: {}", e.getMessage());
         }
 
-        filterChain.doFilter(request,response);
+        filterChain.doFilter(request, response);
     }
 }
