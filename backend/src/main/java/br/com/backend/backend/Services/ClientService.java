@@ -10,6 +10,7 @@ import br.com.backend.backend.Entities.Address;
 import br.com.backend.backend.Entities.Client;
 import br.com.backend.backend.Exceptions.Custom.AccountAlreadyExists;
 import br.com.backend.backend.Repositories.ClientRepository;
+import br.com.backend.backend.Services.Interfaces.ClientPasswordEmailService;
 import br.com.backend.backend.Utils.PasswordGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ public class ClientService {
     private final ClientRepository clientRepository;
     private final AccountService accountService;
     private final AddressService addressService;
+    private final ClientPasswordEmailService clientPasswordEmailService; 
 
     public ResultViewModel<ClientDTO> create(CreateClientDTO dto) {
         String randomPassword = PasswordGenerator.generateRandomPassword();
@@ -39,6 +41,8 @@ public class ClientService {
                 dto.getPhone()
         );
         Client clientCreated = clientRepository.save(client);
+
+        clientPasswordEmailService.sendPasswordToClient(dto, randomPassword);
         return ResultViewModel.success(new ClientDTO());
     }
 }
