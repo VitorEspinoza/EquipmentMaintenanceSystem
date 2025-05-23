@@ -1,13 +1,15 @@
-import { CommonModule, NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
 import { map } from 'rxjs';
 import { Solicitation } from '../../../shared/models/solicitation';
 import { SolicitationService } from '../../../shared/services/client-solicitation.service';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 
-const MATERIAL_MODULES = [MatTableModule];
-const COMMON_MODULES = [NgIf, CommonModule];
+const MATERIAL_MODULES = [MatTableModule, MatTableModule, MatButtonModule, MatCardModule];
+const COMMON_MODULES = [CommonModule];
 const CORE_MODULES = [RouterModule];
 
 @Component({
@@ -19,6 +21,7 @@ const CORE_MODULES = [RouterModule];
 export class EmployeeHomeComponent implements OnInit {
   private readonly solicitationService = inject(SolicitationService);
 
+  displayedColumns: string[] = ['dateTime', 'equipment', 'action'];
   solicitations: Solicitation[] = [];
 
   ngOnInit(): void {

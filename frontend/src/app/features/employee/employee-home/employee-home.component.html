@@ -1,32 +1,35 @@
-<div class="container mx-auto p-6">
+<mat-card class="mat-elevation-z3 p-4 max-w-6xl mx-auto">
   <h1 class="text-2xl font-bold mb-4">Solicitações Abertas</h1>
 
-  <div class="overflow-x-auto bg-white shadow-md rounded-lg">
-    <table class="min-w-full border border-gray-200">
-      <thead class="bg-gray-200 text-gray-700">
-        <tr>
-          <th class="py-2 px-4 text-left">Data/Hora</th>
-          <th class="py-2 px-4 text-left">Nome do Cliente</th>
-          <th class="py-2 px-4 text-left">Descrição do Produto</th>
-          <th class="py-2 px-4 text-center">Ação</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let solicitation of solicitations" class="border-b hover:bg-gray-100">
-          <td class="py-2 px-4">{{ solicitation.dateTime | date: 'dd/MM/yyyy HH:mm' }}</td>
-          <td class="py-2 px-4">{{ getTruncatedDescription(solicitation.equipment) }}</td>
-          <td class="py-2 px-4 text-center">
-            <ng-container *ngIf="getActionButton(solicitation) as action">
-              <a
-                [routerLink]="action[0].route"
-                class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-700 transition"
-              >
-                {{ action[0].label }}
-              </a>
-            </ng-container>
-          </td>
-        </tr>
-      </tbody>
+  <div class="overflow-auto">
+    <table mat-table [dataSource]="solicitations" class="w-full border border-gray-300 rounded">
+      <ng-container matColumnDef="dateTime">
+        <th mat-header-cell *matHeaderCellDef>Data/Hora</th>
+        <td mat-cell *matCellDef="let solicitation">
+          {{ solicitation.dateTime | date: 'dd/MM/yyyy HH:mm' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="equipment">
+        <th mat-header-cell *matHeaderCellDef>Descrição do Produto</th>
+        <td mat-cell *matCellDef="let solicitation">
+          {{ getTruncatedDescription(solicitation.equipment) }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef class="text-center">Ação</th>
+        <td mat-cell *matCellDef="let solicitation" class="text-center">
+          <ng-container *ngIf="getActionButton(solicitation) as action">
+            <button mat-raised-button color="primary" [routerLink]="action[0].route">
+              {{ action[0].label }}
+            </button>
+          </ng-container>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="['dateTime', 'equipment', 'action']"></tr>
+      <tr mat-row *matRowDef="let row; columns: ['dateTime', 'equipment', 'action']"></tr>
     </table>
   </div>
-</div>
+</mat-card>
