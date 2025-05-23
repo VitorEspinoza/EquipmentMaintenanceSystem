@@ -1,4 +1,4 @@
-package br.com.backend.backend.DTOs;
+package br.com.backend.backend.DTOs.Equipment;
 
 import br.com.backend.backend.Entities.Equipment;
 

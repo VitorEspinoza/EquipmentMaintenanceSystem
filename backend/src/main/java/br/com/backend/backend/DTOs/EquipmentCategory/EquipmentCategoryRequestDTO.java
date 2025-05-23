@@ -1,6 +1,5 @@
-package br.com.backend.backend.DTOs;
+package br.com.backend.backend.DTOs.EquipmentCategory;
 
-import br.com.backend.backend.Entities.Equipment;
 import br.com.backend.backend.Entities.EquipmentCategory;
 
 public record EquipmentCategoryRequestDTO(String name, String description) {

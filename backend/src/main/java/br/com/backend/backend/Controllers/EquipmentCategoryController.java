@@ -1,7 +1,7 @@
 package br.com.backend.backend.Controllers;
 
-import br.com.backend.backend.DTOs.EquipmentCategoryRequestDTO;
-import br.com.backend.backend.DTOs.EquipmentCategoryResponseDTO;
+import br.com.backend.backend.DTOs.EquipmentCategory.EquipmentCategoryRequestDTO;
+import br.com.backend.backend.DTOs.EquipmentCategory.EquipmentCategoryResponseDTO;
 import br.com.backend.backend.DTOs.ResultViewModel;
 import br.com.backend.backend.Services.EquipmentCategoryService;
 import lombok.RequiredArgsConstructor;

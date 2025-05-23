@@ -1,6 +1,6 @@
 package br.com.backend.backend.DTOs.Client;
 
-import br.com.backend.backend.DTOs.CreateAddressDTO;
+import br.com.backend.backend.DTOs.Address.CreateAddressDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
