@@ -10,21 +10,18 @@
       <p><strong>Status:</strong> {{ solicitation.status }}</p>
     </div>
 
-    <div class="bg-white shadow rounded p-4 mb-6 border">
-      <label for="budget" class="block font-medium mb-1"> Valor do Orçamento (R$) </label>
-      <input
-        id="budget"
-        type="number"
-        class="w-full p-2 border border-gray-300 rounded"
-        placeholder="Digite o valor do orçamento"
-        [ngModel]="budgetValue"
-        (ngModelChange)="budgetValue = $event"
-      />
-    </div>
+    <form class="example-form">
+      <mat-form-field class="example-full-width w-full">
+        <mat-label>Valor do Orçamento (R$)</mat-label>
+        <input matInput type="number" placeholder="Digite o valor" [(ngModel)]="budgetValue" name="budget" />
+      </mat-form-field>
+    </form>
 
     <button
-      class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+      mat-flat-button
+      color="primary"
       type="button"
+      class="mt-4"
       [disabled]="budgetValue === null"
       (click)="submitBudget()"
     >

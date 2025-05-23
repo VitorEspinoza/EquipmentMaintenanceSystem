@@ -3,12 +3,14 @@ import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-
 import { NotificationService } from '../../../core/services/notification.service';
 import { Solicitation } from '../../../shared/models/solicitation';
 import { SolicitationService } from '../../../shared/services/client-solicitation.service';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
 
-const MATERIAL_MODULES = [MatTableModule];
+const MATERIAL_MODULES = [MatTableModule, MatFormFieldModule, MatInputModule, MatButtonModule];
 const COMMON_MODULES = [CommonModule, NgIf, FormsModule];
 const ROUTING_MODULES = [RouterModule];
 
