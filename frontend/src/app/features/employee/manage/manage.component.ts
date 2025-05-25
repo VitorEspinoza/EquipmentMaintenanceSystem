@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { provideMomentDateAdapter } from '@angular/material-moment-adapter';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -10,6 +10,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator'; // Added MatPaginatorModule
 import { MatSelectModule } from '@angular/material/select';
 import { MatTable, MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
@@ -34,6 +35,7 @@ const MATERIAL_MODULES = [
   MatTableModule,
   MatDatepickerModule,
   MatNativeDateModule,
+  MatPaginatorModule,
 ];
 const FORM_MODULES = [ReactiveFormsModule, FormsModule];
 const COMMON_MODULES = [CommonModule];
@@ -62,12 +64,19 @@ export class ManageComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly employeeService = inject(EmployeeService);
   private readonly notificationService = inject(NotificationService);
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild('form') form: any;
 
   employees: Employee[] = [];
   selectedEmployee: Employee | null = null;
   currentUserId = 1;
 
   employeeForm!: FormGroup;
+
+  // MatPaginator properties
+  totalElements = 0;
+  pageIndex = 0;
+  pageSize = 10;
 
   ngOnInit(): void {
     this.employeeForm = this.fb.group({
@@ -82,12 +91,19 @@ export class ManageComponent implements OnInit {
     this.loadEmployees();
   }
 
-  loadEmployees(): void {
-    this.employeeService.getAll().subscribe({
+  onPageChange(event: PageEvent): void {
+    this.pageIndex = event.pageIndex;
+    this.pageSize = event.pageSize;
+    this.loadEmployees(this.pageIndex, this.pageSize);
+  }
+
+  loadEmployees(pageIndex = 0, pageSize = 10): void {
+    this.employeeService.getAll(pageIndex, pageSize).subscribe({
       next: (response: ApiResponse<Page<Employee>>) => {
         console.log('response:', response);
         if (response.isSuccess) {
           this.employees = response.data.content;
+          this.totalElements = response.data.totalElements;
         } else {
           this.notificationService.error('Erro', response.errors.join(', ') || 'Falha ao carregar funcionários');
         }
@@ -116,19 +132,26 @@ export class ManageComponent implements OnInit {
 
     if (emp.id) {
       this.employeeService.update(emp).subscribe({
-        next: updatedEmp => {
-          const index = this.employees.findIndex(e => e.id === updatedEmp.id);
-          if (index !== -1) {
-            console.log('Atualizando o funcionário:', updatedEmp);
-            this.employees[index] = updatedEmp;
-            this.employees = [...this.employees];
-            this.notificationService.success('Sucesso', 'Funcionário atualizado!');
+        next: (response: ApiResponse<Employee>) => {
+          if (response.isSuccess) {
+            const updatedEmp = response.data;
+            const index = this.employees.findIndex(e => e.id === updatedEmp.id);
+
+            if (index !== -1) {
+              this.employees[index] = updatedEmp;
+              this.employees = [...this.employees];
+              this.notificationService.success('Sucesso', 'Funcionário atualizado!');
+            } else {
+              console.error('Funcionário não encontrado na lista para atualização.');
+              this.notificationService.error('Erro', 'Funcionário não encontrado na lista.');
+            }
           } else {
-            console.error('Funcionário não encontrado para atualização.');
+            const msg = response.errors?.join(', ') || 'Falha ao atualizar funcionário.';
+            this.notificationService.error('Erro', msg);
           }
         },
         error: () => {
-          this.notificationService.error('Error', 'Erro ao atualizar funcionário');
+          this.notificationService.error('Erro', 'Erro ao atualizar funcionário.');
         },
       });
     } else {
@@ -154,13 +177,17 @@ export class ManageComponent implements OnInit {
 
     console.log('Lista de Funcionários:', this.employees);
 
-    this.employeeForm.reset();
     this.selectedEmployee = null;
+    this.employeeForm.reset();
+    this.form.resetForm();
   }
 
   editEmployee(emp: Employee): void {
     this.selectedEmployee = emp;
-    this.employeeForm.setValue({ ...emp });
+    this.employeeForm.patchValue({ ...emp });
+
+    this.employeeForm.get('password')?.clearValidators();
+    this.employeeForm.get('password')?.updateValueAndValidity();
   }
 
   deleteEmployee(id: number): void {

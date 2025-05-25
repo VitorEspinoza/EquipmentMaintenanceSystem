@@ -1,7 +1,7 @@
 <div class="p-4 md:p-8">
   <h2 class="text-xl font-bold mb-4">Gerenciar Funcionários</h2>
 
-  <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()" class="grid gap-4 md:grid-cols-2">
+  <form #form="ngForm" [formGroup]="employeeForm" (ngSubmit)="onSubmit()" class="grid gap-4 md:grid-cols-2">
     <mat-form-field>
       <mat-label>Nome</mat-label>
       <input matInput formControlName="name" required />
@@ -31,7 +31,7 @@
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
 
-    <mat-form-field>
+    <mat-form-field *ngIf="!selectedEmployee">
       <mat-label>Senha</mat-label>
       <input matInput formControlName="password" type="password" required />
       <mat-error *ngIf="employeeForm.get('password')?.hasError('required')"> Senha obrigatória</mat-error>
@@ -78,4 +78,12 @@
       <tr mat-row *matRowDef="let row; columns: ['name', 'email', 'birthDate', 'actions']"></tr>
     </table>
   </div>
+  <mat-paginator
+    [length]="totalElements"
+    [pageSize]="10"
+    [pageSizeOptions]="[10, 25]"
+    (page)="onPageChange($event)"
+    aria-label="Select page"
+  >
+  </mat-paginator>
 </div>

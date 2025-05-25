@@ -13,11 +13,11 @@ export class EmployeeService {
   private crudService = inject(CrudService);
   employeePrefix = 'employees';
 
-  getAll(page = 0, size = 10): Observable<ApiResponse<Page<Employee>>> {
+  getAll(page: number, size: number): Observable<ApiResponse<Page<Employee>>> {
     // prettier-ignore
     const params = new HttpParams()
-      .set('page', page.toString())
-      .set('size', size.toString());
+      .set('pageNumber', page.toString())
+      .set('pageSize', size.toString());
     // prettier-ignore-end
 
     const queryString = params.toString();
@@ -34,8 +34,8 @@ export class EmployeeService {
     );
   }
 
-  update(employee: Employee): Observable<Employee> {
-    return this.crudService.put<Employee>(`${this.employeePrefix}/${employee.id}`, employee).pipe(
+  update(employee: Employee): Observable<ApiResponse<Employee>> {
+    return this.crudService.put<ApiResponse<Employee>>(`${this.employeePrefix}/${employee.id}`, employee).pipe(
       map(response => {
         return response;
       })
