@@ -1,9 +1,7 @@
 package br.com.backend.backend.Exceptions;
 
 import br.com.backend.backend.DTOs.ResultViewModel;
-import br.com.backend.backend.Exceptions.Custom.InvalidStateTransitionException;
-import br.com.backend.backend.Exceptions.Custom.CategoryAlreadyExists;
-import br.com.backend.backend.Exceptions.Custom.ResourceNotFoundException;
+import br.com.backend.backend.Exceptions.Custom.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -15,13 +13,30 @@ import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-
+    
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ResultViewModel<Void>> handleResourceNotFound(
             ResourceNotFoundException ex
     ) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
+                .body(ResultViewModel.error(List.of(ex.getMessage())));
+    }
+
+    @ExceptionHandler(invalidRedirectException.class)
+    public ResponseEntity<ResultViewModel<Void>> handleInvalidFilter(
+            invalidRedirectException ex
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ResultViewModel.error(List.of(ex.getMessage())));
+    }
+    @ExceptionHandler(InvalidFilterException.class)
+    public ResponseEntity<ResultViewModel<Void>> handleInvalidFilter(
+            InvalidFilterException ex
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
                 .body(ResultViewModel.error(List.of(ex.getMessage())));
     }
 

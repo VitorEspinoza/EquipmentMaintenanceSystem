@@ -8,27 +8,33 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "request_state_history")
 @Getter
-@Setter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class RequestStateHistory {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_request", nullable = false)
-    private MaintenanceRequest request;
+    private MaintenanceRequest maintenanceRequest;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "previous_state", length = 20)
-    private EnMaintenanceRequestState previousState;
+    @Column(name = "state", nullable = false)
+    private EnMaintenanceRequestState state;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "new_state", nullable = false, length = 20)
-    private EnMaintenanceRequestState newState;
+    @Column(name = "changed_at", nullable = false)
+    private LocalDateTime changedAt;
 
-    @Column(name = "change_date", nullable = false)
-    private LocalDateTime changeDate;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "changed_by_employee_id")
+    private Employee changedByEmployee;
+    
+    public RequestStateHistory(MaintenanceRequest request, EnMaintenanceRequestState state,
+                               Employee employee) {
+        this.maintenanceRequest = request;
+        this.state = state;
+        this.changedByEmployee = employee;
+        this.changedAt = LocalDateTime.now();
+    }
 }
