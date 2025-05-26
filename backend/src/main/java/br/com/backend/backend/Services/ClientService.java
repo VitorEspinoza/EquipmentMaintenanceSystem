@@ -8,7 +8,6 @@ import br.com.backend.backend.DTOs.ResultViewModel;
 import br.com.backend.backend.Entities.Account;
 import br.com.backend.backend.Entities.Address;
 import br.com.backend.backend.Entities.Client;
-import br.com.backend.backend.Exceptions.Custom.AccountAlreadyExists;
 import br.com.backend.backend.Repositories.ClientRepository;
 import br.com.backend.backend.Services.Interfaces.ClientPasswordEmailService;
 import br.com.backend.backend.Utils.PasswordGenerator;
@@ -43,6 +42,6 @@ public class ClientService {
         Client clientCreated = clientRepository.save(client);
 
         clientPasswordEmailService.sendPasswordToClient(dto, randomPassword);
-        return ResultViewModel.success(new ClientDTO());
+        return ResultViewModel.success(ClientDTO.fromEntity(clientCreated));
     }
 }
