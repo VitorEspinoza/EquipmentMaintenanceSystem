@@ -1,8 +1,8 @@
 package br.com.backend.backend.Exceptions;
 
 import br.com.backend.backend.DTOs.ResultViewModel;
+import br.com.backend.backend.Exceptions.Custom.InvalidStateTransitionException;
 import br.com.backend.backend.Exceptions.Custom.CategoryAlreadyExists;
-import br.com.backend.backend.Exceptions.Custom.EquipmentCategoryNotFoundException;
 import br.com.backend.backend.Exceptions.Custom.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +18,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ResultViewModel<Void>> handleResourceNotFound(
-            EquipmentCategoryNotFoundException ex
+            ResourceNotFoundException ex
     ) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
@@ -33,6 +33,16 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(ResultViewModel.error(List.of(ex.getMessage())));
     }
+
+    @ExceptionHandler(InvalidStateTransitionException.class)
+    public ResponseEntity<ResultViewModel<Void>> handleCategoryAlreadyExists(
+            InvalidStateTransitionException ex
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ResultViewModel.error(List.of(ex.getMessage())));
+    }
+
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ResultViewModel<Void>> handleValidationException(

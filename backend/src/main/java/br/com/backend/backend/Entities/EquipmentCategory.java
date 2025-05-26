@@ -18,7 +18,6 @@ public class EquipmentCategory {
         this.name = name;
         this.description = description;
         this.active = true;
-        this.equipments = new HashSet<>();
     }
 
     @Id
@@ -34,10 +33,7 @@ public class EquipmentCategory {
 
     @Column(name = "active")
     private Boolean active;
-
-    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
-    private Set<Equipment> equipments;
-
+    
     public void update(String name, String description) {
         this.name = name;
         this.description = description;
