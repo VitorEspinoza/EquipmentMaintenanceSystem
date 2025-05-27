@@ -2,6 +2,8 @@ package br.com.backend.backend.Services;
 
 import br.com.backend.backend.DTOs.Account.AccountDTO;
 import br.com.backend.backend.DTOs.Account.CreateAccountDTO;
+import br.com.backend.backend.DTOs.Auth.AuthRequestDTO;
+import br.com.backend.backend.DTOs.Client.ClientCreateResponse;
 import br.com.backend.backend.DTOs.Client.ClientDTO;
 import br.com.backend.backend.DTOs.Client.CreateClientDTO;
 import br.com.backend.backend.DTOs.ResultViewModel;
@@ -13,6 +15,9 @@ import br.com.backend.backend.Repositories.ClientRepository;
 import br.com.backend.backend.Services.Interfaces.ClientPasswordEmailService;
 import br.com.backend.backend.Utils.PasswordGenerator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,8 +27,9 @@ public class ClientService {
     private final AccountService accountService;
     private final AddressService addressService;
     private final ClientPasswordEmailService clientPasswordEmailService; 
+    private final AuthService authService;
 
-    public ResultViewModel<ClientDTO> create(CreateClientDTO dto) {
+    public ClientCreateResponse create(CreateClientDTO dto) {
         String randomPassword = PasswordGenerator.generateRandomPassword();
         CreateAccountDTO account = new CreateAccountDTO(
                 dto.getEmail(),
@@ -43,6 +49,15 @@ public class ClientService {
         Client clientCreated = clientRepository.save(client);
 
         clientPasswordEmailService.sendPasswordToClient(dto, randomPassword);
-        return ResultViewModel.success(new ClientDTO());
+
+        ClientDTO clientDTO = ClientDTO.fromEntity(clientCreated);
+
+        ResponseCookie cookie = authService.login(new AuthRequestDTO(clientCreated.getAccount().getEmail(), randomPassword));
+
+
+        return new ClientCreateResponse(
+                clientDTO,
+                cookie
+        );
     }
 }

@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -27,7 +28,7 @@ public class AccountService {
 
     public AccountDTO create(CreateAccountDTO dto) {
 
-        if(emailAccountAlreadyInUse(dto.getEmail())) {
+        if(emailAccountAlreadyInUse(dto.getEmail(), null)) {
             throw new AccountAlreadyExists("email");
         }
 
@@ -39,8 +40,10 @@ public class AccountService {
         return AccountDTO.fromEntity(savedAccount);
     }
 
-    public boolean emailAccountAlreadyInUse(String email) {
-        Optional<Account> accountWithEmailExists = accountRepository.findByEmail(email);
-        return accountWithEmailExists.isPresent();
+    public boolean emailAccountAlreadyInUse(String email, Integer id) {
+        return Optional.ofNullable(id)
+                .map(existingId -> accountRepository.findByEmailAndIdNot(email, id))
+                .orElseGet(() ->  accountRepository.findByEmail(email))
+                .isPresent();
     }
 }

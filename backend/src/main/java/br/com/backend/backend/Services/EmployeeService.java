@@ -60,11 +60,11 @@ public class EmployeeService {
     public ResultViewModel<EmployeeDTO> update(Integer idEmployee, UpdateEmployeeDTO dto) {
         Employee employee = findById(idEmployee);
 
-        if(accountService.emailAccountAlreadyInUse(dto.getEmail())) {
+        if(accountService.emailAccountAlreadyInUse(dto.getEmail(), employee.getAccount().getId())) {
             throw new AccountAlreadyExists("email");
         }
 
-        employee.update(dto.getNome(), dto.getEmail(), dto.getRole(), dto.getBirthDate());
+        employee.update(dto.getName(), dto.getEmail(), dto.getRole(), dto.getBirthDate());
         employeeRepository.save(employee);
         return ResultViewModel.success(EmployeeDTO.fromEntity(employee));
     }
