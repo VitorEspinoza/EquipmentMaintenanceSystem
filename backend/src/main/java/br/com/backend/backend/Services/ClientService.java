@@ -3,7 +3,7 @@ package br.com.backend.backend.Services;
 import br.com.backend.backend.DTOs.Account.AccountDTO;
 import br.com.backend.backend.DTOs.Account.CreateAccountDTO;
 import br.com.backend.backend.DTOs.Auth.AuthRequestDTO;
-import br.com.backend.backend.DTOs.Client.ClientCreateResponse;
+import br.com.backend.backend.DTOs.Client.ClientCreateResult;
 import br.com.backend.backend.DTOs.Client.ClientDTO;
 import br.com.backend.backend.DTOs.Client.CreateClientDTO;
 import br.com.backend.backend.DTOs.ResultViewModel;
@@ -25,10 +25,9 @@ public class ClientService {
     private final ClientRepository clientRepository;
     private final AccountService accountService;
     private final AddressService addressService;
-    private final ClientPasswordEmailService clientPasswordEmailService; 
+    private final ClientPasswordEmailService clientPasswordEmailService;
     private final AuthService authService;
-
-    public ResultViewModel<ClientCreateResponse> create(CreateClientDTO dto) {
+    public ClientCreateResult create(CreateClientDTO dto) {
         String randomPassword = PasswordGenerator.generateRandomPassword();
         CreateAccountDTO account = new CreateAccountDTO(
                 dto.getEmail(),
@@ -53,12 +52,9 @@ public class ClientService {
 
         ResponseCookie cookie = authService.login(new AuthRequestDTO(clientCreated.getAccount().getEmail(), randomPassword));
 
-
-        var clientCreateResponse = new ClientCreateResponse(
-                clientDTO,
+       return new ClientCreateResult(
+                ResultViewModel.success(clientDTO),
                 cookie
         );
-        
-        return ResultViewModel.success(clientCreateResponse)
     }
 }

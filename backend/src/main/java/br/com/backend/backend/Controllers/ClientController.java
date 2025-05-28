@@ -1,6 +1,5 @@
 package br.com.backend.backend.Controllers;
 
-import br.com.backend.backend.DTOs.Client.ClientCreateResponse;
 import br.com.backend.backend.DTOs.Client.ClientDTO;
 import br.com.backend.backend.DTOs.Client.CreateClientDTO;
 import br.com.backend.backend.DTOs.ResultViewModel;
@@ -23,10 +22,10 @@ public class ClientController {
 
     @PostMapping
     public ResponseEntity<ResultViewModel<ClientDTO>> create(@RequestBody CreateClientDTO dto) {
-        ClientCreateResponse reponse = clientService.create(dto);
+        var result = clientService.create(dto);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .header(HttpHeaders.SET_COOKIE, reponse.getResponseCookie().toString())
-                .body(ResultViewModel.success(reponse.getClient()));
+                .header(HttpHeaders.SET_COOKIE, result.getResponseCookie().toString())
+                .body((result.getResponse()));
     }
 }
