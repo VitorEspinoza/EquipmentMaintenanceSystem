@@ -1,9 +1,7 @@
 package br.com.backend.backend.Services;
 
 import br.com.backend.backend.DTOs.MaintenanceRequest.MaintenanceInfo;
-import br.com.backend.backend.DTOs.MaintenanceRequest.MaintenanceRequestInputDTO;
 import br.com.backend.backend.DTOs.MaintenanceRequest.MaintenanceRequestViewDTO;
-import br.com.backend.backend.DTOs.MaintenanceRequest.RejectionInfo;
 import br.com.backend.backend.DTOs.ResultViewModel;
 import br.com.backend.backend.Entities.Employee;
 import br.com.backend.backend.Entities.MaintenanceRequest;
@@ -14,7 +12,7 @@ import br.com.backend.backend.Repositories.EquipmentCategoryRepository;
 import br.com.backend.backend.Repositories.MaintenanceRequestRepository;
 import br.com.backend.backend.Filters.MaintenanceRequestFilter;
 import br.com.backend.backend.Filters.MaintenanceRequestSpecification;
-import br.com.backend.backend.Services.Interfaces.MaintenanceRequestService;
+import br.com.backend.backend.Services.Interfaces.EmployeeMaintenanceRequestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,26 +21,10 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class MaintenanceRequestServiceImpl implements MaintenanceRequestService {
-
-    private final ClientRepository clientRepository;
-    private final EquipmentCategoryRepository equipmentCategoryRepository;
+public class EmployeeMaintenanceRequestServiceImpl implements EmployeeMaintenanceRequestService {
+    
     private final MaintenanceRequestRepository maintenanceRequestRepository;
     private final EmployeeRepository employeeRepository;
-    @Override
-    public ResultViewModel<MaintenanceRequestViewDTO> Create(MaintenanceRequestInputDTO maintenanceRequestInputDTO, Integer clientId) {
-        var client = clientRepository.findById(clientId).orElseThrow(() -> new ClientNotFoundException(clientId));
-        
-        var equipmentCategoryId = maintenanceRequestInputDTO.equipmentCategoryId();
-        var equipmentCategory = equipmentCategoryRepository.findById(equipmentCategoryId).orElseThrow(() -> new EquipmentCategoryNotFoundException(equipmentCategoryId));
-        
-        var maintenanceRequest = maintenanceRequestInputDTO.toEntity(client, equipmentCategory);
-        
-        var savedRequest = maintenanceRequestRepository.save(maintenanceRequest);
-
-        return ResultViewModel.success(MaintenanceRequestViewDTO.fromEntity(savedRequest));
-    }
-
     @Override
     public ResultViewModel<MaintenanceRequestViewDTO> GetById(Integer id) {
         var request = getRequestById(id);
@@ -70,28 +52,6 @@ public class MaintenanceRequestServiceImpl implements MaintenanceRequestService 
         
         maintenanceRequestRepository.save(request);
     }
-
-    @Override
-    public void Approve(Integer id) {
-        var request = getRequestById(id);
-        request.Approve();
-        maintenanceRequestRepository.save(request);
-    }
-
-    @Override
-    public void Reject(Integer id, RejectionInfo rejectionInfo) {
-        var request = getRequestById(id);
-        request.Reject(rejectionInfo.reason());
-        maintenanceRequestRepository.save(request);
-    }
-
-    @Override
-    public void Pay(Integer id) {
-        var request = getRequestById(id);
-        request.Pay();
-        maintenanceRequestRepository.save(request);
-    }
-
     @Override
     public void RedirectEmployee(Integer id, Integer newEmployeeId) {
         var request = getRequestById(id);

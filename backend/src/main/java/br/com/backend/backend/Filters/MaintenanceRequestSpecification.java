@@ -34,6 +34,10 @@ public class MaintenanceRequestSpecification {
                 predicates.add(cb.or(notRedirected, redirectedAssigned));
             }
 
+            if (filter.getClientId() != null) {
+                predicates.add(cb.equal(root.get("client").get("id"), filter.getClientId()));
+            }
+            
             query.orderBy(cb.asc(root.get("createdAt")));
             return cb.and(predicates.toArray(new Predicate[0]));
         };

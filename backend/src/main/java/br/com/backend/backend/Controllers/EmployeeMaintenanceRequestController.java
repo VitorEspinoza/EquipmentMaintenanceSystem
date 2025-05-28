@@ -1,14 +1,12 @@
 package br.com.backend.backend.Controllers;
 
 import br.com.backend.backend.DTOs.MaintenanceRequest.MaintenanceInfo;
-import br.com.backend.backend.DTOs.MaintenanceRequest.MaintenanceRequestInputDTO;
 import br.com.backend.backend.DTOs.MaintenanceRequest.MaintenanceRequestViewDTO;
-import br.com.backend.backend.DTOs.MaintenanceRequest.RejectionInfo;
 import br.com.backend.backend.DTOs.ResultViewModel;
 import br.com.backend.backend.Enums.EnMaintenanceRequestState;
 import br.com.backend.backend.Enums.EnDateFilter;
 import br.com.backend.backend.Filters.MaintenanceRequestFilter;
-import br.com.backend.backend.Services.Interfaces.MaintenanceRequestService;
+import br.com.backend.backend.Services.Interfaces.EmployeeMaintenanceRequestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
@@ -22,16 +20,9 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/maintenance-request")
-public class MaintenanceRequestController {
+public class EmployeeMaintenanceRequestController {
 
-    private final MaintenanceRequestService service;
-
-    @GetMapping("/{id}")
-    public ResponseEntity<ResultViewModel<MaintenanceRequestViewDTO>> GetById(@PathVariable Integer id) {
-        var request = service.GetById(id);
-
-        return ResponseEntity.status(HttpStatus.OK).body(request);
-    }
+    private final EmployeeMaintenanceRequestService service;
     @GetMapping
     public ResponseEntity<ResultViewModel<List<MaintenanceRequestViewDTO>>> getAllRequests(
             @RequestParam(required = false) EnDateFilter dateFilter,
@@ -55,29 +46,17 @@ public class MaintenanceRequestController {
         return ResponseEntity.ok(requests);
     }
 
-    @PostMapping
-    public ResponseEntity<ResultViewModel<MaintenanceRequestViewDTO>> Create(@RequestBody MaintenanceRequestInputDTO dto, @RequestParam Integer clientId) {
-        var created = service.Create(dto, clientId);
+    @GetMapping("/{id}")
+    public ResponseEntity<ResultViewModel<MaintenanceRequestViewDTO>> GetById(@PathVariable Integer id) {
+        var request = service.GetById(id);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+        return ResponseEntity.status(HttpStatus.OK).body(request);
     }
 
     @PostMapping("{id}/quote")
     public ResponseEntity<Void> QuoteMaintenance(@PathVariable Integer id, @RequestParam(required = false) BigDecimal price,  @RequestParam Integer employeeId) {
         service.Quote(id, price, employeeId);
 
-        return ResponseEntity.noContent().build();
-    }
-
-    @PostMapping("{id}/approve")
-    public ResponseEntity<Void> ApproveMaintenance(@PathVariable Integer id) {
-        service.Approve(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PostMapping("{id}/reject")
-    public ResponseEntity<Void> RejectMaintenance(@PathVariable Integer id, RejectionInfo rejectionInfo) {
-        service.Reject(id, rejectionInfo);
         return ResponseEntity.noContent().build();
     }
 
@@ -98,13 +77,6 @@ public class MaintenanceRequestController {
     @PostMapping("{id}/redirect")
     public ResponseEntity<Void> RedirectEmployee(@PathVariable Integer id, @RequestParam Integer newEmployeeId) {
         service.RedirectEmployee(id, newEmployeeId);
-
-        return ResponseEntity.noContent().build();
-    }
-
-    @PostMapping("{id}/pay")
-    public ResponseEntity<Void> PayMaintenance(@PathVariable Integer id) {
-        service.Pay(id);
 
         return ResponseEntity.noContent().build();
     }
