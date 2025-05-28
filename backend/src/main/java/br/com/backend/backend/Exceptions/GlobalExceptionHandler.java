@@ -13,13 +13,30 @@ import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-
+    
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ResultViewModel<Void>> handleResourceNotFound(
-            EquipmentCategoryNotFoundException ex
+            ResourceNotFoundException ex
     ) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
+                .body(ResultViewModel.error(List.of(ex.getMessage())));
+    }
+
+    @ExceptionHandler(invalidRedirectException.class)
+    public ResponseEntity<ResultViewModel<Void>> handleInvalidFilter(
+            invalidRedirectException ex
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ResultViewModel.error(List.of(ex.getMessage())));
+    }
+    @ExceptionHandler(InvalidFilterException.class)
+    public ResponseEntity<ResultViewModel<Void>> handleInvalidFilter(
+            InvalidFilterException ex
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
                 .body(ResultViewModel.error(List.of(ex.getMessage())));
     }
 
@@ -32,15 +49,6 @@ public class GlobalExceptionHandler {
                 .body(ResultViewModel.error(List.of(ex.getMessage())));
     }
 
-    @ExceptionHandler(EmployeeNotFoundException.class)
-    public ResponseEntity<ResultViewModel<Void>> handleEmployeeNotFound(
-            EmployeeNotFoundException ex
-    ) {
-        return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .body(ResultViewModel.error(List.of(ex.getMessage())));
-    }
-
     @ExceptionHandler(AccountAlreadyExists.class)
     public ResponseEntity<ResultViewModel<Void>> handleAccountAlreadyExists(
             AccountAlreadyExists ex
@@ -49,6 +57,16 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(ResultViewModel.error(List.of(ex.getMessage())));
     }
+
+    @ExceptionHandler(InvalidStateTransitionException.class)
+    public ResponseEntity<ResultViewModel<Void>> handleCategoryAlreadyExists(
+            InvalidStateTransitionException ex
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ResultViewModel.error(List.of(ex.getMessage())));
+    }
+
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ResultViewModel<Void>> handleValidationException(

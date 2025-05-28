@@ -10,7 +10,6 @@ import br.com.backend.backend.DTOs.ResultViewModel;
 import br.com.backend.backend.Entities.Account;
 import br.com.backend.backend.Entities.Address;
 import br.com.backend.backend.Entities.Client;
-import br.com.backend.backend.Exceptions.Custom.AccountAlreadyExists;
 import br.com.backend.backend.Repositories.ClientRepository;
 import br.com.backend.backend.Services.Interfaces.ClientPasswordEmailService;
 import br.com.backend.backend.Utils.PasswordGenerator;
@@ -29,7 +28,7 @@ public class ClientService {
     private final ClientPasswordEmailService clientPasswordEmailService; 
     private final AuthService authService;
 
-    public ClientCreateResponse create(CreateClientDTO dto) {
+    public ResultViewModel<ClientCreateResponse> create(CreateClientDTO dto) {
         String randomPassword = PasswordGenerator.generateRandomPassword();
         CreateAccountDTO account = new CreateAccountDTO(
                 dto.getEmail(),
@@ -55,9 +54,11 @@ public class ClientService {
         ResponseCookie cookie = authService.login(new AuthRequestDTO(clientCreated.getAccount().getEmail(), randomPassword));
 
 
-        return new ClientCreateResponse(
+        var clientCreateResponse = new ClientCreateResponse(
                 clientDTO,
                 cookie
         );
+        
+        return ResultViewModel.success(clientCreateResponse)
     }
 }

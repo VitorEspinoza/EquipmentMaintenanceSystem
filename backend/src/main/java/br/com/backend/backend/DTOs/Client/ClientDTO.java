@@ -4,11 +4,9 @@ import br.com.backend.backend.DTOs.Address.AddressDTO;
 import br.com.backend.backend.Entities.Client;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
 public class ClientDTO {
@@ -20,7 +18,7 @@ public class ClientDTO {
     private String role;
     private String phone;
     private AddressDTO address;
-
+    
     public static ClientDTO fromEntity(Client client) {
         return new ClientDTO(
                 client.getId(),
