@@ -1,14 +1,9 @@
 package br.com.backend.backend.ExternalServices.Report.Interfaces;
 
-import lombok.Getter;
-
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
-public interface DataInterface {
-
-    LocalDate getRevenueDate();
+public interface RevenueReportByCategoryProjection {
+    String getEquipmentCategory();
     Integer getQuantity();
     Double getTotal();
-
 }

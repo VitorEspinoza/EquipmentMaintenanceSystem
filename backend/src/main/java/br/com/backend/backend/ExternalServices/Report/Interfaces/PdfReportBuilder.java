@@ -5,7 +5,12 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.util.List;
 
-@Component
-public interface PdfReportBuilder<T> {
-    byte[] build(List<T> data)throws IOException;
+public abstract class PdfReportBuilder {
+    protected final ReportTemplate template;
+
+    protected PdfReportBuilder(ReportTemplate template) {
+        this.template = template;
+    }
+
+    abstract public byte[] build()throws IOException;
 }
