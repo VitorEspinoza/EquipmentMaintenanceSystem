@@ -4,6 +4,7 @@ import br.com.backend.backend.DTOs.ResultViewModel;
 import br.com.backend.backend.Exceptions.Custom.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -13,7 +14,18 @@ import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-    
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ResultViewModel<Void>> handleBadCredentialsException(
+            BadCredentialsException ex
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ResultViewModel.error(
+                        List.of(ex.getMessage())
+                ));
+    }
+
     @ExceptionHandler(ResourceNotFoundException.class)
     public ResponseEntity<ResultViewModel<Void>> handleResourceNotFound(
             ResourceNotFoundException ex
