@@ -4,6 +4,7 @@ import br.com.backend.backend.DTOs.Account.AccountDTO;
 import br.com.backend.backend.DTOs.Account.CreateAccountDTO;
 import br.com.backend.backend.Entities.Account;
 import br.com.backend.backend.Exceptions.Custom.AccountAlreadyExists;
+import br.com.backend.backend.Exceptions.Custom.AccountNotFoundException;
 import br.com.backend.backend.Repositories.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,11 +20,11 @@ public class AccountService {
     private final PasswordEncoder passwordEncoder;
 
     public Account getByEmail(String email) {
-        return accountRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("Account not found"));
+        return accountRepository.findByEmail(email).orElseThrow(() -> new AccountNotFoundException("Account wiht email not found"));
     }
 
     public Account getById(Integer id) {
-        return accountRepository.findById(id).orElseThrow(() -> new RuntimeException("Account not found"));
+        return accountRepository.findById(id).orElseThrow(() -> new AccountNotFoundException("Account wiht id not found"));
     }
 
     public AccountDTO create(CreateAccountDTO dto) {
