@@ -22,13 +22,8 @@ export const employeeRoutes: Routes = [
       import('./equipment-category/equipment-category.component').then(m => m.EquipmentCategoryComponent),
   },
   {
-<<<<<<< HEAD
     path: 'employee/maintenance',
     loadComponent: () =>
       import('./employee-maintenance/employee-maintenance.component').then(m => m.EmployeeMaintenanceComponent),
-=======
-    path: 'employee/manage',
-    loadComponent: () => import('./manage/manage.component').then(m => m.ManageComponent),
->>>>>>> origin/feat/crud-employee
   },
 ];

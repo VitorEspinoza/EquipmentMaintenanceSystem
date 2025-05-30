@@ -1,28 +1,40 @@
-<div style="overflow: hidden" class="flex flex-col justify-between h-full">
-  <div class="w-full mb-4">
-    <h2>Efetuar Manutenção</h2>
-  </div>
+<div class="flex flex-col p-6">
+  <h2 mat-dialog-title class="mb-6 text-xl font-semibold">Efetuar Manutenção</h2>
 
-  <span class="text-sm text-gray-800 mb-1">Descrição da Manutenção:</span>
-  <textarea
-    [formControl]="maintenceDescription"
-    class="border p-2 rounded-md w-full resize-none mb-4"
-    placeholder="Descreva a manutenção realizada"
-    rows="3"
-  ></textarea>
+  <mat-dialog-content class="flex flex-col space-y-6 w-full">
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Descrição da Manutenção</mat-label>
+      <textarea
+        matInput
+        [formControl]="maintenceDescription"
+        placeholder="Descreva detalhadamente a manutenção realizada no equipamento."
+        rows="10"
+        class="resize-none"
+        style="width: 100%"
+        aria-label="Descrição da Manutenção"
+      >
+      </textarea>
+    </mat-form-field>
 
-  <span class="text-sm text-gray-800 mb-1">Orientações ao Cliente:</span>
-  <textarea
-    [formControl]="clientGuidance"
-    class="border p-2 rounded-md w-full resize-none"
-    placeholder="Informe orientações ao cliente"
-    rows="3"
-  ></textarea>
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Orientações ao Cliente</mat-label>
+      <textarea
+        matInput
+        [formControl]="clientGuidance"
+        placeholder="Informe aqui quaisquer orientações importantes para o cliente."
+        rows="10"
+        class="resize-none"
+        style="width: 100%"
+        aria-label="Orientações ao Cliente"
+      >
+      </textarea>
+    </mat-form-field>
+  </mat-dialog-content>
 
-  <mat-dialog-actions>
-    <div class="mt-5 mb-2 w-full flex justify-between">
-      <button mat-button class="w-[49%] btn-actions" type="button" (click)="cancel()">Cancelar</button>
-      <button mat-button class="export-button btn-actions w-[49%]" (click)="submit()">Confirmar</button>
+  <mat-dialog-actions class="mt-8 pt-6 border-t border-gray-200">
+    <div class="w-full flex flex-row justify-end space-x-3">
+      <button mat-stroked-button type="button" (click)="cancel()" class="px-5 py-2">Cancelar</button>
+      <button mat-raised-button color="primary" (click)="submit()" class="px-5 py-2">Confirmar</button>
     </div>
   </mat-dialog-actions>
 </div>
