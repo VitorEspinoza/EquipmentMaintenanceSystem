@@ -1,32 +1,49 @@
 <div class="p-6 max-w-2xl mx-auto">
-  <h2 class="text-2xl font-bold mb-4">Efetuar Orçamento</h2>
+  <h2 class="text-2xl font-bold mb-6 text-center">Efetuar Orçamento</h2>
 
   <ng-container *ngIf="solicitation; else loading">
-    <div class="bg-white shadow rounded p-4 mb-6 border">
-      <h3 class="text-lg font-semibold mb-2">Dados da Solicitação</h3>
-      <p><strong>ID:</strong> {{ solicitation.id }}</p>
-      <p><strong>Equipamento:</strong> {{ solicitation.equipment }}</p>
-      <p><strong>Data e Hora:</strong> {{ solicitation.dateTime | date }}</p>
-      <p><strong>Status:</strong> {{ solicitation.status }}</p>
+    <div class="bg-white shadow-lg rounded-lg p-6 mb-6 border border-gray-200">
+      <h3 class="text-xl font-semibold mb-3 text-gray-700">Dados da Solicitação</h3>
+      <div class="space-y-2 text-gray-600">
+        <p><strong>ID:</strong> {{ solicitation.id }}</p>
+        <p><strong>Equipamento:</strong> {{ solicitation.equipment }}</p>
+        <p><strong>Data e Hora:</strong> {{ solicitation.dateTime | date: 'dd/MM/yyyy HH:mm' }}</p>
+        <p>
+          <strong>Status:</strong> <span class="font-medium">{{ solicitation.status }}</span>
+        </p>
+      </div>
     </div>
 
-    <form class="example-form">
-      <mat-form-field class="example-full-width w-full">
-        <mat-label>Valor do Orçamento (R$)</mat-label>
-        <input matInput type="number" placeholder="Digite o valor" [(ngModel)]="budgetValue" name="budget" />
+    <form #budgetForm="ngForm" class="space-y-4">
+      <mat-form-field class="w-full" appearance="outline">
+        <mat-label>Valor do Orçamento</mat-label>
+        <input
+          matInput
+          type="text"
+          placeholder="Ex: R$ 150,75"
+          [(ngModel)]="budgetValue"
+          name="budget"
+          required
+          mask="separator.2"
+          thousandSeparator="."
+          decimalMarker=","
+          prefix="R$ "
+          [dropSpecialCharacters]="false"
+        />
+        <mat-hint *ngIf="budgetValue === null || budgetValue <= 0">Digite um valor maior que zero.</mat-hint>
       </mat-form-field>
-    </form>
 
-    <button
-      mat-flat-button
-      color="primary"
-      type="button"
-      class="mt-4"
-      [disabled]="budgetValue === null"
-      (click)="submitBudget()"
-    >
-      Registrar Orçamento
-    </button>
+      <button
+        mat-flat-button
+        color="primary"
+        type="button"
+        class="w-full py-3 text-base"
+        [disabled]="budgetValue === null || budgetValue <= 0"
+        (click)="submitBudget()"
+      >
+        Registrar Orçamento
+      </button>
+    </form>
   </ng-container>
 
   <ng-template #loading>

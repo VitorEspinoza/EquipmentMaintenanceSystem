@@ -46,7 +46,10 @@ export class EmployeeMaintenanceComponent implements OnInit {
   }
 
   performMaintenace(): void {
-    const dialogRef = this.dialog.open(PerformMaintenaceModalComponent);
+    const dialogRef = this.dialog.open(PerformMaintenaceModalComponent, {
+      width: '90vw',
+      maxWidth: '90vw',
+    });
 
     dialogRef.afterClosed().subscribe(result => {
       if (result) {

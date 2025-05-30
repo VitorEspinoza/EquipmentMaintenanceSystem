@@ -9,6 +9,7 @@ import { SolicitationService } from '../../../shared/services/client-solicitatio
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { NgxMaskDirective } from 'ngx-mask';
 
 const MATERIAL_MODULES = [MatTableModule, MatFormFieldModule, MatInputModule, MatButtonModule];
 const COMMON_MODULES = [CommonModule, NgIf, FormsModule];
@@ -16,7 +17,7 @@ const ROUTING_MODULES = [RouterModule];
 
 @Component({
   selector: 'app-employee-budget',
-  imports: [...MATERIAL_MODULES, ...COMMON_MODULES, ...ROUTING_MODULES],
+  imports: [...MATERIAL_MODULES, ...COMMON_MODULES, ...ROUTING_MODULES, NgxMaskDirective],
   templateUrl: './employee-budget.component.html',
   styleUrl: './employee-budget.component.css',
 })
@@ -56,7 +57,7 @@ export class EmployeeBudgetComponent implements OnInit {
     };
 
     this.solicitationService.updateSolicitation(updatedSolicitation).subscribe(() => {
-      this.router.navigate(['/employee-home']);
+      this.notificationService.success('Orçamento registrado com sucesso!');
     });
   }
 }

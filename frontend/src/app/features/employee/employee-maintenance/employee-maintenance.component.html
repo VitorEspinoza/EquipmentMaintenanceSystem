@@ -1,10 +1,13 @@
-<div class="max-w-4xl mx-auto p-6 bg-gray-50 rounded shadow-md">
+<div class="max-w-7xl mx-auto p-6 bg-gray-50 rounded shadow-md">
   <mat-card class="mat-elevation-z3 mb-6">
-    <mat-card-header class="justify-center">
+    <mat-card-header class="justify-center mb-4">
       <mat-card-title class="text-xl font-bold text-center">Detalhes da Solicitação</mat-card-title>
     </mat-card-header>
 
-    <mat-card-content>
+    <mat-card-content
+      class="py-6"
+      style="min-height: 380px; display: flex; flex-direction: column; justify-content: space-around"
+    >
       <div class="info-item">
         <p><strong>Equipamento:</strong> {{ 'Notebook Dell G15.' }}</p>
       </div>
@@ -19,11 +22,13 @@
       </div>
       <div class="info-item">
         <p>
-          <strong>Preço Orçado: </strong> <span class="highlight text-green-600">R${{ '120.00' }}</span>
+          <strong>Preço Orçado: </strong> <span class="highlight text-green-600 font-semibold">R${{ '120.00' }}</span>
         </p>
       </div>
       <div class="info-item">
-        <p><strong>Status Atual:</strong> {{ 'ORÇADO' }}</p>
+        <p>
+          <strong>Status Atual: </strong> <span class="font-semibold">{{ 'ORÇADO' }}</span>
+        </p>
       </div>
       <div class="info-item" *ngIf="solicitation?.redirectedTo">
         <p><strong>Redirecionado para:</strong> {{ solicitation.redirectedTo }}</p>
@@ -32,7 +37,7 @@
 
     <mat-divider></mat-divider>
 
-    <mat-card-actions class="flex justify-center gap-4 mt-4">
+    <mat-card-actions class="flex justify-center gap-4 py-4">
       <button mat-flat-button color="primary" (click)="performMaintenace()">Efetuar Manutenção</button>
       <button mat-flat-button color="accent" (click)="redirectMaintenace()">Redirecionar Manutenção</button>
     </mat-card-actions>
@@ -42,8 +47,7 @@
     <mat-card-header>
       <mat-card-title class="text-lg font-semibold">Histórico de Estados</mat-card-title>
     </mat-card-header>
-
-    <mat-card-content class="space-y-2">
+    <mat-card-content class="space-y-3 pt-3">
       <div *ngFor="let entry of solicitation?.history">
         <p class="text-sm text-gray-700">
           <strong>{{ entry.changeDate | date: 'dd/MM/yyyy HH:mm' }}</strong> — {{ entry.previousState }} →
