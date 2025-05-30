@@ -34,6 +34,11 @@ export class SidenavComponent {
       icon: 'sell',
       label: 'Categorias de Equipamento',
     },
+    {
+      routeLink: 'employee/manage',
+      icon: 'badge',
+      label: 'Funcionários',
+    },
   ];
 
   toggleCollapse(): void {

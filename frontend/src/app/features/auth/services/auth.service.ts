@@ -1,8 +1,8 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { CrudService } from '../../../core/services/crud.service';
 import { map, Observable, tap } from 'rxjs';
-import { LoginResponse } from '../models/loginResponse';
+import { CrudService } from '../../../core/services/crud.service';
 import { LoginRequest } from '../models/loginRequest';
+import { LoginResponse } from '../models/loginResponse';
 import { RegisterRequest } from '../models/registerRequest';
 
 @Injectable({

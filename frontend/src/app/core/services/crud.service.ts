@@ -12,7 +12,7 @@ export class CrudService {
   constructor(private http: HttpClient) {}
 
   get<T>(endpoint: string, apiUrl: string = this.baseUrl): Observable<T> {
-    return this.http.get<T>(`${apiUrl}${endpoint}`, {});
+    return this.http.get<T>(`${apiUrl}${endpoint}`);
   }
 
   getById<T>(endpoint: string, id: number | string): Observable<T> {
