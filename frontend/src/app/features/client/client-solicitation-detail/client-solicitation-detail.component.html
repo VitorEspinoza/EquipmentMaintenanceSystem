@@ -1,0 +1,72 @@
+<div class="max-w-4xl mx-auto p-4 bg-white shadow-md rounded-lg" *ngIf="requestData">
+  <h2 class="text-2xl font-semibold text-gray-800 mb-6 text-center">Detalhes da Solicitação</h2>
+
+  <!-- Informações da solicitação -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+    <div>
+      <p><strong class="text-gray-700">Equipamento:</strong> {{ requestData.equipment }}</p>
+      <p><strong class="text-gray-700">Data/Hora:</strong> {{ requestData.dateTime | date: 'dd/MM/yyyy HH:mm' }}</p>
+      <p><strong class="text-gray-700">Preço Orçado:</strong> R$ {{ requestData.budgetPrice | number: '1.2-2' }}</p>
+    </div>
+    <div>
+      <p>
+        <strong class="text-gray-700">Status:</strong>
+        <span class="px-3 py-1 rounded-full text-sm font-medium" [ngClass]="getStatusClass(requestData.status)">
+          {{ requestData.status }}
+        </span>
+      </p>
+      <p>
+        <strong class="text-gray-700">Descrição do Defeito:</strong>
+        {{ requestData.defectDescription || 'Não informado' }}
+      </p>
+      <p *ngIf="requestData.rejectionReason">
+        <strong class="text-gray-700">Motivo da Rejeição:</strong> {{ requestData.rejectionReason }}
+      </p>
+    </div>
+  </div>
+
+  <!-- Histórico -->
+  <h3 class="text-lg font-semibold text-gray-800 mb-2">Histórico de Estados</h3>
+  <div class="border rounded-lg overflow-hidden mb-6">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-100">
+        <tr>
+          <th class="text-left px-4 py-2 text-sm text-gray-600">Estado Anterior</th>
+          <th class="text-left px-4 py-2 text-sm text-gray-600">Novo Estado</th>
+          <th class="text-left px-4 py-2 text-sm text-gray-600">Data de Mudança</th>
+          <th class="text-left px-4 py-2 text-sm text-gray-600">Atualizado por</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let h of requestData.history" class="hover:bg-gray-50">
+          <td class="px-4 py-2">{{ h.previousState }}</td>
+          <td class="px-4 py-2">
+            <span class="px-3 py-1 rounded-full text-sm font-medium" [ngClass]="getStatusClass(h.newState)">
+              {{ h.newState }}
+            </span>
+          </td>
+          <td class="px-4 py-2">{{ h.changeDate | date: 'dd/MM/yyyy HH:mm' }}</td>
+          <td class="px-4 py-2">{{ (h.updatedByClient ? 'Cliente: ' : 'Funcionario: ') + h.updatedBy }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Ações -->
+  <div class="flex justify-center gap-4">
+    <button *ngIf="requestData.status === 'ORÇADA'" mat-stroked-button color="primary" (click)="onApprove()">
+      Aprovar
+    </button>
+    <button *ngIf="requestData.status === 'ORÇADA'" mat-stroked-button color="warn" (click)="onReject()">
+      Rejeitar
+    </button>
+    <button *ngIf="requestData.status === 'REJEITADA'" mat-stroked-button color="warn" (click)="onRescue()">
+      Resgatar
+    </button>
+    <button *ngIf="requestData.status === 'ARRUMADA'" mat-stroked-button color="warn" (click)="onPayment()">
+      Pagar
+    </button>
+  </div>
+</div>
+
+<div *ngIf="!requestData" class="text-center text-red-600 font-medium mt-4">Solicitação não encontrada.</div>
