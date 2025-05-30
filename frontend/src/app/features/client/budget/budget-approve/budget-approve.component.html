@@ -1,41 +1,60 @@
 <div class="center-square-container">
-  <mat-card class="budget-approve.component-card">
-    <mat-card-header style="display: flex; justify-content: center; align-items: center">
-      <mat-card-title style="text-align: center"><strong>Detalhes do Serviço</strong></mat-card-title>
+  <!-- Card de Detalhes do Serviço -->
+  <mat-card class="service-details-card">
+    <mat-card-header class="card-header-center">
+      <mat-card-title>Detalhes do Serviço</mat-card-title>
     </mat-card-header>
 
-    <mat-card-content>
-      <div class="info-item">
-        <p><strong>Equipamento:</strong> {{ budgetRequest.equipamento }}</p>
-      </div>
-      <div class="info-item">
-        <p><strong>Categoria:</strong> {{ budgetRequest.categoria }}</p>
-      </div>
-      <div class="info-item">
-        <p><strong>Defeito:</strong> {{ budgetRequest.defeito }}</p>
-      </div>
-      <div class="info-item">
-        <p><strong>Data/Hora:</strong> {{ budgetRequest.dataHora }}</p>
-      </div>
-      <div class="info-item">
-        <p><strong>Preço Orçado:</strong> <span class="highlight">R$ {{ budgetRequest.precoOrcado }}</span></p>
+    <mat-card-content class="scrollable-content">
+      <div class="details-grid">
+        <div class="detail-item">
+          <span class="label">Equipamento:</span>
+          <span>{{ budgetRequest.equipamento }}</span>
+        </div>
+
+        <div class="detail-item">
+          <span class="label">Categoria:</span>
+          <span>{{ budgetRequest.categoria }}</span>
+        </div>
+
+        <div class="detail-item">
+          <span class="label">Defeito:</span>
+          <span>{{ budgetRequest.defeito }}</span>
+        </div>
+
+        <div class="detail-item">
+          <span class="label">Data/Hora:</span>
+          <span>{{ budgetRequest.dataHora }}</span>
+        </div>
+
+        <div class="detail-item full-width">
+          <span class="label">Preço Orçado:</span>
+          <span class="price">R$ {{ budgetRequest.precoOrcado }}</span>
+        </div>
       </div>
     </mat-card-content>
 
     <mat-divider></mat-divider>
 
-    <mat-card-actions class="action-buttons" style="display: flex; justify-content: center; gap: 10px">
-      <button mat-flat-button color="primary" (click)="onApprove()">Aprovar Serviço</button>
-      <button mat-flat-button color="warn" (click)="onReject()">Rejeitar Serviço</button>
+    <mat-card-actions class="action-buttons">
+      <button mat-flat-button color="primary" (click)="onApprove()">
+        Aprovar Serviço
+      </button>
+      <button mat-flat-button color="warn" (click)="onReject()">
+        Rejeitar Serviço
+      </button>
     </mat-card-actions>
   </mat-card>
 
-  <mat-card class="observacoes-card">
-    <mat-card-header>
+  <!-- Card de Observações -->
+  <mat-card class="observations-card">
+    <mat-card-header class="card-header-center">
       <mat-card-title>Observações</mat-card-title>
     </mat-card-header>
+
     <mat-card-content>
-      <p>{{ observations }}</p>
+      <p *ngIf="observations; else noObs">{{ observations }}</p>
+      <ng-template #noObs><p>Sem observações adicionais.</p></ng-template>
     </mat-card-content>
   </mat-card>
 </div>
