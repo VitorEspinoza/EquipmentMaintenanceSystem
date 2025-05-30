@@ -34,4 +34,14 @@ public class ReportController {
                 .contentType(MediaType.APPLICATION_PDF)
                 .body(pdfBytes.getData());
     }
+
+    @GetMapping("/revenue-by-category")
+    public ResponseEntity<byte[]> getRevenueByCategory() throws IOException {
+        ResultViewModel<byte[]> pdfBytes = reportService.getRevenueByEquipmentCategoryReport();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=reporte-receita.pdf")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(pdfBytes.getData());
+    }
 }

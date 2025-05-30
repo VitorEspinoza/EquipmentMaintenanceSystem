@@ -19,8 +19,8 @@ public interface MaintenanceRequestRepository extends JpaRepository<MaintenanceR
             COUNT(*) AS quantity,
             SUM(quoted_value) AS total
         FROM maintenance_request
-        WHERE (:startDate IS NULL OR paid_at >= :startDate)
-          AND (:endDate IS NULL OR paid_at <= :endDate)
+        WHERE (DATE(:startDate) IS NULL OR DATE(paid_at) >= DATE(:startDate))
+          AND (DATE(:endDate) IS NULL OR DATE(paid_at) <= DATE(:endDate))
           AND paid_at IS NOT NULL
         GROUP BY DATE(paid_at)
         ORDER BY revenue_date
@@ -42,12 +42,14 @@ public interface MaintenanceRequestRepository extends JpaRepository<MaintenanceR
 
     @Query(value = """
         SELECT
-            ec.name as equipment_category,
-            COUNT(*) AS quantity,
+            ec.name as equipmentCategory,
+            COUNT(mr.id) AS quantity,
             SUM(mr.quotedValue) AS total
-        FROM MaintenanceRequest AS mr
-        JOIN EquipmentCategory ec WHERE ec.id = :categoryId
+        FROM MaintenanceRequest mr
+        LEFT JOIN mr.category ec
+        WHERE mr.state = 'PAID'
         GROUP BY ec.name
+        ORDER BY total DESC
     """)
     List<RevenueReportByCategoryProjection> getRevenueByCategoryReport();
 

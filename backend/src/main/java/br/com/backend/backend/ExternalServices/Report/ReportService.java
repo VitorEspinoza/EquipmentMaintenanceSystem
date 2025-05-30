@@ -2,9 +2,13 @@ package br.com.backend.backend.ExternalServices.Report;
 
 import br.com.backend.backend.DTOs.ResultViewModel;
 import br.com.backend.backend.Exceptions.Custom.InvalidFilterException;
+import br.com.backend.backend.ExternalServices.Pdf.Interfaces.IPdfReportBuilder;
+import br.com.backend.backend.ExternalServices.Pdf.Models.PdfReportBuilder;
+import br.com.backend.backend.ExternalServices.Pdf.Interfaces.IData;
+import br.com.backend.backend.ExternalServices.Pdf.Models.RevenueReportByCategoryDataExtractor;
+import br.com.backend.backend.ExternalServices.Pdf.Models.RevenueReportDataExtractor;
 import br.com.backend.backend.ExternalServices.Report.Interfaces.*;
-import br.com.backend.backend.ExternalServices.Report.Models.RevenueReportByCategoryTemplate;
-import br.com.backend.backend.ExternalServices.Report.Models.RevenueReportTemplate;
+import br.com.backend.backend.ExternalServices.Report.Models.*;
 import br.com.backend.backend.Repositories.MaintenanceRequestRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,19 +35,28 @@ public class ReportService {
             throw new InvalidFilterException("No data found for the selected date");
         }
 
-        PdfReportBuilder pdfBuilder = new PdfReportBuilderImpl(new RevenueReportTemplate(data));
-        return ResultViewModel.success(pdfBuilder.build());
+        IData<RevenueReportProjection> dataExtractor = new RevenueReportDataExtractor();
+        IPdfReportBuilder<IData<RevenueReportProjection>> pdfBuilder = new PdfReportBuilder<>();
+        ReportTemplate template = new RevenueReportTemplate(data, pdfBuilder, dataExtractor);
+        return ResultViewModel.success(template.render());
+    }
+
+    public ResultViewModel<byte[]> getRevenueByEquipmentCategoryReport() throws IOException {
+        List<RevenueReportByCategoryProjection> data = maintenanceRequestRepository.getRevenueByCategoryReport();
+
+        if (data.isEmpty()) {
+            throw new InvalidFilterException("No data found for the selected category");
+        }
+
+        IData<RevenueReportByCategoryProjection> dataExtractor = new RevenueReportByCategoryDataExtractor();
+        IPdfReportBuilder<IData<RevenueReportByCategoryProjection>> pdfBuilder = new PdfReportBuilder<>();
+        ReportTemplate template = new RevenueReportByCategoryTemplate(data, pdfBuilder, dataExtractor);
+        return ResultViewModel.success(template.render());
     }
 
     private List<RevenueReportProjection> fetchRevenueData(LocalDate from, LocalDate to) {
         return (from == null || to == null)
                 ? maintenanceRequestRepository.getRevenueReport()
                 : maintenanceRequestRepository.getRevenueReport(from, to);
-    }
-
-    public ResultViewModel<byte[]> getRevenueByEquipmentCategoryReport() throws IOException {
-        List<RevenueReportByCategoryProjection> data = maintenanceRequestRepository.getRevenueByCategoryReport();
-        PdfReportBuilder pdfBuilder = new PdfReportBuilderImpl(new RevenueReportByCategoryTemplate(data));
-        return ResultViewModel.success(pdfBuilder.build());
     }
 }
