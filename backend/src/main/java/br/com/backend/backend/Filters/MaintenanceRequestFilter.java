@@ -26,6 +26,8 @@ public class MaintenanceRequestFilter {
     private EnMaintenanceRequestState state;
 
     private Integer employeeId;
+    
+    private Integer clientId;
 
     public void validate() {
         if (dateFilter == EnDateFilter.DATE_RANGE && (from == null || to == null)) {

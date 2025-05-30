@@ -4,9 +4,11 @@ import br.com.backend.backend.DTOs.Client.ClientDTO;
 import br.com.backend.backend.DTOs.Employee.EmployeeDTO;
 import br.com.backend.backend.DTOs.EquipmentCategory.EquipmentCategoryResponseDTO;
 import br.com.backend.backend.Entities.MaintenanceRequest;
+import br.com.backend.backend.Entities.RequestStateHistory;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public record MaintenanceRequestViewDTO(
         Integer id,
@@ -20,36 +22,36 @@ public record MaintenanceRequestViewDTO(
         BigDecimal quotedValue,
         LocalDateTime quotedAt,
         EmployeeDTO quotedByEmployee,
-        
+
         LocalDateTime approvedAt,
         LocalDateTime rejectedAt,
         String rejectionReason,
-        
+
         String maintenanceDescription,
         String customerGuidelines,
         LocalDateTime maintenanceCompletedAt,
         EmployeeDTO maintenanceEmployee,
-        
+
         LocalDateTime paidAt,
         LocalDateTime finalizedAt,
         EmployeeDTO finalizedByEmployee,
-        
-        EmployeeDTO assignedToEmployee
+
+        EmployeeDTO assignedToEmployee,
+
+        List<RequestStateHistoryViewDTO> stateHistory
 
 ) {
     public static MaintenanceRequestViewDTO fromEntity(MaintenanceRequest entity) {
         return new MaintenanceRequestViewDTO(
                 entity.getId(),
 
-                // Dados básicos
                 entity.getDescription(),
                 entity.getDefectDescription(),
                 entity.getCreatedAt(),
                 entity.getState().name(),
                 EquipmentCategoryResponseDTO.fromEntity(entity.getCategory()),
                 ClientDTO.fromEntity(entity.getClient()),
-
-                // Dados do orçamento
+                
                 entity.getQuotedValue(),
                 entity.getQuotedAt(),
                 entity.getQuotedByEmployee() != null ?
@@ -71,7 +73,12 @@ public record MaintenanceRequestViewDTO(
                         EmployeeDTO.fromEntity(entity.getFinalizedByEmployee()) : null,
 
                 entity.getAssignedToEmployee() != null ?
-                        EmployeeDTO.fromEntity(entity.getAssignedToEmployee()) : null
+                        EmployeeDTO.fromEntity(entity.getAssignedToEmployee()) : null,
+
+                entity.getStateHistory() != null ?
+                entity.getStateHistory().stream()
+                        .map(RequestStateHistoryViewDTO::fromEntity)
+                        .toList() : null
         );
     }
 }

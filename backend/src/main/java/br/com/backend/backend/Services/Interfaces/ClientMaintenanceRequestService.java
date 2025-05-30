@@ -10,15 +10,11 @@ import br.com.backend.backend.Filters.MaintenanceRequestFilter;
 import java.math.BigDecimal;
 import java.util.List;
 
-public interface MaintenanceRequestService {
+public interface ClientMaintenanceRequestService {
     public ResultViewModel<MaintenanceRequestViewDTO> Create(MaintenanceRequestInputDTO maintenanceRequestInputDTO, Integer clientId);
-    public ResultViewModel<MaintenanceRequestViewDTO> GetById(Integer id);
     public ResultViewModel<List<MaintenanceRequestViewDTO>> GetAll(MaintenanceRequestFilter filter);
-    public void Quote(Integer id, BigDecimal value, Integer employeeId);
-    public void Approve(Integer id);
-    public void Reject(Integer id, RejectionInfo rejectionInfo);
-    public void Pay(Integer id);
-    public void RedirectEmployee(Integer id, Integer newEmployeeId);
-    public void DoMaintenance(Integer id, Integer employeeId, MaintenanceInfo maintenanceInfo);
-    public void FinalizeMaintenance(Integer id, Integer employeeId);
+    public ResultViewModel<MaintenanceRequestViewDTO> GetById(Integer requestId, Integer clientId);
+    public void Approve(Integer requestId, Integer clientId);
+    public void Reject(Integer requestId, Integer clientId, RejectionInfo rejectionInfo);
+    public void Pay(Integer requestId, Integer clientId);
 }
