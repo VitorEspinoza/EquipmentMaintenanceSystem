@@ -21,7 +21,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { Router, RouterModule } from '@angular/router';
 import { NgxMaskDirective, NgxMaskPipe } from 'ngx-mask';
 import { catchError, map, Observable, of, startWith, switchMap } from 'rxjs';
-import { AddressService } from '../../../shared/services/address.service';
+import { AddressService } from '../../../shared/service/address.service';
 import { City } from '../models/city';
 import { State } from '../models/state';
 import { AuthService } from '../services/auth.service';
@@ -83,7 +83,7 @@ export class RegisterComponent implements OnInit {
         zipcode: ['', [Validators.required, Validators.pattern(/^.{8}$/)]],
         phone: ['', [Validators.required, Validators.pattern(/^.{10,11}$/)]],
         street: ['', [Validators.required]],
-        number: ['', [Validators.required, Validators.pattern('^[0-9]{1,6}$')]],
+        number: ['', [Validators.required]],
         neighbourhood: ['', [Validators.required]],
         city: ['', [Validators.required, this.cityValidator]],
         state: ['', [Validators.required, this.stateValidator]],
