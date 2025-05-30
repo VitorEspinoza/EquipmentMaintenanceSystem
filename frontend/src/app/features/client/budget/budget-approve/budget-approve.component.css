@@ -1,76 +1,117 @@
-/* Container principal */
-:host {
+.center-square-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 32px;
-  background-color: #f9f9f9;
+  gap: 24px;
+  padding: 16px;
 }
 
-/* Card principal */
-mat-card {
-  width: 100%;
-  max-width: 600px;
-  margin-bottom: 24px;
-  border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+/* Cards Principais */
+.service-details-card,
+.observations-card {
+  width: 800px;
+  max-width: 95%;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
-/* Título */
+/* Header Centralizado */
+.card-header-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 mat-card-title {
-  font-size: 1.4rem;
-  font-weight: bold;
-  margin-bottom: 16px;
   text-align: center;
-}
-
-/* Textos internos */
-mat-card-content p {
-  margin: 6px 0;
-  font-size: 1rem;
-}
-
-/* Preço */
-mat-card-content p strong {
-  font-size: 1.1rem;
-  color: #000;
-}
-mat-card-content p span {
-  color: #d32f2f;
   font-weight: bold;
+  font-size: 1.4rem;
 }
 
-/* Botões */
-.button-container {
+/* Conteúdo Scrollável em telas pequenas */
+.scrollable-content {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+/* Grid dos Detalhes */
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px 24px;
+  padding: 12px 0;
+}
+
+/* Item de Detalhe */
+.detail-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-item.full-width {
+  grid-column: span 2;
+}
+
+.label {
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 2px;
+}
+
+.price {
+  background-color: #e0e7ff;
+  padding: 4px 10px;
+  border-radius: 8px;
+  font-weight: 600;
+  color: #1e3a8a;
+  display: inline-block;
+}
+
+/* Botões de Ação */
+.action-buttons {
   display: flex;
   justify-content: center;
   gap: 16px;
   margin-top: 16px;
+  flex-wrap: wrap;
 }
 
-button {
-  padding: 8px 24px;
-  font-weight: bold;
-  border-radius: 24px;
+/* Observações */
+.observations-card {
+  background-color: #f9f9f9;
 }
 
-/* Card de Observações */
-.observacoes-card {
-  width: 100%;
-  max-width: 600px;
-  background: white;
-  border-radius: 12px;
-  padding: 16px 24px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-}
-
-.observacoes-card h3 {
-  font-size: 1.2rem;
-  margin-bottom: 8px;
-}
-
-.observacoes-card p {
-  font-size: 1rem;
+.observations-card p {
+  margin: 0;
+  padding: 8px 0;
   color: #333;
-  line-height: 1.5;
+}
+
+/* Divider */
+mat-divider {
+  margin-top: 10px;
+}
+
+/* Responsivo para telas menores */
+@media (max-width: 600px) {
+  mat-card-title {
+    font-size: 1.2rem;
+  }
+
+  .price {
+    font-size: 1rem;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .details-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .detail-item.full-width {
+    grid-column: span 1;
+  }
 }
