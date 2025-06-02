@@ -19,7 +19,7 @@ public class AuthHelper {
         JwtPayload payload = new JwtPayload(
                 account.getId().toString(),
                 account.getEmail(),
-                account.getRole()
+                "ROLE_"+account.getRole()
         );
 
         String accessToken = jwtUtils.generateToken(payload);
