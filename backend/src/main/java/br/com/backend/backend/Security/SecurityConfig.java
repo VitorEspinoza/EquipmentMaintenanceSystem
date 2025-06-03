@@ -1,7 +1,9 @@
 package br.com.backend.backend.Security;
 
+import br.com.backend.backend.DTOs.ResultViewModel;
 import br.com.backend.backend.Security.Encode.Sha256SaltPasswordEncoder;
 import br.com.backend.backend.Security.auth.JwtAuthFilter;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -53,7 +55,26 @@ public class SecurityConfig {
                 )
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint((request, response, authException) -> {
-                            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401
+                            response.setContentType("application/json");
+
+                            ResultViewModel<Void> result = ResultViewModel.error(
+                                    List.of("You must be authenticated to access this resource.")
+                            );
+
+                            ObjectMapper mapper = new ObjectMapper();
+                            response.getWriter().write(mapper.writeValueAsString(result));
+                        })
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            response.setStatus(HttpServletResponse.SC_FORBIDDEN); // 403
+                            response.setContentType("application/json");
+
+                            ResultViewModel<Void> result = ResultViewModel.error(
+                                    List.of("You don't have permission to access this resource.")
+                            );
+
+                            ObjectMapper mapper = new ObjectMapper();
+                            response.getWriter().write(mapper.writeValueAsString(result));
                         })
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
