@@ -1,15 +1,15 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { Router, RouterModule } from '@angular/router';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgIf } from '@angular/common';
+import { Component, inject, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { AuthService } from '../services/auth.service';
 import { NotificationService } from '../../../core/services/notification.service';
+import { AuthService } from '../services/auth.service';
 
 const MATERIAL_MODULES = [MatFormFieldModule, MatInputModule, MatButtonModule, MatCardModule, MatIconModule];
 const FORM_MODULES = [ReactiveFormsModule, FormsModule];
@@ -38,7 +38,11 @@ export class LoginComponent implements OnInit {
 
   onSubmit() {
     this.authService.login(this.loginForm.value).subscribe({
-      next: () => this.notificationService.success('Sucesso', 'Login'),
+      next: () => {
+        localStorage.setItem('email', this.loginForm.value.email);
+        this.notificationService.success('Sucesso', 'Login');
+        this.router.navigate(['/']);
+      },
       error: () => this.notificationService.error('Error', 'Login'),
     });
   }
