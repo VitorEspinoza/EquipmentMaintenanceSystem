@@ -14,11 +14,7 @@ export class EmployeeService {
   employeePrefix = 'employees';
 
   getAll(page: number, size: number): Observable<ApiResponse<Page<Employee>>> {
-    // prettier-ignore
-    const params = new HttpParams()
-      .set('pageNumber', page.toString())
-      .set('pageSize', size.toString());
-    // prettier-ignore-end
+    const params = new HttpParams().set('pageNumber', page.toString()).set('pageSize', size.toString());
 
     const queryString = params.toString();
     const endpoint = `${this.employeePrefix}/all?${queryString}`;
