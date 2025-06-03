@@ -22,7 +22,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(ResultViewModel.error(
-                        List.of(ex.getMessage())
+                        List.of("Invalid credentials.")
                 ));
     }
 
