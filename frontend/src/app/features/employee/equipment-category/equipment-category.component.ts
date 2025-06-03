@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -17,38 +17,50 @@ interface EquipmentCategory {
   selector: 'app-equipment-category',
   imports: [
     CommonModule,
-    FormsModule,
-    MatFormFieldModule,
+    ReactiveFormsModule,
     MatInputModule,
-    MatListModule,
+    MatFormFieldModule,
     MatButtonModule,
+    MatListModule,
     MatIconModule,
   ],
   templateUrl: './equipment-category.component.html',
 })
-export class EquipmentCategoryComponent {
+export class EquipmentCategoryComponent implements OnInit {
+  categoryForm!: FormGroup;
+  @ViewChild('form') form: any;
   categories: EquipmentCategory[] = [];
-  category: EquipmentCategory = { id: 0, name: '' };
   private idCounter = 1;
+  editingId: number | null = null;
+
+  constructor(private fb: FormBuilder) {}
+
+  ngOnInit(): void {
+    this.categoryForm = this.fb.group({
+      name: ['', [Validators.required, Validators.pattern(/\S+/)]],
+    });
+  }
 
   saveCategory(): void {
-    if (this.category.id) {
-      // Atualizar categoria existente
-      const index = this.categories.findIndex(c => c.id === this.category.id);
+    if (this.categoryForm.invalid) return;
+
+    const name = this.categoryForm.value.name.trim();
+
+    if (this.editingId) {
+      const index = this.categories.findIndex(c => c.id === this.editingId);
       if (index !== -1) {
-        this.categories[index] = { ...this.category };
+        this.categories[index] = { id: this.editingId, name };
       }
     } else {
-      // Adicionar nova categoria
-      this.category.id = this.idCounter++;
-      this.categories.push({ ...this.category });
+      this.categories.push({ id: this.idCounter++, name });
     }
 
     this.resetForm();
   }
 
   editCategory(cat: EquipmentCategory): void {
-    this.category = { ...cat };
+    this.editingId = cat.id;
+    this.categoryForm.setValue({ name: cat.name });
   }
 
   deleteCategory(id: number): void {
@@ -57,6 +69,8 @@ export class EquipmentCategoryComponent {
   }
 
   resetForm(): void {
-    this.category = { id: 0, name: '' };
+    this.editingId = null;
+    this.categoryForm.reset({ name: '' });
+    this.form.resetForm();
   }
 }
