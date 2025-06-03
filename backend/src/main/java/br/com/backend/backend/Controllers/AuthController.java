@@ -28,4 +28,18 @@ public class AuthController {
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
                 .body(ResultViewModel.success("Login successful"));
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<ResultViewModel<String>> logout() {
+        ResponseCookie cookie = ResponseCookie.from("access_token", "")
+                .path("/")
+                .httpOnly(true)
+                .maxAge(0)
+                .build();
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, cookie.toString())
+                .body(ResultViewModel.success("Logout successful"));
+    }
+
 }
