@@ -4,6 +4,7 @@ import br.com.backend.backend.DTOs.Client.ClientDTO;
 import br.com.backend.backend.DTOs.Client.CreateClientDTO;
 import br.com.backend.backend.DTOs.ResultViewModel;
 import br.com.backend.backend.Services.ClientService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -21,7 +22,7 @@ public class ClientController {
     private final ClientService clientService;
 
     @PostMapping
-    public ResponseEntity<ResultViewModel<ClientDTO>> create(@RequestBody CreateClientDTO dto) {
+    public ResponseEntity<ResultViewModel<ClientDTO>> create(@Valid @RequestBody CreateClientDTO dto) {
         var result = clientService.create(dto);
         return ResponseEntity
                 .status(HttpStatus.CREATED)

@@ -9,4 +9,6 @@ import java.util.Optional;
 @Repository
 public interface AddressRepository extends JpaRepository<Address, Integer> {
     Optional<Address> findByZipcode(String zipcode);
+
+    Optional<Address> findByZipcodeAndNumber(String zipcode, String number);
 }

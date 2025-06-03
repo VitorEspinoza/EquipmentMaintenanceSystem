@@ -14,7 +14,7 @@ public class AddressService {
     private final AddressRepository addressRepository;
 
     public Address persistAddress(CreateAddressDTO dto) {
-        Address existingAddres = getByZipcode(dto.getZipcode());
+        Address existingAddres = getByZipcodeAndNumber(dto.getZipcode(), dto.getNumber());
         if(existingAddres == null) {
             Address createAddress = new Address(
                     dto.getZipcode(),
@@ -31,8 +31,8 @@ public class AddressService {
         return existingAddres;
     }
 
-    public Address getByZipcode(String zipcode) {
-        Optional<Address> address = addressRepository.findByZipcode(zipcode);
+    public Address getByZipcodeAndNumber(String zipcode, String number) {
+        Optional<Address> address = addressRepository.findByZipcodeAndNumber(zipcode, number);
         return address.orElse(null);
     }
 }
