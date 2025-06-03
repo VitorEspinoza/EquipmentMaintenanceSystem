@@ -1,6 +1,8 @@
 package br.com.backend.backend.Services;
 
 import br.com.backend.backend.DTOs.Auth.AuthRequestDTO;
+import br.com.backend.backend.DTOs.Auth.AuthResponse;
+import br.com.backend.backend.DTOs.Auth.AuthResponseDTO;
 import br.com.backend.backend.Entities.Account;
 import br.com.backend.backend.Security.auth.AuthHelper;
 import lombok.RequiredArgsConstructor;
@@ -17,12 +19,15 @@ public class AuthService {
     private final AccountService accountService;
     private final AuthHelper authHelper;
 
-    public ResponseCookie login(AuthRequestDTO authRequestDTO) {
+    public AuthResponse login(AuthRequestDTO authRequestDTO) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authRequestDTO.getEmail(), authRequestDTO.getPassword())
         );
 
         Account account = accountService.getByEmail(authRequestDTO.getEmail());
-        return authHelper.generateAuthResponse(account);
+        return new AuthResponse (
+                authHelper.generateAuthResponse(account),
+                account.getRole()
+        );
     }
 }
