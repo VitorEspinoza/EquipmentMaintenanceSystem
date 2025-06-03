@@ -62,7 +62,7 @@ public class ClientService {
 
         ClientDTO clientDTO = ClientDTO.fromEntity(clientCreated);
 
-        ResponseCookie cookie = authService.login(new AuthRequestDTO(clientCreated.getAccount().getEmail(), randomPassword));
+        ResponseCookie cookie = authService.login(new AuthRequestDTO(clientCreated.getAccount().getEmail(), randomPassword)).getCookie();
 
        return new ClientCreateResult(
                 ResultViewModel.success(clientDTO),
