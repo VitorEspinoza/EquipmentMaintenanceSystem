@@ -2,6 +2,7 @@ package br.com.backend.backend.Security.auth;
 
 import br.com.backend.backend.Entities.Account;
 import br.com.backend.backend.Services.AccountService;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -10,6 +11,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,6 +21,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static br.com.backend.backend.Security.SecurityConstants.ACCESS_TOKEN_COOKIE;
 import static br.com.backend.backend.Security.SecurityConstants.BEARER_PREFIX;
@@ -60,8 +65,18 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 Account account = accountService.getByEmail(username);
 
                 if (jwtUtils.validateToken(token, account)) {
+                    Claims claims = jwtUtils.parseToken(token);
+
+                    List<String> roles = claims.get("roles", List.class);
+                    List<GrantedAuthority> authorities = roles.stream()
+                            .map(SimpleGrantedAuthority::new)
+                            .collect(Collectors.toList());
+
+                    Integer entityId = Integer.parseInt(claims.get("idEntity", String.class));
+                    account.setEntityId(entityId);
+
                     UsernamePasswordAuthenticationToken authToken =
-                            new UsernamePasswordAuthenticationToken(account, null, account.getAuthorities());
+                            new UsernamePasswordAuthenticationToken(account, null, authorities);
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                     SecurityContextHolder.getContext().setAuthentication(authToken);

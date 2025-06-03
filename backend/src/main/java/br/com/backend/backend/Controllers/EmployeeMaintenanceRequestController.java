@@ -41,7 +41,7 @@ public class EmployeeMaintenanceRequestController {
                 .from(from)
                 .to(to)
                 .state(state)
-                .employeeId(currentUserService.getUserId())
+                .employeeId(currentUserService.getUserEntityId())
                 .build();
 
         filter.validate();
@@ -59,21 +59,21 @@ public class EmployeeMaintenanceRequestController {
 
     @PostMapping("{id}/quote")
     public ResponseEntity<Void> QuoteMaintenance(@PathVariable Integer id, @RequestParam(required = false) BigDecimal price) {
-        service.Quote(id, price, currentUserService.getUserId());
+        service.Quote(id, price, currentUserService.getUserEntityId());
 
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("{id}/do-maintenance")
     public ResponseEntity<Void> DoMaintenance(@PathVariable Integer id, @RequestBody MaintenanceInfo maintenanceInfo) {
-        service.DoMaintenance(id, currentUserService.getUserId(), maintenanceInfo);
+        service.DoMaintenance(id, currentUserService.getUserEntityId(), maintenanceInfo);
 
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("{id}/finalize")
     public ResponseEntity<Void> FinalizeMaintenance(@PathVariable Integer id) {
-        service.FinalizeMaintenance(id, currentUserService.getUserId());
+        service.FinalizeMaintenance(id, currentUserService.getUserEntityId());
 
         return ResponseEntity.noContent().build();
     }

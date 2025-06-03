@@ -1,3 +1,5 @@
 package br.com.backend.backend.Security.auth;
 
-public record JwtPayload(String id, String email, String role) {}
+import java.util.List;
+
+public record JwtPayload(String id, String idEntity, String email, List<String> roles) {}
