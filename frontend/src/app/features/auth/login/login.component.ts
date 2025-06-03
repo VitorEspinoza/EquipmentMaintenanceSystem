@@ -39,6 +39,7 @@ export class LoginComponent implements OnInit {
   onSubmit() {
     this.authService.login(this.loginForm.value).subscribe({
       next: () => {
+        localStorage.setItem('email', this.loginForm.value.email);
         this.notificationService.success('Sucesso', 'Login');
         this.router.navigate(['/']);
       },

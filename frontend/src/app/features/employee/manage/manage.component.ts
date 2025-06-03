@@ -12,6 +12,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator'; // Added MatPaginatorModule
 import { MatSelectModule } from '@angular/material/select';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTable, MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
 import moment from 'moment';
@@ -36,6 +37,7 @@ const MATERIAL_MODULES = [
   MatDatepickerModule,
   MatNativeDateModule,
   MatPaginatorModule,
+  MatSlideToggleModule,
 ];
 const FORM_MODULES = [ReactiveFormsModule, FormsModule];
 const COMMON_MODULES = [CommonModule];
@@ -69,7 +71,6 @@ export class ManageComponent implements OnInit {
 
   employees: Employee[] = [];
   selectedEmployee: Employee | null = null;
-  currentUserId = 1;
 
   employeeForm!: FormGroup;
 
@@ -77,6 +78,8 @@ export class ManageComponent implements OnInit {
   totalElements = 0;
   pageIndex = 0;
   pageSize = 10;
+
+  isChecked = false;
 
   ngOnInit(): void {
     this.employeeForm = this.fb.group({
@@ -98,7 +101,7 @@ export class ManageComponent implements OnInit {
   }
 
   loadEmployees(pageIndex = 0, pageSize = 10): void {
-    this.employeeService.getAll(pageIndex, pageSize).subscribe({
+    this.employeeService.getAll(pageIndex, pageSize, !this.isChecked).subscribe({
       next: (response: ApiResponse<Page<Employee>>) => {
         console.log('response:', response);
         if (response.isSuccess) {
@@ -167,8 +170,9 @@ export class ManageComponent implements OnInit {
             this.notificationService.error('Erro', response.errors.join(', ') || 'Falha ao criar funcionário');
           }
         },
-        error: () => {
-          this.notificationService.error('Erro', 'Erro de comunicação com o servidor');
+        error: err => {
+          const errorMessage = err?.error?.errors?.join(', ') || 'Erro de comunicação com o servidor';
+          this.notificationService.error('Erro', errorMessage);
         },
       });
 
@@ -190,18 +194,27 @@ export class ManageComponent implements OnInit {
     this.employeeForm.get('password')?.updateValueAndValidity();
   }
 
-  deleteEmployee(id: number): void {
-    if (id === this.currentUserId) {
-      alert('Você não pode se remover.');
+  deleteEmployee(emp: Employee): void {
+    const email = localStorage.getItem('email');
+    if (emp.email === email) {
+      this.notificationService.error('Erro', 'Você não pode se remover.');
       return;
     }
 
     if (this.employees.length === 1) {
-      alert('Deve haver pelo menos um funcionário.');
+      this.notificationService.error('Erro', 'Deve haver pelo menos um funcionário.');
       return;
     }
 
-    this.employees = this.employees.filter(e => e.id !== id);
+    this.employeeService.delete(emp.id).subscribe({
+      next: () => {
+        this.loadEmployees();
+        this.notificationService.success('Sucesso', 'Funcionário removido!');
+      },
+      error: err => {
+        this.notificationService.error('Erro', 'Erro ao remover funcionário.' + (err.error?.message || ''));
+      },
+    });
   }
 
   formatDate(event: any) {
@@ -209,5 +222,9 @@ export class ManageComponent implements OnInit {
     if (input.length > 2) input = input.slice(0, 2) + '/' + input.slice(2);
     if (input.length > 5) input = input.slice(0, 5) + '/' + input.slice(5);
     event.target.value = input;
+  }
+
+  onToggleChange(): void {
+    this.loadEmployees();
   }
 }

@@ -13,11 +13,12 @@ export class EmployeeService {
   private crudService = inject(CrudService);
   employeePrefix = 'employees';
 
-  getAll(page: number, size: number): Observable<ApiResponse<Page<Employee>>> {
+  getAll(page: number, size: number, isChecked: boolean): Observable<ApiResponse<Page<Employee>>> {
     // prettier-ignore
     const params = new HttpParams()
       .set('pageNumber', page.toString())
-      .set('pageSize', size.toString());
+      .set('pageSize', size.toString())
+      .set('active', isChecked.toString())
     // prettier-ignore-end
 
     const queryString = params.toString();
@@ -36,6 +37,14 @@ export class EmployeeService {
 
   update(employee: Employee): Observable<ApiResponse<Employee>> {
     return this.crudService.put<ApiResponse<Employee>>(`${this.employeePrefix}/${employee.id}`, employee).pipe(
+      map(response => {
+        return response;
+      })
+    );
+  }
+
+  delete(id: number): Observable<ApiResponse<void>> {
+    return this.crudService.delete<ApiResponse<void>>(`${this.employeePrefix}`, id).pipe(
       map(response => {
         return response;
       })
