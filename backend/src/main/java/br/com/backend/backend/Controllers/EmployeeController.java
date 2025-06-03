@@ -6,6 +6,7 @@ import br.com.backend.backend.DTOs.Employee.UpdateEmployeeDTO;
 import br.com.backend.backend.DTOs.Page.PageDTO;
 import br.com.backend.backend.DTOs.ResultViewModel;
 import br.com.backend.backend.Services.EmployeeService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,7 @@ public class EmployeeController {
     private final EmployeeService employeeService;
 
     @PostMapping("/register")
-    public ResponseEntity<ResultViewModel<EmployeeDTO>> create(@RequestBody CreateEmployeeDTO dto) {
+    public ResponseEntity<ResultViewModel<EmployeeDTO>> create(@Valid @RequestBody CreateEmployeeDTO dto) {
         return ResponseEntity.ok().body(employeeService.create(dto));
     }
 

@@ -10,6 +10,9 @@ import br.com.backend.backend.DTOs.ResultViewModel;
 import br.com.backend.backend.Entities.Account;
 import br.com.backend.backend.Entities.Address;
 import br.com.backend.backend.Entities.Client;
+import br.com.backend.backend.Exceptions.Custom.ClientCreationInvalidException;
+import br.com.backend.backend.ExternalServices.Zipcode.ViaCepZipCodeValidator;
+import br.com.backend.backend.ExternalServices.Zipcode.ZipCodeValidator;
 import br.com.backend.backend.Repositories.ClientRepository;
 import br.com.backend.backend.Services.Interfaces.ClientPasswordEmailService;
 import br.com.backend.backend.Utils.PasswordGenerator;
@@ -18,6 +21,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +33,13 @@ public class ClientService {
     private final AddressService addressService;
     private final ClientPasswordEmailService clientPasswordEmailService;
     private final AuthService authService;
+
+    @Transactional
     public ClientCreateResult create(CreateClientDTO dto) {
+        if(!invalidClientCreationList(dto).isEmpty()) {
+            throw new ClientCreationInvalidException(invalidClientCreationList(dto));
+        }
+
         String randomPassword = PasswordGenerator.generateRandomPassword();
         CreateAccountDTO account = new CreateAccountDTO(
                 dto.getEmail(),
@@ -57,4 +69,28 @@ public class ClientService {
                 cookie
         );
     }
+
+    private List<String> invalidClientCreationList(CreateClientDTO dto) {
+        List<String> validations = new ArrayList<>();
+
+        if (clientRepository.findClientByCpf(dto.getCpf()).isPresent()) {
+            validations.add("CPF already in use.");
+        }
+
+        if (clientRepository.findClientByPhone(dto.getPhone()).isPresent()) {
+            validations.add("Phone already in use.");
+        }
+
+        if(clientRepository.findClientByAccount_Email(dto.getEmail()).isPresent()) {
+            validations.add("Email already in use.");
+        }
+
+        ZipCodeValidator zipValidator = new ViaCepZipCodeValidator();
+        if(zipValidator.isValidZipCode(dto.getAddress().getZipcode())) {
+            validations.add("Zipcode not valid.");
+        }
+
+        return validations;
+    }
+
 }

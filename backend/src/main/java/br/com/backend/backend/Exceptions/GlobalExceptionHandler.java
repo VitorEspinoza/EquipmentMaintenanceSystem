@@ -15,6 +15,17 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(ClientCreationInvalidException.class)
+    public ResponseEntity<ResultViewModel<Void>> ClientCreationInvalidException(
+            ClientCreationInvalidException ex
+    ) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ResultViewModel.error(
+                        ex.getErrors()
+                ));
+    }
+
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ResultViewModel<Void>> handleBadCredentialsException(
             BadCredentialsException ex
