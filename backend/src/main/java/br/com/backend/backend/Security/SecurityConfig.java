@@ -1,11 +1,14 @@
 package br.com.backend.backend.Security;
 
+import br.com.backend.backend.DTOs.ResultViewModel;
 import br.com.backend.backend.Security.Encode.Sha256SaltPasswordEncoder;
 import br.com.backend.backend.Security.auth.JwtAuthFilter;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -34,17 +37,44 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/api/v1/auth/**").permitAll()
-                        .requestMatchers("/api/v1/employees/register").permitAll()
-                        .requestMatchers("/api/v1/clients").permitAll()
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/clients").permitAll()
+                        .requestMatchers("/api/v1/client/maintenance-request/**").hasRole("CLIENT")
+                        .requestMatchers("/api/v1/employees/**").hasRole("EMPLOYEE")
+                        .requestMatchers("/api/v1/maintenance-request/**").hasRole("EMPLOYEE")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/categories").hasAnyRole("CLIENT", "EMPLOYEE")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/categories/{id}").hasRole("EMPLOYEE")
+                        .requestMatchers(HttpMethod.POST, "/api/v1/categories/**").hasRole("EMPLOYEE")
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/categories/**").hasRole("EMPLOYEE")
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/categories/**").hasRole("EMPLOYEE")
+                        .requestMatchers("/api/v1/reports/**").hasRole("EMPLOYEE")
                         .anyRequest().authenticated()
                 )
+
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint((request, response, authException) -> {
-                            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401
+                            response.setContentType("application/json");
+
+                            ResultViewModel<Void> result = ResultViewModel.error(
+                                    List.of("You must be authenticated to access this resource.")
+                            );
+
+                            ObjectMapper mapper = new ObjectMapper();
+                            response.getWriter().write(mapper.writeValueAsString(result));
+                        })
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            response.setStatus(HttpServletResponse.SC_FORBIDDEN); // 403
+                            response.setContentType("application/json");
+
+                            ResultViewModel<Void> result = ResultViewModel.error(
+                                    List.of("You don't have permission to access this resource.")
+                            );
+
+                            ObjectMapper mapper = new ObjectMapper();
+                            response.getWriter().write(mapper.writeValueAsString(result));
                         })
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

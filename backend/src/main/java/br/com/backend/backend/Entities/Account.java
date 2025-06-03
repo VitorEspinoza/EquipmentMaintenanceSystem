@@ -33,6 +33,9 @@ public class Account implements UserDetails {
     @Column(name = "id")
     private Integer id;
 
+    @Transient
+    private Integer entityId;
+
     @Column(name = "email")
     private String email;
 
@@ -47,7 +50,7 @@ public class Account implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(this.role));
+        return List.of(new SimpleGrantedAuthority("ROLE_" + this.role));
     }
 
     @Override

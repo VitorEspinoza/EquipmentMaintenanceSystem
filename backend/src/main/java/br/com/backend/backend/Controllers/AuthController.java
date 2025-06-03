@@ -2,16 +2,16 @@ package br.com.backend.backend.Controllers;
 
 import br.com.backend.backend.DTOs.Auth.AuthRequestDTO;
 import br.com.backend.backend.DTOs.ResultViewModel;
+import br.com.backend.backend.Entities.Account;
 import br.com.backend.backend.Services.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -28,5 +28,4 @@ public class AuthController {
                 .header(HttpHeaders.SET_COOKIE, cookie.toString())
                 .body(ResultViewModel.success("Login successful"));
     }
-
 }

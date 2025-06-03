@@ -18,4 +18,5 @@
     <include file="/db/changelog/migrations/tables/011_drop_equipment_table.xml"/>
     <include file="/db/changelog/migrations/tables/012_refactor_maintenance_request_workflow.xml"/>
     <include file="/db/changelog/migrations/tables/013_remove_maintenance_history_and_maintenance_tables.xml"/>
+    <include file="/db/changelog/migrations/tables/014_create_default_admin.xml"/>
 </databaseChangeLog>

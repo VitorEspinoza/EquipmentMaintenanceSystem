@@ -33,7 +33,8 @@ public class JwtUtils {
     public String generateToken(JwtPayload payload) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("id", payload.id());
-        claims.put("roles", List.of(payload.role()));
+        claims.put("idEntity", payload.idEntity());
+        claims.put("roles", payload.roles());
         return Jwts.builder()
                 .claims(claims)
                 .subject(payload.email())
@@ -46,7 +47,7 @@ public class JwtUtils {
     public String generateRefreshToken(JwtPayload payload) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("id", payload.id());
-        claims.put("roles", List.of(payload.role()));
+        claims.put("roles", List.of(payload.roles()));
         return Jwts.builder()
                 .subject(payload.email())
                 .claims(claims)
@@ -84,6 +85,10 @@ public class JwtUtils {
 
     private Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
+    }
+
+    public Claims parseToken(String token) {
+        return extractAllClaims(token);
     }
 }
 
