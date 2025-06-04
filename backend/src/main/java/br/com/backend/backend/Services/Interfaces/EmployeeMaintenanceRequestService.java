@@ -11,10 +11,10 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface EmployeeMaintenanceRequestService {
-    public ResultViewModel<List<MaintenanceRequestViewDTO>> GetAll(MaintenanceRequestFilter filter);
-    public ResultViewModel<MaintenanceRequestViewDTO> GetById(Integer id);
-    public void Quote(Integer id, BigDecimal value, Integer employeeId);
-    public void RedirectEmployee(Integer id, Integer newEmployeeId);
-    public void DoMaintenance(Integer id, Integer employeeId, MaintenanceInfo maintenanceInfo);
-    public void FinalizeMaintenance(Integer id, Integer employeeId);
+    public ResultViewModel<List<MaintenanceRequestViewDTO>> getAll(MaintenanceRequestFilter filter);
+    public ResultViewModel<MaintenanceRequestViewDTO> getById(Integer id);
+    public void quote(Integer id, BigDecimal value, Integer employeeId);
+    public void redirectEmployee(Integer id, Integer newEmployeeId);
+    public void doMaintenance(Integer id, Integer employeeId, MaintenanceInfo maintenanceInfo);
+    public void finalizeMaintenance(Integer id, Integer employeeId);
 }

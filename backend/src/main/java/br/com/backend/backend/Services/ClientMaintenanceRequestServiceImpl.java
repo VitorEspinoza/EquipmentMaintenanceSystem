@@ -29,7 +29,7 @@ public class ClientMaintenanceRequestServiceImpl implements ClientMaintenanceReq
     private final EquipmentCategoryRepository equipmentCategoryRepository;
     private final MaintenanceRequestRepository maintenanceRequestRepository;
     @Override
-    public ResultViewModel<MaintenanceRequestViewDTO> Create(MaintenanceRequestInputDTO maintenanceRequestInputDTO, Integer clientId) {
+    public ResultViewModel<MaintenanceRequestViewDTO> create(MaintenanceRequestInputDTO maintenanceRequestInputDTO, Integer clientId) {
         var client = clientRepository.findById(clientId).orElseThrow(() -> new ClientNotFoundException(clientId));
 
         var equipmentCategoryId = maintenanceRequestInputDTO.equipmentCategoryId();
@@ -43,7 +43,7 @@ public class ClientMaintenanceRequestServiceImpl implements ClientMaintenanceReq
     }
 
     @Override
-    public ResultViewModel<List<MaintenanceRequestViewDTO>> GetAll(MaintenanceRequestFilter filter) {
+    public ResultViewModel<List<MaintenanceRequestViewDTO>> getAll(MaintenanceRequestFilter filter) {
         var spec = MaintenanceRequestSpecification.withFilter(filter);
         var requests = maintenanceRequestRepository.findAll(spec);
 
@@ -54,27 +54,27 @@ public class ClientMaintenanceRequestServiceImpl implements ClientMaintenanceReq
         return ResultViewModel.success(dtos);
     }
     @Override
-    public ResultViewModel<MaintenanceRequestViewDTO> GetById(Integer requestId, Integer clientId) {
+    public ResultViewModel<MaintenanceRequestViewDTO> getById(Integer requestId, Integer clientId) {
         var request = getRequestById(requestId, clientId);
         return ResultViewModel.success(MaintenanceRequestViewDTO.fromEntity(request));
     }
     
     @Override
-    public void Approve(Integer requestId, Integer clientId) {
+    public void approve(Integer requestId, Integer clientId) {
         var request = getRequestById(requestId, clientId);
         request.Approve();
         maintenanceRequestRepository.save(request);
     }
 
     @Override
-    public void Reject(Integer requestId, Integer clientId, RejectionInfo rejectionInfo) {
+    public void reject(Integer requestId, Integer clientId, RejectionInfo rejectionInfo) {
         var request = getRequestById(requestId, clientId);
         request.Reject(rejectionInfo.reason());
         maintenanceRequestRepository.save(request);
     }
 
     @Override
-    public void Pay(Integer requestId, Integer clientId) {
+    public void pay(Integer requestId, Integer clientId) {
         var request = getRequestById(requestId, clientId);
         request.Pay();
         maintenanceRequestRepository.save(request);
