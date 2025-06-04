@@ -49,38 +49,38 @@ public class ClientMaintenanceRequestController {
 
         filter.validate();
 
-        var requests = service.GetAll(filter);
+        var requests = service.getAll(filter);
         return ResponseEntity.ok(requests);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResultViewModel<MaintenanceRequestViewDTO>> GetById(@PathVariable Integer id) {
-        var request = service.GetById(id, currentUserService.getUserEntityId());
+    public ResponseEntity<ResultViewModel<MaintenanceRequestViewDTO>> getById(@PathVariable Integer id) {
+        var request = service.getById(id, currentUserService.getUserEntityId());
 
         return ResponseEntity.status(HttpStatus.OK).body(request);
     }
 
     @PostMapping
-    public ResponseEntity<ResultViewModel<MaintenanceRequestViewDTO>> Create(@RequestBody MaintenanceRequestInputDTO dto) {
-        var created = service.Create(dto, currentUserService.getUserEntityId());
+    public ResponseEntity<ResultViewModel<MaintenanceRequestViewDTO>> create(@RequestBody MaintenanceRequestInputDTO dto) {
+        var created = service.create(dto, currentUserService.getUserEntityId());
 
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @PostMapping("{id}/approve")
-    public ResponseEntity<Void> ApproveMaintenance(@PathVariable Integer id) {
-        service.Approve(id, currentUserService.getUserEntityId());
+    public ResponseEntity<Void> approveMaintenance(@PathVariable Integer id) {
+        service.approve(id, currentUserService.getUserEntityId());
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("{id}/reject")
-    public ResponseEntity<Void> RejectMaintenance(@PathVariable Integer id, RejectionInfo rejectionInfo) {
-        service.Reject(id, currentUserService.getUserEntityId(), rejectionInfo);
+    public ResponseEntity<Void> rejectMaintenance(@PathVariable Integer id, RejectionInfo rejectionInfo) {
+        service.reject(id, currentUserService.getUserEntityId(), rejectionInfo);
         return ResponseEntity.noContent().build();
     }
     @PostMapping("{id}/pay")
-    public ResponseEntity<Void> PayMaintenance(@PathVariable Integer id) {
-        service.Pay(id, currentUserService.getUserEntityId());
+    public ResponseEntity<Void> payMaintenance(@PathVariable Integer id) {
+        service.pay(id, currentUserService.getUserEntityId());
 
         return ResponseEntity.noContent().build();
     }

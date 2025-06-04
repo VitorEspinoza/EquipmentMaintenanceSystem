@@ -11,10 +11,12 @@ import br.com.backend.backend.Entities.Account;
 import br.com.backend.backend.Entities.Employee;
 import br.com.backend.backend.Exceptions.Custom.AccountAlreadyExists;
 import br.com.backend.backend.Exceptions.Custom.EmployeeNotFoundException;
+import br.com.backend.backend.Exceptions.Custom.InvalidDeleteException;
 import br.com.backend.backend.Filters.EmployeeSpecifications;
 import br.com.backend.backend.Repositories.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -32,6 +34,7 @@ public class EmployeeService {
 
     private final EmployeeRepository employeeRepository;
     private final AccountService accountService;
+    private final CurrentUserService currentUserService;
 
     public ResultViewModel<EmployeeDTO> create(CreateEmployeeDTO createEmployeeDTO) {
         CreateAccountDTO accountCreate = new CreateAccountDTO(createEmployeeDTO.getEmail(), createEmployeeDTO.getPassword(), "EMPLOYEE");
@@ -71,6 +74,11 @@ public class EmployeeService {
 
     public void logicalDelete(Integer idEmployee) {
         Employee employee = findById(idEmployee);
+        Integer loggedEmployeeId = currentUserService.getUserEntityId();
+
+        if(loggedEmployeeId.equals(employee.getId())) {
+            throw new InvalidDeleteException("Employees cannot delete themselves.");
+        }
 
         employee.inactivate();
         employeeRepository.save(employee);

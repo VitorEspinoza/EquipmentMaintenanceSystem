@@ -15,8 +15,19 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler
+    public ResponseEntity<ResultViewModel<Void>> handleInvalidDeleteException(
+            InvalidDeleteException ex
+    ){
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ResultViewModel.error(
+                        List.of(ex.getMessage())
+                ));
+    }
+
     @ExceptionHandler(ClientCreationInvalidException.class)
-    public ResponseEntity<ResultViewModel<Void>> ClientCreationInvalidException(
+    public ResponseEntity<ResultViewModel<Void>> handleClientCreationInvalidException(
             ClientCreationInvalidException ex
     ) {
         return ResponseEntity

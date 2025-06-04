@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -25,14 +26,16 @@ public class EmployeeMaintenanceRequestServiceImpl implements EmployeeMaintenanc
     
     private final MaintenanceRequestRepository maintenanceRequestRepository;
     private final EmployeeRepository employeeRepository;
+    private final CurrentUserService currentUserService;
+
     @Override
-    public ResultViewModel<MaintenanceRequestViewDTO> GetById(Integer id) {
+    public ResultViewModel<MaintenanceRequestViewDTO> getById(Integer id) {
         var request = getRequestById(id);
         return ResultViewModel.success(MaintenanceRequestViewDTO.fromEntity(request));
     }
 
     @Override
-    public ResultViewModel<List<MaintenanceRequestViewDTO>> GetAll(MaintenanceRequestFilter filter) {
+    public ResultViewModel<List<MaintenanceRequestViewDTO>> getAll(MaintenanceRequestFilter filter) {
         var spec = MaintenanceRequestSpecification.withFilter(filter);
         var requests = maintenanceRequestRepository.findAll(spec);
 
@@ -43,7 +46,7 @@ public class EmployeeMaintenanceRequestServiceImpl implements EmployeeMaintenanc
         return ResultViewModel.success(dtos);
     }
     @Override
-    public void Quote(Integer id, BigDecimal value, Integer employeeId) {
+    public void quote(Integer id, BigDecimal value, Integer employeeId) {
         var request = getRequestById(id);
         
         var employee = getEmployeeById(employeeId);
@@ -53,12 +56,19 @@ public class EmployeeMaintenanceRequestServiceImpl implements EmployeeMaintenanc
         maintenanceRequestRepository.save(request);
     }
     @Override
-    public void RedirectEmployee(Integer id, Integer newEmployeeId) {
+    public void redirectEmployee(Integer id, Integer newEmployeeId) {
         var request = getRequestById(id);
         
-        if(request.getAssignedToEmployee().getId() == newEmployeeId) {
+        if(Objects.equals(request.getAssignedToEmployee().getId(), newEmployeeId)) {
             throw new invalidRedirectException("Employee is already assigned to this request");
         }
+
+        Integer loggedEmployeeId = currentUserService.getUserEntityId();
+
+        if(loggedEmployeeId.equals(newEmployeeId)) {
+            throw new invalidRedirectException("Employees cannot redirect to themselves.");
+        }
+
         var newEmployee = getEmployeeById(newEmployeeId);
         
         request.RedirectEmployee(newEmployee);
@@ -67,7 +77,7 @@ public class EmployeeMaintenanceRequestServiceImpl implements EmployeeMaintenanc
     }
 
     @Override
-    public void DoMaintenance(Integer id, Integer employeeId, MaintenanceInfo maintenanceInfo) {
+    public void doMaintenance(Integer id, Integer employeeId, MaintenanceInfo maintenanceInfo) {
         var request = getRequestById(id);
         var employee = getEmployeeById(employeeId);
         
@@ -77,7 +87,7 @@ public class EmployeeMaintenanceRequestServiceImpl implements EmployeeMaintenanc
     }
 
     @Override
-    public void FinalizeMaintenance(Integer id, Integer employeeId) {
+    public void finalizeMaintenance(Integer id, Integer employeeId) {
         var request = getRequestById(id);
         var employee = getEmployeeById(employeeId);
         

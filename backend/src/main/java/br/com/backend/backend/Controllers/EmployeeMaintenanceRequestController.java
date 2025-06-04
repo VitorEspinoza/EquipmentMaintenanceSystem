@@ -46,41 +46,41 @@ public class EmployeeMaintenanceRequestController {
 
         filter.validate();
         
-        var requests = service.GetAll(filter);
+        var requests = service.getAll(filter);
         return ResponseEntity.ok(requests);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResultViewModel<MaintenanceRequestViewDTO>> GetById(@PathVariable Integer id) {
-        var request = service.GetById(id);
+    public ResponseEntity<ResultViewModel<MaintenanceRequestViewDTO>> getById(@PathVariable Integer id) {
+        var request = service.getById(id);
 
         return ResponseEntity.status(HttpStatus.OK).body(request);
     }
 
     @PostMapping("{id}/quote")
-    public ResponseEntity<Void> QuoteMaintenance(@PathVariable Integer id, @RequestParam(required = false) BigDecimal price) {
-        service.Quote(id, price, currentUserService.getUserEntityId());
+    public ResponseEntity<Void> quoteMaintenance(@PathVariable Integer id, @RequestParam(required = false) BigDecimal price) {
+        service.quote(id, price, currentUserService.getUserEntityId());
 
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("{id}/do-maintenance")
-    public ResponseEntity<Void> DoMaintenance(@PathVariable Integer id, @RequestBody MaintenanceInfo maintenanceInfo) {
-        service.DoMaintenance(id, currentUserService.getUserEntityId(), maintenanceInfo);
+    public ResponseEntity<Void> doMaintenance(@PathVariable Integer id, @RequestBody MaintenanceInfo maintenanceInfo) {
+        service.doMaintenance(id, currentUserService.getUserEntityId(), maintenanceInfo);
 
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("{id}/finalize")
-    public ResponseEntity<Void> FinalizeMaintenance(@PathVariable Integer id) {
-        service.FinalizeMaintenance(id, currentUserService.getUserEntityId());
+    public ResponseEntity<Void> finalizeMaintenance(@PathVariable Integer id) {
+        service.finalizeMaintenance(id, currentUserService.getUserEntityId());
 
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("{id}/redirect")
-    public ResponseEntity<Void> RedirectEmployee(@PathVariable Integer id, @RequestParam Integer newEmployeeId) {
-        service.RedirectEmployee(id, newEmployeeId);
+    public ResponseEntity<Void> redirectEmployee(@PathVariable Integer id, @RequestParam Integer newEmployeeId) {
+        service.redirectEmployee(id, newEmployeeId);
 
         return ResponseEntity.noContent().build();
     }
