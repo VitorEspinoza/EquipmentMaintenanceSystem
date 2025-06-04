@@ -30,11 +30,11 @@ export class BudgetApproveComponent {
     precoOrcado: '',
   };
 
-  aprovarServico() {
+  approve() {
     this.notificationService.success(`Serviço aprovado no valor de R$ 735,90`);
   }
 
-  rejeitarServico() {
+  reject() {
     this.dialog
       .open(BudgetRejectionModalComponent, { data: {} })
       .afterClosed()

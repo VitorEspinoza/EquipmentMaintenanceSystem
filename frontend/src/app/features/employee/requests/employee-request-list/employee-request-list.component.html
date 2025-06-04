@@ -1,0 +1,22 @@
+<div class="p-6 space-y-6">
+  <h2 class="text-2xl font-semibold">Solicitações</h2>
+
+  <div *ngIf="solicitations.length > 0; else noResults">
+    <div
+      *ngFor="let solicitation of solicitations"
+      class="p-4 rounded shadow flex justify-between items-center mb-3"
+      [ngClass]="getStatusClass(solicitation.state)"
+    >
+      <div>
+        <p><strong>ID:</strong> {{ solicitation.id }}</p>
+        <p><strong>Equipamento:</strong> {{ solicitation.equipmentDescription }}</p>
+        <p><strong>Data:</strong> {{ solicitation.createdAt | date: 'shortDate' }}</p>
+        <p><strong>Estado:</strong> {{ solicitation.state }}</p>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #noResults>
+    <p class="text-gray-500">Nenhuma solicitação encontrada.</p>
+  </ng-template>
+</div>

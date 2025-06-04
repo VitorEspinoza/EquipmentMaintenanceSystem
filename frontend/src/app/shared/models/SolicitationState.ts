@@ -1,0 +1,10 @@
+export enum SolicitationState {
+  OPEN = 'OPEN',
+  QUOTED = 'QUOTED',
+  APPROVED = 'APPROVED',
+  REJECTED = 'REJECTED',
+  REDIRECTED = 'REDIRECTED',
+  FIXED = 'FIXED',
+  COMPLETED = 'COMPLETED',
+  PAID = 'PAID',
+}

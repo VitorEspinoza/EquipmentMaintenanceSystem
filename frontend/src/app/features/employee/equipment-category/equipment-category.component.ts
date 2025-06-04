@@ -6,12 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
-
-interface EquipmentCategory {
-  id: number;
-  name: string;
-}
-
+import { EquipmentCategory } from '../../../shared/models/EquipmentCategory';
 @Component({
   standalone: true,
   selector: 'app-equipment-category',
@@ -28,7 +23,7 @@ interface EquipmentCategory {
 })
 export class EquipmentCategoryComponent {
   categories: EquipmentCategory[] = [];
-  category: EquipmentCategory = { id: 0, name: '' };
+  category: EquipmentCategory = { id: 0, name: '', description: '', Active: false };
   private idCounter = 1;
 
   saveCategory(): void {
@@ -57,6 +52,6 @@ export class EquipmentCategoryComponent {
   }
 
   resetForm(): void {
-    this.category = { id: 0, name: '' };
+    this.category = { id: 0, name: '', description: '', Active: false };
   }
 }

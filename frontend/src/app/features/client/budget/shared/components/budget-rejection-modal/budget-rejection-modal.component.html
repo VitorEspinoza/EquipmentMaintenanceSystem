@@ -1,33 +1,13 @@
-<div style="overflow: hidden" class="flex flex-col justify-between h-full">
-  <div class="w-full">
-    <h2>Rejeitar Orçamento</h2>
-  </div>
+<span class="text-sm text-gray-800"> Por favor, informe o motivo da rejeição: </span>
+<textarea
+  [formControl]="rejectionReasonControl"
+  class="border p-2 rounded-md w-full resize-none"
+  placeholder="Motivo da rejeição"
+  rows="4"
+></textarea>
 
-  <span class="text-sm text-gray-800"> Por favor, informe o motivo da rejeição: </span>
-  <textarea
-    [formControl]="rejectionReasonControl"
-    class="border p-2 rounded-md w-full resize-none"
-    placeholder="Motivo da rejeição"
-    rows="4"
-  ></textarea>
-
-  <ng-container *ngIf="rejectionReason">
-    <span class="text-sm text-gray-800"> Serviço rejeitado com o motivo: {{ rejectionReason }} </span>
+@if (rejectionReason()) {
+  <ng-container>
+    <span class="text-sm text-gray-800"> Serviço rejeitado com o motivo: {{ rejectionReason() }} </span>
   </ng-container>
-
-  <mat-dialog-actions>
-    <div class="mt-5 mb-2 w-full flex justify-between">
-      <button mat-button class="w-[49%] btn-actions" type="button" (click)="this.dialogRef.close(false)">
-        Cancelar
-      </button>
-
-      <button
-        mat-button
-        class="export-button btn-actions w-[49%]"
-        (click)="this.dialogRef.close(rejectionReason ? rejectionReason : true)"
-      >
-        Rejeitar
-      </button>
-    </div>
-  </mat-dialog-actions>
-</div>
+}

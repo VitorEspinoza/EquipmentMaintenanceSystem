@@ -1,11 +1,16 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { Component, computed } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
 import { RouterModule } from '@angular/router';
+import {
+  FormState,
+  MaintenanceActionComponent,
+} from '../../../../../../shared/maintenance-request-details/models/maintenanceActionComponent';
 
 @Component({
   selector: 'app-budget-rejection-modal',
@@ -21,13 +26,15 @@ import { RouterModule } from '@angular/router';
   templateUrl: './budget-rejection-modal.component.html',
   styleUrl: './budget-rejection-modal.component.css',
 })
-export class BudgetRejectionModalComponent {
-  private readonly data = inject(MAT_DIALOG_DATA);
-  readonly dialogRef = inject(MatDialogRef<BudgetRejectionModalComponent>);
+export class BudgetRejectionModalComponent implements MaintenanceActionComponent<string | null> {
+  rejectionReasonControl = new FormControl<string>('', Validators.required);
 
-  rejectionReasonControl = new FormControl<string>('');
+  rejectionReason = toSignal(this.rejectionReasonControl.valueChanges, {
+    initialValue: this.rejectionReasonControl.value,
+  });
 
-  get rejectionReason(): string {
-    return this.rejectionReasonControl.value ?? '';
-  }
+  formState = computed<FormState<string | null>>(() => ({
+    formData: this.rejectionReason(),
+    isValid: this.rejectionReasonControl.valid,
+  }));
 }

@@ -1,0 +1,26 @@
+<div style="overflow: hidden" class="flex flex-col justify-between h-full">
+  <div class="w-full">
+    <h2>{{ data.title }}</h2>
+  </div>
+
+  <div class="flex-1 overflow-auto py-4">
+    <ng-container #dynamicComponentContainer></ng-container>
+  </div>
+
+  <mat-dialog-actions>
+    <div class="mt-5 mb-2 w-full flex justify-between">
+      <button mat-button class="w-[49%] btn-actions" type="button" (click)="this.dialogRef.close(false)">
+        Cancelar
+      </button>
+
+      <button
+        mat-button
+        [disabled]="!isFormValid()"
+        class="export-button btn-actions w-[49%]"
+        (click)="this.dialogRef.close(formData())"
+      >
+        {{ data.actionName }}
+      </button>
+    </div>
+  </mat-dialog-actions>
+</div>

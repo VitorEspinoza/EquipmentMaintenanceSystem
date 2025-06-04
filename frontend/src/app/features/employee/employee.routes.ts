@@ -1,24 +1,31 @@
 import { Routes } from '@angular/router';
+import { EmployeeMaintenanceRequestStrategy } from '../../shared/maintenance-request-details/strategies/EmployeeMaintenanceRequestStrategy';
+import { MAINTENANCE_REQUEST_STRATEGY } from '../../shared/models/maintenanceRequest';
 
 export const employeeRoutes: Routes = [
   {
-    path: 'employee',
-    loadComponent: () => import('./employee-home/employee-home.component').then(m => m.EmployeeHomeComponent),
-  },
-  {
-    path: 'employee/solicitations',
+    path: 'employee/requests',
     loadComponent: () =>
-      import('./employee-solicitation-list/employee-solicitation-list.component').then(
-        m => m.EmployeeSolicitationListComponent
+      import('./requests/employee-request-list/employee-request-list.component').then(
+        m => m.EmployeeRequestListComponent
       ),
-  },
-  {
-    path: 'employee/budget/:solicitationId',
-    loadComponent: () => import('./employee-budget/employee-budget.component').then(m => m.EmployeeBudgetComponent),
   },
   {
     path: 'employee/equipment-category',
     loadComponent: () =>
       import('./equipment-category/equipment-category.component').then(m => m.EquipmentCategoryComponent),
+  },
+  {
+    path: 'employee/request/:requestId',
+    loadComponent: () =>
+      import('./../../shared/maintenance-request-details/maintenance-request-details.component').then(
+        m => m.MaintenanceRequestDetailsComponent
+      ),
+    providers: [
+      {
+        provide: MAINTENANCE_REQUEST_STRATEGY,
+        useClass: EmployeeMaintenanceRequestStrategy,
+      },
+    ],
   },
 ];
