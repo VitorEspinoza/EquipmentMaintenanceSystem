@@ -23,6 +23,7 @@ public class MaintenanceRequest {
         this.defectDescription = defectDescription;
         this.state = EnMaintenanceRequestState.OPEN;
         this.createdAt = LocalDateTime.now();
+        addStateHistory();
     }
 
     @Id
@@ -115,7 +116,6 @@ public class MaintenanceRequest {
     private void addStateHistory() {
         var history =  new RequestStateHistory(this, this.state, this.assignedToEmployee);
         stateHistory.add(history);
-        
     }
     public void Quote(BigDecimal value, Employee employee) {
         if(value.compareTo(BigDecimal.ZERO) <= 0) {

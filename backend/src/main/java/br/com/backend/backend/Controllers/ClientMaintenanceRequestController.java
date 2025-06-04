@@ -74,7 +74,7 @@ public class ClientMaintenanceRequestController {
     }
 
     @PostMapping("{id}/reject")
-    public ResponseEntity<Void> RejectMaintenance(@PathVariable Integer id, RejectionInfo rejectionInfo) {
+    public ResponseEntity<Void> RejectMaintenance(@PathVariable Integer id, @RequestBody RejectionInfo rejectionInfo) {
         service.Reject(id, currentUserService.getUserEntityId(), rejectionInfo);
         return ResponseEntity.noContent().build();
     }
