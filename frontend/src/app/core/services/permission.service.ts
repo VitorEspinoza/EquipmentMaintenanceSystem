@@ -45,7 +45,8 @@ export class PermissionService {
       return [];
     }
 
-    return this.items.filter(item => item.permissedRoles.includes(role));
+    // return this.items.filter(item => item.permissedRoles.includes(role));
+    return this.items;
   });
 }
 
