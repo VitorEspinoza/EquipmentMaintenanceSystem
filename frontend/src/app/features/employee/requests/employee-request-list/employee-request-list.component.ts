@@ -6,8 +6,10 @@ import { RouterModule } from '@angular/router';
 import { MaintenanceRequest } from '../../../../shared/models/maintenanceRequest';
 import { SolicitationState } from '../../../../shared/models/SolicitationState';
 import { EmployeeRequestService } from '../../shared/services/employee-request.service';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
-const MATERIAL_MODULES = [MatTableModule];
+const MATERIAL_MODULES = [MatTableModule, MatButtonModule, MatIconModule];
 const COMMON_MODULES = [CommonModule, NgIf, FormsModule];
 const ROUTING_MODULES = [RouterModule];
 
