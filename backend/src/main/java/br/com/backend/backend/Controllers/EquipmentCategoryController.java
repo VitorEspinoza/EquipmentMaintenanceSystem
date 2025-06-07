@@ -19,8 +19,9 @@ public class EquipmentCategoryController {
     private final EquipmentCategoryService service;
 
     @GetMapping
-    public ResponseEntity<ResultViewModel<List<EquipmentCategoryResponseDTO>>> getAll() {
-        var categories = service.getAllCategories();
+    public ResponseEntity<ResultViewModel<List<EquipmentCategoryResponseDTO>>> getAll(@RequestParam(name = "active", required = false,defaultValue = "true") Boolean active
+    ) {
+        var categories = service.getAllCategories(active);
         return ResponseEntity.ok(categories);
     }
 

@@ -86,7 +86,7 @@ public class ClientService {
         }
 
         ZipCodeValidator zipValidator = new ViaCepZipCodeValidator();
-        if(zipValidator.isValidZipCode(dto.getAddress().getZipcode())) {
+        if(Boolean.FALSE.equals(zipValidator.isValidZipCode(dto.getAddress().getZipcode()))) {
             validations.add("Zipcode not valid.");
         }
 
