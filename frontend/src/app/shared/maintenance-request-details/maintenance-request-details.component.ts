@@ -10,14 +10,19 @@ import {
   MaintenanceRequestStrategy,
 } from '../models/maintenanceRequest';
 import { SolicitationState } from '../models/SolicitationState';
+import { MatCardModule } from '@angular/material/card';
+import { MatTableModule } from '@angular/material/table';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-maintenance-request-details',
-  imports: [CommonModule, MatButtonModule],
+  imports: [CommonModule, MatButtonModule, MatCardModule, MatTableModule, MatDividerModule, MatIconModule],
   templateUrl: './maintenance-request-details.component.html',
   styleUrl: './maintenance-request-details.component.css',
 })
 export class MaintenanceRequestDetailsComponent {
+  readonly displayedColumns: string[] = ['state', 'changedAt', 'changedByEmployeeName'];
   requestId = input.required<string>();
   private strategy: MaintenanceRequestStrategy = inject(MAINTENANCE_REQUEST_STRATEGY);
   private readonly notificationService = inject(NotificationService);
