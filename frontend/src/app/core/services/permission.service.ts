@@ -41,12 +41,12 @@ export class PermissionService {
 
   permissedMenuItems = computed(() => {
     const role = this.accountRole();
+    return this.items;
     if (!role) {
       return [];
     }
 
     // return this.items.filter(item => item.permissedRoles.includes(role));
-    return this.items;
   });
 }
 

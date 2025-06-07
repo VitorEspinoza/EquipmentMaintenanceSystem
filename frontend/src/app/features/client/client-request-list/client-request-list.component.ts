@@ -6,9 +6,10 @@ import { map } from 'rxjs';
 import { MaintenanceRequest } from '../../../shared/models/maintenanceRequest';
 import { SolicitationState } from '../../../shared/models/SolicitationState';
 import { ClientRequestService } from '../shared/services/client-request.service';
+import { MatButtonModule } from '@angular/material/button';
 
 const MATERIAL_MODULES = [MatTableModule];
-const COMMON_MODULES = [CommonModule];
+const COMMON_MODULES = [CommonModule, MatButtonModule];
 const CORE_MODULES = [RouterModule];
 
 @Component({

@@ -1,22 +1,67 @@
-<div class="p-6 space-y-6">
-  <h2 class="text-2xl font-semibold">Solicitações</h2>
+<div class="p-6 md:p-8 bg-gray-50 min-h-screen">
+  <div class="flex flex-col md:flex-row justify-between md:items-center mb-6 gap-4">
+    <h2 class="text-2xl font-bold text-gray-800">Solicitações de Manutenção</h2>
 
-  <div *ngIf="solicitations.length > 0; else noResults">
-    <div
-      *ngFor="let solicitation of solicitations"
-      class="p-4 rounded shadow flex justify-between items-center mb-3"
-      [ngClass]="getStatusClass(solicitation.state)"
-    >
-      <div>
-        <p><strong>ID:</strong> {{ solicitation.id }}</p>
-        <p><strong>Equipamento:</strong> {{ solicitation.equipmentDescription }}</p>
-        <p><strong>Data:</strong> {{ solicitation.createdAt | date: 'shortDate' }}</p>
-        <p><strong>Estado:</strong> {{ solicitation.state }}</p>
-      </div>
+    <div class="flex items-center gap-2">
+      <button mat-flat-button [color]="filterType === 'TODAS' ? 'primary' : ''" (click)="filterType = 'TODAS'">
+        Todas
+      </button>
+      <button mat-flat-button [color]="filterType === 'HOJE' ? 'primary' : ''" (click)="filterType = 'HOJE'">
+        Hoje
+      </button>
     </div>
   </div>
 
-  <ng-template #noResults>
-    <p class="text-gray-500">Nenhuma solicitação encontrada.</p>
-  </ng-template>
+  <div class="bg-white shadow-md rounded-lg overflow-hidden">
+    <table mat-table [dataSource]="solicitations" class="w-full">
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef>ID</th>
+        <td mat-cell *matCellDef="let solicitation">{{ solicitation.id }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="equipment">
+        <th mat-header-cell *matHeaderCellDef>Equipamento</th>
+        <td mat-cell *matCellDef="let solicitation">{{ solicitation.equipmentDescription | slice: 0 : 40 }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="date">
+        <th mat-header-cell *matHeaderCellDef>Data</th>
+        <td mat-cell *matCellDef="let solicitation">{{ solicitation.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="state">
+        <th mat-header-cell *matHeaderCellDef>Estado</th>
+        <td mat-cell *matCellDef="let solicitation">
+          <span class="px-3 py-1 rounded-full text-xs font-semibold" [ngClass]="getStatusClass(solicitation.state)">
+            {{ solicitation.state }}
+          </span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef class="text-center">Ação</th>
+        <td mat-cell *matCellDef="let solicitation" class="text-center">
+          <a
+            mat-icon-button
+            color="primary"
+            [routerLink]="['/employee/maintenance', solicitation.id]"
+            matTooltip="Ver Detalhes"
+          >
+            <mat-icon>visibility</mat-icon>
+          </a>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="['id', 'equipment', 'date', 'state', 'actions']"></tr>
+      <tr
+        mat-row
+        *matRowDef="let row; columns: ['id', 'equipment', 'date', 'state', 'actions']"
+        class="hover:bg-gray-50 transition-colors"
+      ></tr>
+    </table>
+
+    <div *ngIf="solicitations.length === 0" class="text-center p-8 text-gray-500">
+      Nenhuma solicitação encontrada para os filtros selecionados.
+    </div>
+  </div>
 </div>
