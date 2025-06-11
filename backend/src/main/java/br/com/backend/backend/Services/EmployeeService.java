@@ -74,9 +74,9 @@ public class EmployeeService {
 
     public void logicalDelete(Integer idEmployee) {
         Employee employee = findById(idEmployee);
-        Integer loggedEmployeeId = currentUserService.getUserEntityId();
+        Account loggedEmployeeId = currentUserService.getCurrentUser();
 
-        if(loggedEmployeeId.equals(employee.getId())) {
+        if(loggedEmployeeId.getId().equals(employee.getId())) {
             throw new InvalidDeleteException("Employees cannot delete themselves.");
         }
 

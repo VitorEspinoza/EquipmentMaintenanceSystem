@@ -22,7 +22,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/maintenance-request")
+@RequestMapping("/api/v1/employee/maintenance-request")
 public class EmployeeMaintenanceRequestController {
 
     private final EmployeeMaintenanceRequestService service;
@@ -51,35 +51,35 @@ public class EmployeeMaintenanceRequestController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResultViewModel<MaintenanceRequestViewDTO>> getById(@PathVariable Integer id) {
+    public ResponseEntity<ResultViewModel<MaintenanceRequestViewDTO>> GetById(@PathVariable Integer id) {
         var request = service.getById(id);
 
         return ResponseEntity.status(HttpStatus.OK).body(request);
     }
 
     @PostMapping("{id}/quote")
-    public ResponseEntity<Void> quoteMaintenance(@PathVariable Integer id, @RequestParam(required = false) BigDecimal price) {
+    public ResponseEntity<Void> QuoteMaintenance(@PathVariable Integer id, @RequestParam(required = false) BigDecimal price) {
         service.quote(id, price, currentUserService.getUserEntityId());
 
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("{id}/do-maintenance")
-    public ResponseEntity<Void> doMaintenance(@PathVariable Integer id, @RequestBody MaintenanceInfo maintenanceInfo) {
+    public ResponseEntity<Void> DoMaintenance(@PathVariable Integer id, @RequestBody MaintenanceInfo maintenanceInfo) {
         service.doMaintenance(id, currentUserService.getUserEntityId(), maintenanceInfo);
 
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("{id}/finalize")
-    public ResponseEntity<Void> finalizeMaintenance(@PathVariable Integer id) {
+    public ResponseEntity<Void> FinalizeMaintenance(@PathVariable Integer id) {
         service.finalizeMaintenance(id, currentUserService.getUserEntityId());
 
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("{id}/redirect")
-    public ResponseEntity<Void> redirectEmployee(@PathVariable Integer id, @RequestParam Integer newEmployeeId) {
+    public ResponseEntity<Void> RedirectEmployee(@PathVariable Integer id, @RequestParam Integer newEmployeeId) {
         service.redirectEmployee(id, newEmployeeId);
 
         return ResponseEntity.noContent().build();

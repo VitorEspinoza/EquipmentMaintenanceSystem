@@ -1,4 +1,5 @@
 package br.com.backend.backend.Repositories;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.lang.NonNull;
 import br.com.backend.backend.Entities.EquipmentCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -8,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface EquipmentCategoryRepository extends JpaRepository<EquipmentCategory, Integer> {
+public interface EquipmentCategoryRepository extends JpaRepository<EquipmentCategory, Integer>, JpaSpecificationExecutor<EquipmentCategory> {
     Optional<EquipmentCategory> findByNameIgnoreCase(String name);
 
     @NonNull
