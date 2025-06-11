@@ -33,6 +33,7 @@ public class ClientService {
     private final AddressService addressService;
     private final ClientPasswordEmailService clientPasswordEmailService;
     private final AuthService authService;
+    private final ZipCodeValidator zipCodeValidator;
 
     @Transactional
     public ClientCreateResult create(CreateClientDTO dto) {
@@ -85,8 +86,7 @@ public class ClientService {
             validations.add("Email already in use.");
         }
 
-        ZipCodeValidator zipValidator = new ViaCepZipCodeValidator();
-        if(zipValidator.isValidZipCode(dto.getAddress().getZipcode())) {
+        if(!zipCodeValidator.isValidZipCode(dto.getAddress().getZipcode())) {
             validations.add("Zipcode not valid.");
         }
 
