@@ -16,6 +16,17 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler
+    public ResponseEntity<ResultViewModel<Void>> handleEmployeeNotResponsibleException(
+            EmployeeNotResponsibleException ex
+    ){
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ResultViewModel.error(
+                        List.of(ex.getMessage())
+                ));
+    }
+
+    @ExceptionHandler
     public ResponseEntity<ResultViewModel<Void>> handleInvalidDeleteException(
             InvalidDeleteException ex
     ){

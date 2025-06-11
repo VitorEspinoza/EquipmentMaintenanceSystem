@@ -50,7 +50,11 @@ public class EmployeeMaintenanceRequestServiceImpl implements EmployeeMaintenanc
         var request = getRequestById(id);
         
         var employee = getEmployeeById(employeeId);
-        
+
+        if(!request.getAssignedToEmployee().getId().equals(employeeId)) {
+            throw new EmployeeNotResponsibleException("Employee not responsible for this request");
+        }
+
         request.Quote(value, employee);
         
         maintenanceRequestRepository.save(request);
@@ -64,6 +68,10 @@ public class EmployeeMaintenanceRequestServiceImpl implements EmployeeMaintenanc
         }
 
         Integer loggedEmployeeId = currentUserService.getUserEntityId();
+
+        if(!request.getAssignedToEmployee().getId().equals(loggedEmployeeId)) {
+            throw new EmployeeNotResponsibleException("Employee not responsible for this request");
+        }
 
         if(loggedEmployeeId.equals(newEmployeeId)) {
             throw new invalidRedirectException("Employees cannot redirect to themselves.");
@@ -80,7 +88,11 @@ public class EmployeeMaintenanceRequestServiceImpl implements EmployeeMaintenanc
     public void doMaintenance(Integer id, Integer employeeId, MaintenanceInfo maintenanceInfo) {
         var request = getRequestById(id);
         var employee = getEmployeeById(employeeId);
-        
+
+        if(!request.getAssignedToEmployee().getId().equals(employeeId)) {
+            throw new EmployeeNotResponsibleException("Employee not responsible for this request");
+        }
+
         request.DoMaintenance(employee, maintenanceInfo.maintenanceDescription(), maintenanceInfo.customerGuidelines());
         
         maintenanceRequestRepository.save(request);
@@ -90,7 +102,11 @@ public class EmployeeMaintenanceRequestServiceImpl implements EmployeeMaintenanc
     public void finalizeMaintenance(Integer id, Integer employeeId) {
         var request = getRequestById(id);
         var employee = getEmployeeById(employeeId);
-        
+
+        if(!request.getAssignedToEmployee().getId().equals(employeeId)) {
+            throw new EmployeeNotResponsibleException("Employee not responsible for this request");
+        }
+
         request.Finalize(employee);
         
         maintenanceRequestRepository.save(request);
