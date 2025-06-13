@@ -46,7 +46,7 @@
         <div class="flex space-x-4">
           <mat-form-field appearance="outline" class="w-2/3">
             <mat-label>Rua</mat-label>
-            <input matInput formControlName="street" type="text" [readonly]="true" />
+            <input matInput formControlName="street" type="text" [disabled]="true" />
             <mat-error *ngIf="registerForm.get('street')?.hasError('required')">Rua obrigatória</mat-error>
           </mat-form-field>
 
@@ -65,20 +65,20 @@
 
         <mat-form-field appearance="outline">
           <mat-label>Bairro</mat-label>
-          <input matInput formControlName="neighbourhood" type="text" />
+          <input matInput formControlName="neighbourhood" type="text" [disabled]="true" />
           <mat-error *ngIf="registerForm.get('neighbourhood')?.hasError('required')">Bairro obrigatório</mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="outline">
           <mat-label>Cidade</mat-label>
-          <input type="text" matInput formControlName="city" type="text" [readonly]="true" />
+          <input type="text" matInput formControlName="city" type="text" [disabled]="true" />
           <mat-error *ngIf="registerForm.get('city')?.hasError('required')">Cidade obrigatória</mat-error>
           <mat-error *ngIf="registerForm.get('city')?.hasError('invalidCity')">Cidade inválida</mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="outline">
           <mat-label>Estado</mat-label>
-          <input type="text" matInput formControlName="state" type="text" [readonly]="true" />
+          <input type="text" matInput formControlName="state" type="text" [disabled]="true" />
           <mat-error *ngIf="registerForm.get('state')?.hasError('required')">Estado obrigatório</mat-error>
           <mat-error *ngIf="registerForm.get('state')?.hasError('invalidState')">Estado inválido</mat-error>
         </mat-form-field>
