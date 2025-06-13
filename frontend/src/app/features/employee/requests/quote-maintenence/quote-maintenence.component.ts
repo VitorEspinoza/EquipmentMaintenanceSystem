@@ -3,13 +3,15 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
 import { FormState, MaintenanceActionComponent } from '../../../requests/shared/models/maintenanceActionComponent';
 
 @Component({
   selector: 'app-quote-maintenence',
-  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule],
+  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, NgxMaskDirective],
   templateUrl: './quote-maintenence.component.html',
   styleUrl: './quote-maintenence.component.css',
+  providers: [provideNgxMask()],
 })
 export class QuoteMaintenenceModalComponent implements MaintenanceActionComponent<string | null> {
   quotePriceControl = new FormControl<string>('', Validators.required);
