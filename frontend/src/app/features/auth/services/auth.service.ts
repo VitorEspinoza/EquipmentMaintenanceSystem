@@ -1,8 +1,8 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { CrudService } from '../../../core/services/crud.service';
 import { map, Observable, tap } from 'rxjs';
-import { LoginResponse } from '../models/loginResponse';
+import { CrudService } from '../../../core/services/crud.service';
 import { LoginRequest } from '../models/loginRequest';
+import { LoginResponse } from '../models/loginResponse';
 import { RegisterRequest } from '../models/registerRequest';
 import { DefaultResponse } from './../../../shared/models/DefaultResponse';
 
@@ -13,6 +13,7 @@ export class AuthService {
   private authenticatedSign = signal(false);
   private crudService = inject(CrudService);
   authPrefix = 'auth';
+  clientPrefix = 'clients';
 
   isAuthenticated(): boolean {
     return this.authenticatedSign();
@@ -32,7 +33,7 @@ export class AuthService {
   }
 
   register(credentials: RegisterRequest): Observable<DefaultResponse<LoginResponse>> {
-    return this.crudService.post<DefaultResponse<LoginResponse>>(`${this.authPrefix}/register`, credentials);
+    return this.crudService.post<DefaultResponse<LoginResponse>>(`${this.clientPrefix}`, credentials);
   }
 
   logout(): Observable<void> {

@@ -9,14 +9,14 @@
         <mat-form-field appearance="outline" class="w-full">
           <mat-label>Email</mat-label>
           <input matInput formControlName="email" type="email" />
-          <mat-error *ngIf="loginForm.get('email')?.hasError('required')">Email required</mat-error>
-          <mat-error *ngIf="loginForm.get('email')?.hasError('email')">Invalid email</mat-error>
+          <mat-error *ngIf="loginForm.get('email')?.hasError('required')">Email obrigatório</mat-error>
+          <mat-error *ngIf="loginForm.get('email')?.hasError('email')">Email inválido</mat-error>
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Password</mat-label>
+          <mat-label>Senha</mat-label>
           <input matInput formControlName="password" type="password" />
-          <mat-error *ngIf="loginForm.get('password')?.hasError('required')">Password required</mat-error>
+          <mat-error *ngIf="loginForm.get('password')?.hasError('required')">Senha obrigatória</mat-error>
         </mat-form-field>
       </form>
     </mat-card-content>
@@ -30,14 +30,14 @@
         [disabled]="!loginForm.valid"
         form="loginForm"
       >
-        Sign in
+        Entrar
       </button>
     </mat-card-actions>
 
     <mat-card-footer>
       <p class="text-center mt-4 text-sm">
-        Don't have an account?
-        <a [routerLink]="['/register']" class="text-blue-500 hover:underline">Sign up</a>
+        Não tem uma conta?
+        <a [routerLink]="['/register']" class="text-blue-500 hover:underline">Cadastre-se</a>
       </p>
     </mat-card-footer>
   </mat-card>

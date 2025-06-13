@@ -16,6 +16,10 @@ export const employeeRoutes: Routes = [
       import('./equipment-category/equipment-category.component').then(m => m.EquipmentCategoryComponent),
   },
   {
+    path: 'employee/manage',
+    loadComponent: () => import('./manage/manage.component').then(m => m.ManageComponent),
+  },
+  {
     path: 'employee/request/:requestId',
     loadComponent: () =>
       import('./../../shared/maintenance-request-details/maintenance-request-details.component').then(

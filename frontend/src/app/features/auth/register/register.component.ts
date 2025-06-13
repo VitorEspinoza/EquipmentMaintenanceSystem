@@ -7,7 +7,6 @@ import {
   FormsModule,
   ReactiveFormsModule,
   ValidationErrors,
-  ValidatorFn,
   Validators,
 } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -19,7 +18,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { Router, RouterModule } from '@angular/router';
-import { NgxMaskDirective, NgxMaskPipe } from 'ngx-mask';
+import { NgxMaskDirective } from 'ngx-mask';
 import { catchError, map, Observable, of, startWith, switchMap } from 'rxjs';
 import { AddressService } from '../../../shared/services/address.service';
 import { City } from '../models/city';
@@ -39,7 +38,7 @@ const MATERIAL_MODULES = [
 const FORM_MODULES = [ReactiveFormsModule, FormsModule];
 const COMMON_MODULES = [NgIf, CommonModule];
 const CORE_MODULES = [RouterModule];
-const NGXCONFIG = [NgxMaskDirective, NgxMaskPipe];
+const NGXCONFIG = [NgxMaskDirective];
 
 @Component({
   selector: 'app-register',
@@ -73,24 +72,19 @@ export class RegisterComponent implements OnInit {
   };
 
   ngOnInit(): void {
-    this.registerForm = this.fb.group(
-      {
-        password: ['', [Validators.required]],
-        confirmPassword: ['', [Validators.required]],
-        cpf: ['', [Validators.required, Validators.pattern(/^.{11}$/)]],
-        name: ['', [Validators.required]],
-        email: ['', [Validators.required, Validators.email]],
-        zipcode: ['', [Validators.required, Validators.pattern(/^.{8}$/)]],
-        phone: ['', [Validators.required, Validators.pattern(/^.{10,11}$/)]],
-        street: ['', [Validators.required]],
-        number: ['', [Validators.required, Validators.pattern('^[0-9]{1,6}$')]],
-        neighbourhood: ['', [Validators.required]],
-        city: ['', [Validators.required, this.cityValidator]],
-        state: ['', [Validators.required, this.stateValidator]],
-        complement: [''],
-      },
-      { validators: passwordMatchValidator }
-    );
+    this.registerForm = this.fb.group({
+      cpf: ['', [Validators.required, Validators.pattern(/^.{11}$/)]],
+      name: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email]],
+      zipcode: ['', [Validators.required, Validators.pattern(/^.{8}$/)]],
+      phone: ['', [Validators.required, Validators.pattern(/^.{10,11}$/)]],
+      street: ['', [Validators.required]],
+      number: ['', [Validators.required, Validators.pattern('^[0-9]{1,6}$')]],
+      neighbourhood: ['', [Validators.required]],
+      city: ['', [Validators.required, this.cityValidator]],
+      state: ['', [Validators.required, this.stateValidator]],
+      complement: [''],
+    });
 
     let zipCodeFlag = false;
 
@@ -189,17 +183,26 @@ export class RegisterComponent implements OnInit {
       return;
     }
 
-    this.authService.register(this.registerForm.value).subscribe(() => {
+    const raw = this.registerForm.value;
+
+    const payload = {
+      cpf: raw.cpf,
+      name: raw.name,
+      email: raw.email,
+      phone: raw.phone,
+      address: {
+        zipcode: raw.zipcode,
+        street: raw.street,
+        number: raw.number,
+        neighbourhood: raw.neighbourhood,
+        city: raw.city,
+        state: raw.state,
+        complement: raw.complement,
+      },
+    };
+
+    this.authService.register(payload).subscribe(() => {
       this.router.navigate(['/login']);
     });
   }
 }
-
-export const passwordMatchValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
-  const password = control.get('password')?.value;
-  const confirmPassword = control.get('confirmPassword')?.value;
-  const haveError =
-    password !== confirmPassword && control.get('confirmPassword')?.dirty && control.get('password')?.dirty;
-
-  return !haveError ? null : { passwordMismatch: true };
-};
