@@ -1,1 +1,40 @@
-<p>redirect-maintenance works!</p>
+<mat-form-field appearance="outline" class="w-full pt-2">
+  <mat-label>Selecione o Funcionário</mat-label>
+
+  <input
+    matInput
+    autocomplete="off"
+    placeholder="Pesquise por nome ou e-mail"
+    [formControl]="employeeSearchControl"
+    [matAutocomplete]="auto"
+  />
+
+  @if (isLoading()) {
+    <mat-spinner matSuffix diameter="20"></mat-spinner>
+  }
+
+  @if (employeeControl.hasError('required') && employeeControl.touched) {
+    <mat-error>Funcionário é obrigatório</mat-error>
+  }
+
+  @if (hasSearchError()) {
+    <mat-error>Funcionário não encontrado</mat-error>
+  }
+
+  <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onEmployeeSelected($event)" autoActiveFirstOption>
+    @for (employee of filteredEmployees(); track employee.id) {
+      <mat-option [value]="employee" class="employee-option">
+        <div class="employee-info">
+          <div class="employee-name">{{ employee.name }}</div>
+          <div class="employee-email">{{ employee.email }}</div>
+        </div>
+      </mat-option>
+    } @empty {
+      @if (!isLoading() && searchTerm().length >= 2 && !employeeControl.value) {
+        <mat-option disabled>
+          <div class="no-results">Nenhum funcionário encontrado</div>
+        </mat-option>
+      }
+    }
+  </mat-autocomplete>
+</mat-form-field>

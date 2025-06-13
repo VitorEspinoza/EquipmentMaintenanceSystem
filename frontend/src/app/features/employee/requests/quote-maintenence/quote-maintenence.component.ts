@@ -3,10 +3,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
-import {
-  FormState,
-  MaintenanceActionComponent,
-} from '../../../../shared/maintenance-request-details/models/maintenanceActionComponent';
+import { FormState, MaintenanceActionComponent } from '../../../requests/shared/models/maintenanceActionComponent';
 
 @Component({
   selector: 'app-quote-maintenence',

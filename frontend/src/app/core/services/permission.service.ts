@@ -8,19 +8,13 @@ export class PermissionService {
   accountRole = signal<Role | null>(null);
   items: NavigationItem[] = [
     {
-      routeLink: 'client/solicitations',
+      routeLink: 'client/requests',
       icon: 'table_view',
       label: 'Solicitações do Cliente',
       permissedRoles: [Role.CLIENT],
     },
     {
-      routeLink: 'employee',
-      icon: 'home',
-      label: 'Home do Funcionário',
-      permissedRoles: [Role.EMPLOYEE],
-    },
-    {
-      routeLink: 'employee/solicitations',
+      routeLink: 'employee/requests',
       icon: 'table_view',
       label: 'Solicitações do Funcionário',
       permissedRoles: [Role.EMPLOYEE],

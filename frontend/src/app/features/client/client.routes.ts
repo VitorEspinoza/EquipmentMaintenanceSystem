@@ -1,18 +1,18 @@
 import { Routes } from '@angular/router';
-import { ClientMaintenanceRequestStrategy } from '../../shared/maintenance-request-details/strategies/ClientMaintenanceRequestStrategy';
-import { MAINTENANCE_REQUEST_STRATEGY } from '../../shared/models/maintenanceRequest';
+import { MAINTENANCE_REQUEST_STRATEGY } from '../requests/shared/models/maintenanceActionComponent';
+import { ClientMaintenanceRequestStrategy } from './requests/strategies/ClientMaintenanceRequestStrategy';
 
 export const clientRoutes: Routes = [
   {
     path: 'client/requests',
     loadComponent: () =>
-      import('./client-request-list/client-request-list.component').then(m => m.ClientRequestListComponent),
+      import('./requests/client-request-list/client-request-list.component').then(m => m.ClientRequestListComponent),
   },
   {
-    path: 'client/request/:requestId',
+    path: 'client/requests/:requestId',
     loadComponent: () =>
-      import('./../../shared/maintenance-request-details/maintenance-request-details.component').then(
-        m => m.MaintenanceRequestDetailsComponent
+      import('./requests/client-maintenance-request-details/client-maintenance-request-details.component').then(
+        m => m.ClientMaintenanceRequestDetailsComponent
       ),
     providers: [
       {

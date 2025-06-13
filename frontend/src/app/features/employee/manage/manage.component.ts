@@ -18,7 +18,7 @@ import { RouterModule } from '@angular/router';
 import moment from 'moment';
 import { NgxMaskDirective } from 'ngx-mask';
 import { NotificationService } from '../../../core/services/notification.service';
-import { ApiResponse } from '../../../shared/models/ApiResponse';
+import { DefaultResponse } from '../../../shared/models/DefaultResponse';
 import { Page } from '../../../shared/models/page';
 import { Employee } from '../models/Employee';
 import { EmployeeService } from '../services/employee.service';
@@ -102,7 +102,7 @@ export class ManageComponent implements OnInit {
 
   loadEmployees(pageIndex = 0, pageSize = 10): void {
     this.employeeService.getAll(pageIndex, pageSize, !this.isChecked).subscribe({
-      next: (response: ApiResponse<Page<Employee>>) => {
+      next: (response: DefaultResponse<Page<Employee>>) => {
         console.log('response:', response);
         if (response.isSuccess) {
           this.employees = response.data.content;
@@ -135,7 +135,7 @@ export class ManageComponent implements OnInit {
 
     if (emp.id) {
       this.employeeService.update(emp).subscribe({
-        next: (response: ApiResponse<Employee>) => {
+        next: (response: DefaultResponse<Employee>) => {
           if (response.isSuccess) {
             const updatedEmp = response.data;
             const index = this.employees.findIndex(e => e.id === updatedEmp.id);
@@ -159,7 +159,7 @@ export class ManageComponent implements OnInit {
       });
     } else {
       this.employeeService.create(emp).subscribe({
-        next: (response: ApiResponse<Employee>) => {
+        next: (response: DefaultResponse<Employee>) => {
           console.log('response:', response);
           if (response.isSuccess) {
             console.log('Funcionário criado com sucesso:', response.data);

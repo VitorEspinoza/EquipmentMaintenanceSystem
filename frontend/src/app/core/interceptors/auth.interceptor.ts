@@ -1,8 +1,6 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-  console.log('Auth interceptor', req.url);
-
   const allowedUrls: string[] = ['viacep.com.br', 'servicodados.ibge.gov.br'];
 
   const shouldSkipCredentials = allowedUrls.some(url => req.url.includes(url));
