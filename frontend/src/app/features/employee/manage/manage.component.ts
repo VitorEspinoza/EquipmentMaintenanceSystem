@@ -7,6 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatNativeDateModule, MatOptionModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -18,6 +19,7 @@ import { RouterModule } from '@angular/router';
 import moment from 'moment';
 import { NgxMaskDirective } from 'ngx-mask';
 import { NotificationService } from '../../../core/services/notification.service';
+import { ConfirmDeleteModalComponent } from '../../../shared/confirm-dialog/confirm-dialog/confirm-dialog.component';
 import { DefaultResponse } from '../../../shared/models/DefaultResponse';
 import { Page } from '../../../shared/models/page';
 import { Employee } from '../models/Employee';
@@ -38,6 +40,7 @@ const MATERIAL_MODULES = [
   MatNativeDateModule,
   MatPaginatorModule,
   MatSlideToggleModule,
+  MatDialogModule,
 ];
 const FORM_MODULES = [ReactiveFormsModule, FormsModule];
 const COMMON_MODULES = [CommonModule];
@@ -66,6 +69,7 @@ export class ManageComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly employeeService = inject(EmployeeService);
   private readonly notificationService = inject(NotificationService);
+  private readonly dialog = inject(MatDialog);
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild('form') form: any;
 
@@ -80,6 +84,7 @@ export class ManageComponent implements OnInit {
   pageSize = 10;
 
   isChecked = false;
+  loggedEmail = localStorage.getItem('email');
 
   ngOnInit(): void {
     this.employeeForm = this.fb.group({
@@ -206,14 +211,27 @@ export class ManageComponent implements OnInit {
       return;
     }
 
-    this.employeeService.delete(emp.id).subscribe({
-      next: () => {
-        this.loadEmployees();
-        this.notificationService.success('Sucesso', 'Funcionário removido!');
+    const dialogRef = this.dialog.open(ConfirmDeleteModalComponent, {
+      width: '400px',
+      data: {
+        message: `Você tem certeza que deseja excluir "${emp.name}"?`,
       },
-      error: err => {
-        this.notificationService.error('Erro', 'Erro ao remover funcionário.' + (err.error?.message || ''));
-      },
+    });
+
+    dialogRef.afterClosed().subscribe((confirmed: boolean) => {
+      if (confirmed) {
+        this.employeeService.delete(emp.id).subscribe({
+          next: () => {
+            this.loadEmployees();
+            this.notificationService.success('Sucesso', 'Funcionário removido!');
+          },
+          error: err => {
+            this.notificationService.error('Erro', 'Erro ao remover funcionário.' + (err.error?.message || ''));
+          },
+        });
+      } else {
+        this.notificationService.info('Cancelado', 'Exclusão cancelada.');
+      }
     });
   }
 

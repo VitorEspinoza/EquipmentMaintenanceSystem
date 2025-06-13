@@ -43,6 +43,7 @@ export class LoginComponent implements OnInit {
     this.authService.login(this.loginForm.value).subscribe({
       next: response => {
         this.notificationService.success('Sucesso', 'Login');
+        localStorage.setItem('email', this.loginForm.value.email);
 
         const roleActions = {
           [Role.EMPLOYEE]: this.employeeActions,

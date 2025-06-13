@@ -73,7 +73,7 @@
           <button mat-icon-button color="accent" (click)="editEmployee(emp)">
             <mat-icon>edit</mat-icon>
           </button>
-          <button mat-icon-button color="warn" (click)="deleteEmployee(emp)">
+          <button *ngIf="emp.email !== loggedEmail" mat-icon-button color="warn" (click)="deleteEmployee(emp)">
             <mat-icon>delete</mat-icon>
           </button>
         </td>
