@@ -89,11 +89,11 @@
         mat-raised-button
         color="primary"
         type="submit"
-        class="py-2"
+        class="py-2 w-40"
         [disabled]="!registerForm.valid"
         form="registerForm"
       >
-        Cadastrar
+        <a [routerLink]="['/client/requests']" class="text-white">Cadastrar</a>
       </button>
     </mat-card-actions>
 

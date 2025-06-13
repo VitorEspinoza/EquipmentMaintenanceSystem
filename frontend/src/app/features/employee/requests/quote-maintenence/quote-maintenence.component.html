@@ -1,13 +1,15 @@
-<mat-form-field class="w-full">
-  <mat-label>Valor do orçamento</mat-label>
-  <input
-    matInput
-    [formControl]="quotePriceControl"
-    mask="separator.2"
-    type="text"
-    thousandSeparator="."
-    prefix="R$"
-    autocomplete="off"
-    placeholder="Valor do orçamento"
-  />
-</mat-form-field>
+<div class="flex flex-col items-center gap-4">
+  <mat-form-field class="w-80" appearance="outline">
+    <mat-label>Valor do orçamento</mat-label>
+    <input
+      matInput
+      [formControl]="quotePriceControl"
+      mask="separator.2"
+      type="text"
+      thousandSeparator="."
+      prefix="R$"
+      autocomplete="off"
+      placeholder="Valor do orçamento"
+    />
+  </mat-form-field>
+</div>
