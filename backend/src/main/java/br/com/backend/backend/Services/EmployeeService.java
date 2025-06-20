@@ -12,6 +12,7 @@ import br.com.backend.backend.Entities.Employee;
 import br.com.backend.backend.Exceptions.Custom.AccountAlreadyExists;
 import br.com.backend.backend.Exceptions.Custom.EmployeeNotFoundException;
 import br.com.backend.backend.Exceptions.Custom.InvalidDeleteException;
+import br.com.backend.backend.Exceptions.Custom.InactiveAccountException;
 import br.com.backend.backend.Filters.EmployeeSpecifications;
 import br.com.backend.backend.Repositories.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
@@ -91,6 +92,7 @@ public class EmployeeService {
             Boolean active,
             Integer excludeEmployeeId
     ) {
+        validateCurrentAccountState();
 
 
         Specification<Employee> spec = Specification.where(EmployeeSpecifications.nameContains(name))
@@ -106,5 +108,11 @@ public class EmployeeService {
 
 
         return new ResultViewModel<List<EmployeeDTO>>(employeesDTOs);
+    }
+
+    private void validateCurrentAccountState() {
+        if(!currentUserService.getCurrentUser().getActive()) {
+            throw new InactiveAccountException("This account is inactive.");
+        }
     }
 }
