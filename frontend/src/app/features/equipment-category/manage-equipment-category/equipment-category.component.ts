@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -8,8 +8,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { NotificationService } from '../../../core/services/notification.service';
 import { DefaultResponse } from '../../../shared/models/DefaultResponse';
-import { EquipmentCategory } from '../../../shared/models/EquipmentCategory';
 import { EquipmentCategoryService } from '../services/equipment-category.service';
+import { DynamicTableComponent } from '../../../shared/components/dynamic-table/dynamic-table.component';
+import { TableAction, TableColumn } from '../../../shared/models/TableColumn';
+import { EquipmentCategory } from '../../../shared/models/EquipmentCategory';
 
 @Component({
   standalone: true,
@@ -22,6 +24,7 @@ import { EquipmentCategoryService } from '../services/equipment-category.service
     MatButtonModule,
     MatListModule,
     MatIconModule,
+    DynamicTableComponent,
   ],
   templateUrl: './equipment-category.component.html',
 })
@@ -37,6 +40,42 @@ export class EquipmentCategoryComponent implements OnInit {
   categoryForm!: FormGroup;
 
   isChecked = false;
+
+  tableColumns = signal<TableColumn[]>([
+    {
+      key: 'name',
+      header: 'Nome da Categoria',
+      type: 'text',
+      slice: { start: 0, end: 30 },
+    },
+    {
+      key: 'actions',
+      header: 'Ações',
+      type: 'actions',
+    },
+  ]);
+  handleAction(event: { tableAction: TableAction<'EDIT' | 'DELETE'>; element: EquipmentCategory }) {
+    const action = event.tableAction.action;
+    if (action === 'EDIT') {
+      this.editCategory(event.element);
+    } else if (action === 'DELETE') {
+      this.deleteCategory(event.element.id);
+    }
+  }
+  getRowActions = (): TableAction<'EDIT' | 'DELETE'>[] => {
+    const editAction: TableAction<'EDIT' | 'DELETE'> = {
+      label: 'Editar',
+      action: 'EDIT',
+    };
+
+    const deleteAction: TableAction<'EDIT' | 'DELETE'> = {
+      label: 'Excluir',
+      action: 'DELETE',
+    };
+
+    const actions = [editAction, deleteAction];
+    return actions;
+  };
 
   ngOnInit(): void {
     this.categoryForm = this.fb.group({
@@ -97,7 +136,7 @@ export class EquipmentCategoryComponent implements OnInit {
         next: (response: DefaultResponse<EquipmentCategory>) => {
           if (response.isSuccess) {
             const createdCategory = response.data;
-            this.notificationService.success('Sucesso', 'Funcionário criado!');
+            this.notificationService.success('Sucesso', 'Categoria criada!');
             this.categories = [...this.categories, createdCategory];
           } else {
             this.notificationService.error('Erro', response.errors.join(', ') || 'Falha ao criar categoria');
