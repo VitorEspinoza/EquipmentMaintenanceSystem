@@ -1,12 +1,11 @@
 package br.com.backend.backend.Services;
 
+import br.com.backend.backend.DTOs.Account.AccountDTO;
 import br.com.backend.backend.DTOs.Auth.AuthRequestDTO;
-import br.com.backend.backend.DTOs.Auth.AuthResponse;
 import br.com.backend.backend.DTOs.Auth.AuthResponseDTO;
 import br.com.backend.backend.Entities.Account;
 import br.com.backend.backend.Security.auth.AuthHelper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
@@ -19,15 +18,15 @@ public class AuthService {
     private final AccountService accountService;
     private final AuthHelper authHelper;
 
-    public AuthResponse login(AuthRequestDTO authRequestDTO) {
+    public AuthResponseDTO login(AuthRequestDTO authRequestDTO) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authRequestDTO.getEmail(), authRequestDTO.getPassword())
         );
 
         Account account = accountService.getByEmail(authRequestDTO.getEmail());
-        return new AuthResponse (
+        return new AuthResponseDTO(
                 authHelper.generateAuthResponse(account),
-                account.getRole()
+                AccountDTO.fromEntity(account)
         );
     }
 }
