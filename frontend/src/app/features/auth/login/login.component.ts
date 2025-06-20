@@ -8,6 +8,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { map } from 'rxjs';
 import { Role } from '../../../core/models/role';
 import { NotificationService } from '../../../core/services/notification.service';
 import { PermissionService } from '../../../core/services/permission.service';
@@ -40,30 +41,30 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit() {
-    this.authService.login(this.loginForm.value).subscribe({
-      next: response => {
-        this.notificationService.success('Sucesso', 'Login');
-        localStorage.setItem('email', this.loginForm.value.email);
+    this.authService
+      .login(this.loginForm.value)
+      .pipe(map(response => response.data))
+      .subscribe({
+        next: account => {
+          const roleActions = {
+            [Role.EMPLOYEE]: this.employeeActions,
+            [Role.CLIENT]: this.clientActions,
+          };
+          const userRole = account.role as keyof typeof Role;
 
-        const roleActions = {
-          [Role.EMPLOYEE]: this.employeeActions,
-          [Role.CLIENT]: this.clientActions,
-        };
-        const userRole = response.data.role as keyof typeof Role;
+          roleActions[userRole]();
 
-        roleActions[userRole]();
-      },
-      error: () => this.notificationService.error('Error', 'Login'),
-    });
+          this.notificationService.success('Login feito com sucesso');
+        },
+        error: () => this.notificationService.error('Erro ao fazer login'),
+      });
   }
 
   employeeActions = () => {
     this.router.navigate(['/employee/requests']);
-    this.permissionService.accountRole.set(Role.EMPLOYEE);
   };
 
   clientActions = () => {
     this.router.navigate(['/client/requests']);
-    this.permissionService.accountRole.set(Role.CLIENT);
   };
 }

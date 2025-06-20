@@ -1,12 +1,13 @@
 import { registerLocaleData } from '@angular/common';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import localePt from '@angular/common/locales/pt';
-import { ApplicationConfig, LOCALE_ID, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, inject, LOCALE_ID, provideAppInitializer, provideZoneChangeDetection } from '@angular/core';
 import { MAT_DATE_FORMATS, provideNativeDateAdapter } from '@angular/material/core';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { provideEnvironmentNgxMask } from 'ngx-mask';
 import { routes } from './app.routes';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
+import { AuthService } from './features/auth/services/auth.service';
 
 export const BR_DATE_FORMATS = {
   parse: {
@@ -27,9 +28,11 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes, withComponentInputBinding()),
     provideHttpClient(withInterceptors([authInterceptor])),
     provideEnvironmentNgxMask(),
-
     { provide: LOCALE_ID, useValue: 'pt-BR' },
     provideNativeDateAdapter(),
     { provide: MAT_DATE_FORMATS, useValue: BR_DATE_FORMATS },
+    provideAppInitializer(() => {
+      inject(AuthService).getAccount().subscribe();
+    }),
   ],
 };

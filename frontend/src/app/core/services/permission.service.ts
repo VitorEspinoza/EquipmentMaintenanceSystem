@@ -1,11 +1,12 @@
-import { computed, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable } from '@angular/core';
+import { AuthService } from '../../features/auth/services/auth.service';
 import { Role } from '../models/role';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PermissionService {
-  accountRole = signal<Role | null>(null);
+  private readonly authService = inject(AuthService);
   items: NavigationItem[] = [
     {
       routeLink: 'client/requests',
@@ -34,13 +35,13 @@ export class PermissionService {
   ];
 
   permissedMenuItems = computed(() => {
-    const role = this.accountRole();
-    return this.items;
-    if (!role) {
-      return [];
-    }
+    const account = this.authService.account();
 
-    // return this.items.filter(item => item.permissedRoles.includes(role));
+    if (!account) return [];
+
+    const role = account.role;
+
+    return this.items.filter(item => item.permissedRoles.includes(role));
   });
 }
 
