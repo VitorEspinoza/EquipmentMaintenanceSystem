@@ -46,8 +46,17 @@
   </form>
 </mat-dialog-content>
 <mat-dialog-actions>
-  <button mat-raised-button type="button" mat-dialog-close>Cancel</button>
-  <button mat-raised-button type="button" [disabled]="!filtersForm.valid" [mat-dialog-close]="filterQueryParams()">
+  <button mat-raised-button type="button" mat-dialog-close>Cancelar</button>
+  <button mat-stroked-button type="button" (click)="clearFilters()" [mat-dialog-close]="cleanFilters">
+    Limpar Filtros
+  </button>
+  <button
+    mat-flat-button
+    type="button"
+    (click)="saveFilters()"
+    [disabled]="!filtersForm.valid"
+    [mat-dialog-close]="filtersFormToParams()"
+  >
     Filtrar
   </button>
 </mat-dialog-actions>

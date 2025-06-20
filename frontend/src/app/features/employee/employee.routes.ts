@@ -11,7 +11,7 @@ export const employeeRoutes: Routes = [
   },
   {
     path: 'employee/manage',
-    loadComponent: () => import('./manage/manage.component').then(m => m.ManageComponent),
+    loadComponent: () => import('./manage/manage-employees.component').then(m => m.ManageEmployeesComponent),
   },
   {
     path: 'employee/requests/:requestId',

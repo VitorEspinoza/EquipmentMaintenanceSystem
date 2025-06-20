@@ -2,6 +2,7 @@ export interface TableColumn {
   key: string;
   header: string;
   type: 'text' | 'date' | 'badge' | 'actions' | 'custom';
+  defaultValue?: string;
   dateFormat?: string;
   headerClass?: string;
   cellClass?: string;

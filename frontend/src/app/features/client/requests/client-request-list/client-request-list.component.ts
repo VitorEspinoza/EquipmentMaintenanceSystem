@@ -80,7 +80,7 @@ export class ClientRequestListComponent {
     if (columnKey === 'translatedState') {
       const stateClassMap: Record<string, string> = {
         [RequestState.OPEN]: 'bg-gray-200',
-        [RequestState.QUOTED]: 'bg-brown-200',
+        [RequestState.QUOTED]: 'bg-orange-900',
         [RequestState.REJECTED]: 'bg-red-200',
         [RequestState.REDIRECTED]: 'bg-purple-200',
         [RequestState.FIXED]: 'bg-blue-200',
@@ -127,26 +127,23 @@ export class ClientRequestListComponent {
     });
   }
 
-  toolbarActions = signal<DataViewAction[]>([
-    {
-      icon: 'filter_list',
+  toolbarActions = computed<DataViewAction[]>(() => {
+    const haveFilters = this.filtersSignal().keys().length > 0;
+    const filterAction = {
+      icon: haveFilters ? 'filter_list' : 'filter_list_off',
       label: 'Adicionar Filtro',
       action: 'filter',
-      color: 'primary',
-    },
-    {
+      color: haveFilters ? 'accent' : 'primary',
+    };
+
+    const addSolicitationAction = {
       icon: 'add',
       label: 'Nova Solicitação',
       action: 'create',
       color: 'primary',
-    },
-    // {
-    //   icon: 'download',
-    //   label: 'Exportar',
-    //   action: 'export',
-    //   color: 'accent',
-    // },
-  ]);
+    };
+    return [filterAction, addSolicitationAction];
+  });
 
   handleToolbarAction(action: DataViewAction) {
     switch (action.action) {

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, ViewChild } from '@angular/core';
+import { Component, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { provideMomentDateAdapter } from '@angular/material-moment-adapter';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -16,14 +16,16 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTable, MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
-import moment from 'moment';
 import { NgxMaskDirective } from 'ngx-mask';
 import { NotificationService } from '../../../core/services/notification.service';
+import { DynamicTableComponent } from '../../../shared/components/dynamic-table/dynamic-table.component';
 import { ConfirmDeleteModalComponent } from '../../../shared/confirm-dialog/confirm-dialog/confirm-dialog.component';
 import { DefaultResponse } from '../../../shared/models/DefaultResponse';
 import { Page } from '../../../shared/models/page';
+import { TableColumn } from '../../../shared/models/TableColumn';
 import { Employee } from '../models/Employee';
 import { EmployeeService } from '../services/employee.service';
+import { TableAction } from './../../../shared/models/TableColumn';
 
 const MATERIAL_MODULES = [
   MatFormFieldModule,
@@ -46,6 +48,7 @@ const FORM_MODULES = [ReactiveFormsModule, FormsModule];
 const COMMON_MODULES = [CommonModule];
 const CORE_MODULES = [RouterModule];
 const NGXCONFIG = [NgxMaskDirective];
+const SMART_COMPONENTS = [DynamicTableComponent];
 
 export const MY_DATE_FORMATS = {
   parse: {
@@ -60,12 +63,19 @@ export const MY_DATE_FORMATS = {
 };
 @Component({
   selector: 'app-crud',
-  imports: [...COMMON_MODULES, ...CORE_MODULES, ...MATERIAL_MODULES, ...FORM_MODULES, ...NGXCONFIG],
+  imports: [
+    ...COMMON_MODULES,
+    ...CORE_MODULES,
+    ...MATERIAL_MODULES,
+    ...FORM_MODULES,
+    ...NGXCONFIG,
+    ...SMART_COMPONENTS,
+  ],
   providers: [provideMomentDateAdapter(MY_DATE_FORMATS)],
-  templateUrl: './manage.component.html',
-  styleUrls: ['./manage.component.css'],
+  templateUrl: './manage-employees.component.html',
+  styleUrls: ['./manage-employees.component.css'],
 })
-export class ManageComponent implements OnInit {
+export class ManageEmployeesComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly employeeService = inject(EmployeeService);
   private readonly notificationService = inject(NotificationService);
@@ -85,6 +95,58 @@ export class ManageComponent implements OnInit {
 
   isChecked = false;
   loggedEmail = localStorage.getItem('email');
+
+  tableColumns = signal<TableColumn[]>([
+    {
+      key: 'name',
+      header: 'Nome',
+      type: 'text',
+      slice: { start: 0, end: 30 },
+    },
+    {
+      key: 'email',
+      header: 'Email',
+      type: 'text',
+    },
+    {
+      key: 'birthDate',
+      header: 'Nascimento',
+      type: 'date',
+      dateFormat: 'dd/MM/yyyy HH:mm',
+    },
+    {
+      key: 'actions',
+      header: 'Ações',
+      type: 'actions',
+    },
+  ]);
+
+  handleAction(event: { tableAction: TableAction<'EDIT' | 'DELETE'>; element: Employee }) {
+    const action = event.tableAction.action;
+    const actionHandler = {
+      EDIT: this.editEmployee,
+      DELETE: this.deleteEmployee,
+    };
+    console.log(actionHandler[action], event.element, 'handler');
+    actionHandler[action](event.element);
+  }
+
+  getRowActions = (element: Employee): TableAction<'EDIT' | 'DELETE'>[] => {
+    const editAction: TableAction<'EDIT' | 'DELETE'> = {
+      label: 'Editar',
+      action: 'EDIT',
+    };
+
+    const deleteAction: TableAction<'EDIT' | 'DELETE'> = {
+      label: 'Excluir',
+      action: 'DELETE',
+    };
+
+    const actions = [editAction];
+
+    if (element.email != this.loggedEmail) actions.push(deleteAction);
+    return actions;
+  };
 
   ngOnInit(): void {
     this.employeeForm = this.fb.group({
@@ -127,16 +189,6 @@ export class ManageComponent implements OnInit {
     if (this.employeeForm.invalid) return;
 
     const emp = this.employeeForm.value;
-
-    const birthDate = this.employeeForm.get('birthDate')?.value;
-
-    if (moment.isMoment(birthDate)) {
-      console.log('Data é um objeto Moment:', birthDate.format('DD/MM/YYYY'));
-    } else if (birthDate instanceof Date) {
-      console.log('Data é um objeto Date:', birthDate);
-    } else {
-      console.error('Tipo de data inválido!');
-    }
 
     if (emp.id) {
       this.employeeService.update(emp).subscribe({
@@ -191,15 +243,15 @@ export class ManageComponent implements OnInit {
     this.form.resetForm();
   }
 
-  editEmployee(emp: Employee): void {
+  editEmployee = (emp: Employee): void => {
     this.selectedEmployee = emp;
-    this.employeeForm.patchValue({ ...emp });
+    this.employeeForm.patchValue(emp);
 
     this.employeeForm.get('password')?.clearValidators();
     this.employeeForm.get('password')?.updateValueAndValidity();
-  }
+  };
 
-  deleteEmployee(emp: Employee): void {
+  deleteEmployee = (emp: Employee): void => {
     const email = localStorage.getItem('email');
     if (emp.email === email) {
       this.notificationService.error('Erro', 'Você não pode se remover.');
@@ -233,7 +285,7 @@ export class ManageComponent implements OnInit {
         this.notificationService.info('Cancelado', 'Exclusão cancelada.');
       }
     });
-  }
+  };
 
   formatDate(event: any) {
     let input = event.target.value.replace(/\D/g, '');

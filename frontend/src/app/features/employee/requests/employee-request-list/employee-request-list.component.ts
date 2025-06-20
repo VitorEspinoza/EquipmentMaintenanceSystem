@@ -10,6 +10,7 @@ import { DataListViewComponent } from '../../../../shared/components/data-list-v
 import { DynamicTableComponent } from '../../../../shared/components/dynamic-table/dynamic-table.component';
 import { DataViewAction, TableAction, TableColumn } from '../../../../shared/models/TableColumn';
 import { FilterRequestsModalComponent } from '../../../requests/shared/modals/filter-requests-modal/filter-requests-modal.component';
+import { FiltersFormValue } from '../../../requests/shared/models/FiltersFormValue';
 import { MaintenanceAction } from '../../../requests/shared/models/maintenanceActionComponent';
 import { MaintenanceRequest } from '../../../requests/shared/models/maintenanceRequest';
 import { EmployeeRequestService } from '../../services/employee-request.service';
@@ -43,14 +44,17 @@ export class EmployeeRequestListComponent {
     { initialValue: [] }
   );
 
-  toolbarActions = signal<DataViewAction[]>([
-    {
-      icon: 'filter_list',
+  toolbarActions = computed<DataViewAction[]>(() => {
+    const haveFilters = this.filtersSignal().keys().length > 0;
+    const filterAction = {
+      icon: haveFilters ? 'filter_list' : 'filter_list_off',
       label: 'Adicionar Filtro',
       action: 'filter',
-      color: 'primary',
-    },
-  ]);
+      color: haveFilters ? 'accent' : 'primary',
+    };
+
+    return [filterAction];
+  });
 
   handleToolbarAction(action: DataViewAction) {
     switch (action.action) {
@@ -59,41 +63,6 @@ export class EmployeeRequestListComponent {
         break;
     }
   }
-  tableColumns = signal<TableColumn[]>([
-    {
-      key: 'id',
-      header: 'ID',
-      type: 'text',
-    },
-    {
-      key: 'client.name',
-      header: 'Cliente',
-      type: 'text',
-      slice: { start: 0, end: 30 },
-    },
-    {
-      key: 'equipmentDescription',
-      header: 'Equipamento',
-      type: 'text',
-      slice: { start: 0, end: 30 },
-    },
-    {
-      key: 'createdAt',
-      header: 'Data',
-      type: 'date',
-      dateFormat: 'dd/MM/yyyy HH:mm',
-    },
-    {
-      key: 'translatedState',
-      header: 'Estado',
-      type: 'badge',
-    },
-    {
-      key: 'actions',
-      header: 'Ação',
-      type: 'actions',
-    },
-  ]);
 
   getStatusClass(status: RequestState): string {
     switch (status) {
@@ -136,6 +105,42 @@ export class EmployeeRequestListComponent {
     return '';
   };
 
+  tableColumns = signal<TableColumn[]>([
+    {
+      key: 'id',
+      header: 'ID',
+      type: 'text',
+    },
+    {
+      key: 'client.name',
+      header: 'Cliente',
+      type: 'text',
+      slice: { start: 0, end: 30 },
+    },
+    {
+      key: 'equipmentDescription',
+      header: 'Equipamento',
+      type: 'text',
+      slice: { start: 0, end: 30 },
+    },
+    {
+      key: 'createdAt',
+      header: 'Data',
+      type: 'date',
+      dateFormat: 'dd/MM/yyyy HH:mm',
+    },
+    {
+      key: 'translatedState',
+      header: 'Estado',
+      type: 'badge',
+    },
+    {
+      key: 'actions',
+      header: 'Ação',
+      type: 'actions',
+    },
+  ]);
+
   handleAction(event: { tableAction: TableAction<MaintenanceAction | any>; element: MaintenanceRequest }) {
     const action = event.tableAction.action;
     this.requestService.executeAction(event.element.id.toString(), action).subscribe({
@@ -172,11 +177,19 @@ export class EmployeeRequestListComponent {
   };
 
   openFilterModal(): void {
+    const openStateKey =
+      Object.keys(RequestState).find(k => RequestState[k as keyof typeof RequestState] === RequestState.OPEN) || null;
+
+    const dialogData: { filters: Partial<FiltersFormValue> } = {
+      filters: { dateFilter: 'ALL', state: openStateKey },
+    };
+
     this.dialog
       .open(FilterRequestsModalComponent, {
         maxWidth: '90vw',
         minWidth: '400px',
         maxHeight: '90vh',
+        data: dialogData,
       })
       .afterClosed()
       .subscribe(params => {

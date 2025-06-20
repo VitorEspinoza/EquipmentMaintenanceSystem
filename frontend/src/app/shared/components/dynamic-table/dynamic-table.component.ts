@@ -33,7 +33,6 @@ export class DynamicTableComponent<TAction = any, TData = any> {
     const badgeResolver = this.badgeClassResolver();
     const actionResolver = this.actionsResolver();
     return data.map(item => {
-      // console.log(actionResolver?.(item), 'dynamic table');
       return {
         original: item,
         processed: this.processRowData(item, cols),
@@ -63,7 +62,7 @@ export class DynamicTableComponent<TAction = any, TData = any> {
           if (column.slice && typeof value === 'string') {
             value = value.slice(column.slice.start, column.slice.end);
           }
-          processed[key] = value || '';
+          processed[key] = value || column.defaultValue || '';
           break;
 
         default:

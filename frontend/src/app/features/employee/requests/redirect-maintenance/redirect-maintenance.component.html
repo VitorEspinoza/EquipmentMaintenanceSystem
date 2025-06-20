@@ -1,3 +1,4 @@
+<!-- O mat-form-field agora contém o input e o autocomplete configurados da maneira correta -->
 <mat-form-field appearance="outline" class="w-full pt-2">
   <mat-label>Selecione o Funcionário</mat-label>
 
@@ -5,7 +6,7 @@
     matInput
     autocomplete="off"
     placeholder="Pesquise por nome ou e-mail"
-    [formControl]="employeeSearchControl"
+    [formControl]="employeeControl"
     [matAutocomplete]="auto"
   />
 
@@ -14,14 +15,13 @@
   }
 
   @if (employeeControl.hasError('required') && employeeControl.touched) {
-    <mat-error>Funcionário é obrigatório</mat-error>
+    <mat-error>Funcionário é obrigatório.</mat-error>
+  }
+  @if (employeeControl.hasError('requireSelection') && !employeeControl.hasError('required')) {
+    <mat-error>Por favor, selecione um funcionário da lista.</mat-error>
   }
 
-  @if (hasSearchError()) {
-    <mat-error>Funcionário não encontrado</mat-error>
-  }
-
-  <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onEmployeeSelected($event)" autoActiveFirstOption>
+  <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption [displayWith]="displayFn">
     @for (employee of filteredEmployees(); track employee.id) {
       <mat-option [value]="employee" class="employee-option">
         <div class="employee-info">
@@ -30,7 +30,7 @@
         </div>
       </mat-option>
     } @empty {
-      @if (!isLoading() && searchTerm().length >= 2 && !employeeControl.value) {
+      @if (!isLoading() && searchTerm().length >= 2) {
         <mat-option disabled>
           <div class="no-results">Nenhum funcionário encontrado</div>
         </mat-option>

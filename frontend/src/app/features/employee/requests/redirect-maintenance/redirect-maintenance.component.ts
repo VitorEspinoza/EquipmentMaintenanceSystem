@@ -1,19 +1,41 @@
-import { Component, computed, DestroyRef, effect, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
-
+import {
+  AbstractControl,
+  FormControl,
+  FormsModule,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validators,
+} from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { catchError, debounceTime, distinctUntilChanged, finalize, map, of, startWith } from 'rxjs';
 import { CrudService } from '../../../../core/services/crud.service';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { Employee } from '../../../../shared/models/employee';
 import { FormState, MaintenanceActionComponent } from '../../../requests/shared/models/maintenanceActionComponent';
 
+export function requireObjectSelection(control: AbstractControl): ValidationErrors | null {
+  const value = control.value;
+  if (value && typeof value === 'string') {
+    return { requireSelection: true };
+  }
+  return null;
+}
+
 @Component({
   selector: 'app-redirect-maintenance',
-  imports: [FormsModule, MatFormFieldModule, MatInputModule, MatAutocompleteModule, ReactiveFormsModule],
+  imports: [
+    FormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatAutocompleteModule,
+    ReactiveFormsModule,
+    MatProgressSpinnerModule,
+  ],
   templateUrl: './redirect-maintenance.component.html',
   styleUrl: './redirect-maintenance.component.css',
 })
@@ -22,97 +44,74 @@ export class RedirectMaintenanceComponent implements MaintenanceActionComponent,
   private readonly crudService = inject(CrudService);
   private readonly destroyRef = inject(DestroyRef);
 
-  readonly employeeSearchControl = new FormControl<string>('', {
-    nonNullable: true,
-    validators: [],
-  });
-
-  readonly employeeControl = new FormControl<Employee | null>(null, [Validators.required]);
+  readonly employeeControl = new FormControl<string | Employee | null>('', [
+    Validators.required,
+    requireObjectSelection,
+  ]);
 
   private readonly employees = signal<Employee[]>([]);
-  isLoading = signal<boolean>(false);
-  private readonly searchError = signal<boolean>(false);
+  readonly isLoading = signal<boolean>(false);
+
+  readonly employeeValue = toSignal(this.employeeControl.valueChanges, { initialValue: this.employeeControl.value });
 
   readonly searchTerm = toSignal(
-    this.employeeSearchControl.valueChanges.pipe(
+    this.employeeControl.valueChanges.pipe(
       startWith(''),
       debounceTime(300),
-      distinctUntilChanged(),
-      map(term => (term || '').toString().trim())
+      map(value => (typeof value === 'string' ? value : (value?.name ?? ''))),
+      distinctUntilChanged()
     ),
     { initialValue: '' }
   );
 
   readonly filteredEmployees = computed(() => {
     const search = this.searchTerm().toLowerCase();
+
     const allEmployees = this.employees();
-
-    if (!search || search.length < 1) {
-      return allEmployees;
+    if (!search) {
+      return allEmployees.slice(0, 20);
     }
-
-    const filtered = allEmployees.filter(employee => {
-      const name = employee?.name?.toLowerCase() || '';
-      const email = employee?.email?.toLowerCase() || '';
-
-      return name.includes(search) || email.includes(search);
-    });
-
-    return filtered.slice(0, 20);
+    return allEmployees
+      .filter(employee => {
+        const name = employee?.name?.toLowerCase() || '';
+        const email = employee?.email?.toLowerCase() || '';
+        return name.includes(search) || email.includes(search);
+      })
+      .slice(0, 20);
   });
 
-  readonly selectedEmployee = toSignal(this.employeeControl.valueChanges.pipe(startWith(this.employeeControl.value)), {
-    initialValue: this.employeeControl.value,
+  readonly selectedEmployee = computed(() => {
+    const value = this.employeeValue();
+    return typeof value === 'object' && value !== null ? value : null;
   });
+
+  readonly isFormValid = toSignal(
+    this.employeeControl.statusChanges.pipe(
+      startWith(this.employeeControl.status),
+      map(() => this.employeeControl.valid)
+    ),
+    { initialValue: this.employeeControl.valid }
+  );
 
   readonly formState = computed<FormState<number | null>>(() => {
-    const selectedEmployee = this.selectedEmployee();
+    const employee = this.selectedEmployee();
 
     return {
-      formData: selectedEmployee?.id ?? null,
-      isValid: this.employeeControl.valid && !this.searchError(),
+      formData: employee ? employee.id : null,
+      isValid: this.isFormValid(),
     };
   });
 
-  readonly hasSearchError = computed(() => this.searchError());
-
-  constructor() {
-    effect(() => {
-      const searchTerm = this.searchTerm().toLowerCase();
-      const selectedEmployee = this.employeeControl.value;
-      const filteredResults = this.filteredEmployees();
-
-      const showError = searchTerm.length >= 2 && !selectedEmployee && filteredResults.length === 0;
-
-      this.searchError.set(showError);
-    });
-  }
-
   ngOnInit(): void {
     this.loadEmployees();
-
-    this.employeeSearchControl.valueChanges
-      .pipe(
-        startWith(''),
-        debounceTime(300),
-        distinctUntilChanged(),
-        map(term => (term || '').toString().trim())
-      )
-      .subscribe(term => {
-        console.log('Search term changed:', term);
-      });
   }
 
-  onEmployeeSelected(event: MatAutocompleteSelectedEvent): void {
-    const selectedEmployee = event.option.value as Employee;
-    this.employeeControl.setValue(selectedEmployee);
-    this.employeeSearchControl.setValue('');
-    this.searchError.set(false);
+  displayFn(employee: Employee): string {
+    return employee && employee.name ? employee.name : '';
   }
 
   private loadEmployees(): void {
     this.isLoading.set(true);
-
     this.crudService
       .get<{ data: { content: Employee[] } }>('employees/all?excludeSelf=true')
       .pipe(

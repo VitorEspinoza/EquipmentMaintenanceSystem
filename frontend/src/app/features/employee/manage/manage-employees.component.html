@@ -46,49 +46,23 @@
 
   <div class="mt-8">
     <h3 class="text-lg font-semibold mb-2">Lista de Funcionários</h3>
-    <div class="flex items-center justify-between mb-4">
-      <mat-slide-toggle [(ngModel)]="isChecked" (change)="onToggleChange()" labelPosition="before">
-        <b>Inativos</b>
-      </mat-slide-toggle>
-    </div>
-    <table mat-table [dataSource]="employees" class="w-full mat-elevation-z2">
-      <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef>Nome</th>
-        <td mat-cell *matCellDef="let emp">{{ emp.name }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="email">
-        <th mat-header-cell *matHeaderCellDef>E-mail</th>
-        <td mat-cell *matCellDef="let emp">{{ emp.email }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="birthDate">
-        <th mat-header-cell *matHeaderCellDef>Nascimento</th>
-        <td mat-cell *matCellDef="let emp">{{ emp.birthDate | date }}</td>
-      </ng-container>
-
-      <ng-container matColumnDef="actions">
-        <th mat-header-cell *matHeaderCellDef>Ações</th>
-        <td mat-cell *matCellDef="let emp">
-          <button mat-icon-button color="accent" (click)="editEmployee(emp)">
-            <mat-icon>edit</mat-icon>
-          </button>
-          <button *ngIf="emp.email !== loggedEmail" mat-icon-button color="warn" (click)="deleteEmployee(emp)">
-            <mat-icon>delete</mat-icon>
-          </button>
-        </td>
-      </ng-container>
-
-      <tr mat-header-row *matHeaderRowDef="['name', 'email', 'birthDate', 'actions']"></tr>
-      <tr mat-row *matRowDef="let row; columns: ['name', 'email', 'birthDate', 'actions']"></tr>
-    </table>
-    <mat-paginator
-      [length]="totalElements"
-      [pageSize]="10"
-      [pageSizeOptions]="[10, 25]"
-      (page)="onPageChange($event)"
-      aria-label="Select page"
-    >
-    </mat-paginator>
+    <app-dynamic-table
+      [dataSource]="employees"
+      [columns]="tableColumns()"
+      [actionsResolver]="getRowActions"
+      (actionClicked)="handleAction($event)"
+    />
+    <!-- <mat-slide-toggle [(ngModel)]="isChecked" (change)="onToggleChange()" labelPosition="before">
+      <b>Inativos</b>
+    </mat-slide-toggle> -->
   </div>
+
+  <!-- <mat-paginator
+    [length]="totalElements"
+    [pageSize]="10"
+    [pageSizeOptions]="[10, 25]"
+    (page)="onPageChange($event)"
+    aria-label="Select page"
+  >
+  </mat-paginator> -->
 </div>
