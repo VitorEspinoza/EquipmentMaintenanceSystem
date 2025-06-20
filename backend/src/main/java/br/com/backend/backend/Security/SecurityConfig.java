@@ -40,7 +40,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/v1/clients").permitAll()
                         .requestMatchers("/api/v1/client/maintenance-request/**").hasRole("CLIENT")
                         .requestMatchers("/api/v1/employees/**").hasRole("EMPLOYEE")
-                        .requestMatchers("/api/v1/maintenance-request/**").hasRole("EMPLOYEE")
+                        .requestMatchers("/api/v1/employee/maintenance-request/**").hasRole("EMPLOYEE")
                         .requestMatchers(HttpMethod.GET, "/api/v1/categories").hasAnyRole("CLIENT", "EMPLOYEE")
                         .requestMatchers(HttpMethod.GET, "/api/v1/categories/{id}").hasRole("EMPLOYEE")
                         .requestMatchers(HttpMethod.POST, "/api/v1/categories/**").hasRole("EMPLOYEE")
