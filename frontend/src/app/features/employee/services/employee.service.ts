@@ -3,7 +3,6 @@ import { inject, Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { CrudService } from '../../../core/services/crud.service';
 import { DefaultResponse } from '../../../shared/models/DefaultResponse';
-import { Page } from '../../../shared/models/page';
 import { Employee } from '../models/Employee';
 
 @Injectable({
@@ -13,7 +12,7 @@ export class EmployeeService {
   private crudService = inject(CrudService);
   employeePrefix = 'employees';
 
-  getAll(page: number, size: number, isChecked: boolean): Observable<DefaultResponse<Page<Employee>>> {
+  getAll(page: number, size: number, isChecked: boolean): Observable<DefaultResponse<Employee[]>> {
     const params = new HttpParams()
       .set('pageNumber', page.toString())
       .set('pageSize', size.toString())
@@ -22,7 +21,7 @@ export class EmployeeService {
     const queryString = params.toString();
     const endpoint = `${this.employeePrefix}/all?${queryString}`;
 
-    return this.crudService.get<DefaultResponse<Page<Employee>>>(endpoint).pipe(map(response => response));
+    return this.crudService.get<DefaultResponse<Employee[]>>(endpoint);
   }
 
   create(employee: Employee): Observable<DefaultResponse<Employee>> {

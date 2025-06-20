@@ -15,6 +15,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { catchError, debounceTime, distinctUntilChanged, finalize, map, of, startWith } from 'rxjs';
 import { CrudService } from '../../../../core/services/crud.service';
 import { NotificationService } from '../../../../core/services/notification.service';
+import { DefaultResponse } from '../../../../shared/models/DefaultResponse';
 import { Employee } from '../../../../shared/models/employee';
 import { FormState, MaintenanceActionComponent } from '../../../requests/shared/models/maintenanceActionComponent';
 
@@ -113,9 +114,9 @@ export class RedirectMaintenanceComponent implements MaintenanceActionComponent,
   private loadEmployees(): void {
     this.isLoading.set(true);
     this.crudService
-      .get<{ data: { content: Employee[] } }>('employees/all?excludeSelf=true')
+      .get<DefaultResponse<Employee[]>>('employees/all?excludeSelf=true')
       .pipe(
-        map(response => response.data.content),
+        map(response => response.data),
         catchError(() => {
           this.notificationService.error('Não foi possível carregar os funcionários');
           return of([]);
@@ -124,6 +125,7 @@ export class RedirectMaintenanceComponent implements MaintenanceActionComponent,
         takeUntilDestroyed(this.destroyRef)
       )
       .subscribe(employees => {
+        if (employees.length == 0) this.notificationService.warning('Não existem funcionários para redirecionar');
         this.employees.set(employees);
       });
   }

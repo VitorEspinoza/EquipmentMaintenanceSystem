@@ -11,17 +11,15 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { MatPaginator, MatPaginatorModule, PageEvent } from '@angular/material/paginator'; // Added MatPaginatorModule
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatTable, MatTableModule } from '@angular/material/table';
+import { MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
 import { NgxMaskDirective } from 'ngx-mask';
 import { NotificationService } from '../../../core/services/notification.service';
 import { DynamicTableComponent } from '../../../shared/components/dynamic-table/dynamic-table.component';
 import { ConfirmDeleteModalComponent } from '../../../shared/confirm-dialog/confirm-dialog/confirm-dialog.component';
 import { DefaultResponse } from '../../../shared/models/DefaultResponse';
-import { Page } from '../../../shared/models/page';
 import { TableColumn } from '../../../shared/models/TableColumn';
 import { Employee } from '../models/Employee';
 import { EmployeeService } from '../services/employee.service';
@@ -36,11 +34,9 @@ const MATERIAL_MODULES = [
   MatOptionModule,
   MatSelectModule,
   MatAutocompleteModule,
-  MatTable,
   MatTableModule,
   MatDatepickerModule,
   MatNativeDateModule,
-  MatPaginatorModule,
   MatSlideToggleModule,
   MatDialogModule,
 ];
@@ -80,18 +76,12 @@ export class ManageEmployeesComponent implements OnInit {
   private readonly employeeService = inject(EmployeeService);
   private readonly notificationService = inject(NotificationService);
   private readonly dialog = inject(MatDialog);
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild('form') form: any;
 
   employees: Employee[] = [];
   selectedEmployee: Employee | null = null;
 
   employeeForm!: FormGroup;
-
-  // MatPaginator properties
-  totalElements = 0;
-  pageIndex = 0;
-  pageSize = 10;
 
   isChecked = false;
   loggedEmail = localStorage.getItem('email');
@@ -127,7 +117,6 @@ export class ManageEmployeesComponent implements OnInit {
       EDIT: this.editEmployee,
       DELETE: this.deleteEmployee,
     };
-    console.log(actionHandler[action], event.element, 'handler');
     actionHandler[action](event.element);
   }
 
@@ -161,19 +150,11 @@ export class ManageEmployeesComponent implements OnInit {
     this.loadEmployees();
   }
 
-  onPageChange(event: PageEvent): void {
-    this.pageIndex = event.pageIndex;
-    this.pageSize = event.pageSize;
-    this.loadEmployees(this.pageIndex, this.pageSize);
-  }
-
   loadEmployees(pageIndex = 0, pageSize = 10): void {
     this.employeeService.getAll(pageIndex, pageSize, !this.isChecked).subscribe({
-      next: (response: DefaultResponse<Page<Employee>>) => {
-        console.log('response:', response);
+      next: (response: DefaultResponse<Employee[]>) => {
         if (response.isSuccess) {
-          this.employees = response.data.content;
-          this.totalElements = response.data.totalElements;
+          this.employees = response.data;
         } else {
           this.notificationService.error('Erro', response.errors.join(', ') || 'Falha ao carregar funcionários');
         }

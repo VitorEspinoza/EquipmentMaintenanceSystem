@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { MatSnackBar, MatSnackBarConfig } from '@angular/material/snack-bar';
-import { NotificationConfig } from '../interfaces/notificationConfig';
 import { NotificationComponent } from '../components/notification/notification.component';
+import { NotificationConfig } from '../interfaces/notificationConfig';
 
 type NotificationType = 'success' | 'info' | 'error' | 'warning';
 
@@ -17,10 +17,10 @@ export class NotificationService {
   private readonly snackBar = inject(MatSnackBar);
 
   private readonly defaults: Record<NotificationType, NotificationDefaults> = {
-    success: { duration: 3000, title: 'Success' },
-    info: { duration: 3000, title: 'Info' },
-    error: { duration: 3000, title: 'Error' },
-    warning: { duration: 3000, title: 'Warning' },
+    success: { duration: 3000, title: 'Sucesso' },
+    info: { duration: 3000, title: 'Informação' },
+    error: { duration: 3000, title: 'Ocorreu um erro' },
+    warning: { duration: 3000, title: 'Atenção' },
   };
 
   private show(config: NotificationConfig) {
