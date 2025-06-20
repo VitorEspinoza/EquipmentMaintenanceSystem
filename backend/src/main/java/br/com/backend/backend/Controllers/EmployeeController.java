@@ -41,7 +41,7 @@ public class EmployeeController {
             @RequestParam(name = "excludeSelf", required = false, defaultValue = "false") Boolean excludeSelf
             
     ) {
-        var excludeEmployeeId = excludeSelf == null ? null : currentUserService.getUserEntityId();
+        var excludeEmployeeId = excludeSelf ? currentUserService.getUserEntityId() : null;
         var employees = employeeService.getAll(name, email, active, excludeEmployeeId);
         return ResponseEntity.ok().body(employees);
     }
@@ -53,6 +53,9 @@ public class EmployeeController {
 
     @DeleteMapping("/{idEmployee}")
     public ResponseEntity<ResultViewModel<Void>> logicalDelete(@PathVariable Integer idEmployee) {
+        if(currentUserService.getUserEntityId().equals(idEmployee)) {
+            return ResponseEntity.badRequest().build();
+        }
         employeeService.logicalDelete(idEmployee);
         return ResponseEntity.ok().build();
     }
