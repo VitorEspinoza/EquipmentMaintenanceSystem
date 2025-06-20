@@ -1,9 +1,10 @@
 package br.com.backend.backend.Services;
 
+import br.com.backend.backend.DTOs.Account.AccountDTO;
 import br.com.backend.backend.DTOs.Auth.AuthRequestDTO;
-import br.com.backend.backend.DTOs.Auth.AuthResponse;
 import br.com.backend.backend.DTOs.Auth.AuthResponseDTO;
 import br.com.backend.backend.Entities.Account;
+import br.com.backend.backend.Exceptions.Custom.InactiveAccountException;
 import br.com.backend.backend.Security.auth.AuthHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseCookie;
