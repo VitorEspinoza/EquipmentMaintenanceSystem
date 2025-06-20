@@ -26,4 +26,8 @@ export const employeeRoutes: Routes = [
       },
     ],
   },
+  {
+    path: 'employee/manage',
+    loadComponent: () => import('./manage/manage.component').then(m => m.ManageComponent),
+  },
 ];
