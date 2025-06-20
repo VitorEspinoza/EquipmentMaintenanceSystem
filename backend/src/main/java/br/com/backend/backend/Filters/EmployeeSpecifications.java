@@ -12,13 +12,18 @@ public class EmployeeSpecifications {
     public static Specification<Employee> emailContains(String email) {
         return (root, query, cb) -> email == null ? null : cb.like(cb.lower(root.get("account").get("email")), "%" + email.toLowerCase() + "%");
     }
-
-    public static Specification<Employee> hasRole(String role) {
-        return (root, query, cb) -> role == null ? null : cb.equal(cb.lower(root.get("account").get("role")), role.toLowerCase());
-    }
-
+    
     public static Specification<Employee> isActive(Boolean active) {
         return (root, query, cb) -> active == null ? null : cb.equal(root.get("account").get("active"), active);
+    }
+
+    public static Specification<Employee> excludeEmployeeId(Integer employeeId) {
+        return (root, query, cb) -> {
+            if (employeeId == null) {
+                return cb.conjunction();
+            }
+            return cb.notEqual(root.get("id"), employeeId);
+        };
     }
 }
 

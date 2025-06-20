@@ -85,38 +85,26 @@ public class EmployeeService {
     }
 
 
-    public ResultViewModel<PageDTO<EmployeeDTO>> getAll(
-            Integer pageNumber,
-            Integer pageSize,
-            String orderBy,
-            Sort.Direction sort,
+    public ResultViewModel<List<EmployeeDTO>> getAll(
             String name,
             String email,
-            String role,
-            Boolean active
+            Boolean active,
+            Integer excludeEmployeeId
     ) {
-        Sort sortObj = (orderBy != null) ? Sort.by(sort, orderBy) : Sort.unsorted();
-        Pageable pageable = PageRequest.of(pageNumber, pageSize, sortObj);
+
 
         Specification<Employee> spec = Specification.where(EmployeeSpecifications.nameContains(name))
                 .and(EmployeeSpecifications.emailContains(email))
-                .and(EmployeeSpecifications.hasRole(role))
-                .and(EmployeeSpecifications.isActive(active));
+                .and(EmployeeSpecifications.isActive(active))
+                .and(EmployeeSpecifications.excludeEmployeeId(excludeEmployeeId));
 
-        Page<Employee> page = employeeRepository.findAll(spec, pageable);
+        List<Employee> employees = employeeRepository.findAll(spec);
 
-        // Mapeamento para DTO
-        List<EmployeeDTO> content = page.getContent().stream()
+        List<EmployeeDTO> employeesDTOs = employees.stream()
                 .map(EmployeeDTO::fromEntity)
                 .toList();
 
-        PageDTO<EmployeeDTO> pageDTO = new PageDTO<>();
-        pageDTO.setTotalElements(page.getTotalElements());
-        pageDTO.setTotalPages(page.getTotalPages());
-        pageDTO.setPage(page.getNumber());
-        pageDTO.setSize(page.getSize());
-        pageDTO.setContent(content);
 
-        return new ResultViewModel<>(pageDTO);
+        return new ResultViewModel<List<EmployeeDTO>>(employeesDTOs);
     }
 }

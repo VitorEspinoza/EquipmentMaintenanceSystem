@@ -5,6 +5,7 @@ import br.com.backend.backend.DTOs.Employee.EmployeeDTO;
 import br.com.backend.backend.DTOs.Employee.UpdateEmployeeDTO;
 import br.com.backend.backend.DTOs.Page.PageDTO;
 import br.com.backend.backend.DTOs.ResultViewModel;
+import br.com.backend.backend.Services.CurrentUserService;
 import br.com.backend.backend.Services.EmployeeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -12,12 +13,15 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/employees")
 public class EmployeeController {
 
     private final EmployeeService employeeService;
+    private final CurrentUserService currentUserService;
 
     @PostMapping("/register")
     public ResponseEntity<ResultViewModel<EmployeeDTO>> create(@Valid @RequestBody CreateEmployeeDTO dto) {
@@ -30,17 +34,16 @@ public class EmployeeController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<ResultViewModel<PageDTO<EmployeeDTO>>> getAll(
-            @RequestParam(name = "pageNumber", required = false, defaultValue = "0") Integer pageNumber,
-            @RequestParam(name = "pageSize", required = false, defaultValue = "30") Integer pageSize,
-            @RequestParam(name = "orderBy", required = false) String orderBy,
-            @RequestParam(name = "sort", required = false, defaultValue = "DESC") Sort.Direction sort,
+    public ResponseEntity<ResultViewModel<List<EmployeeDTO>>> getAll(
             @RequestParam(name = "name", required = false) String name,
             @RequestParam(name = "email", required = false) String email,
-            @RequestParam(name = "role", required = false, defaultValue = "EMPLOYEE") String role,
-            @RequestParam(name = "active", required = false,defaultValue = "true") Boolean active
+            @RequestParam(name = "active", required = false, defaultValue = "true") Boolean active,
+            @RequestParam(name = "excludeSelf", required = false, defaultValue = "false") Boolean excludeSelf
+            
     ) {
-        return ResponseEntity.ok().body(employeeService.getAll(pageNumber,pageSize, orderBy, sort, name, email, role, active));
+        var excludeEmployeeId = excludeSelf == null ? null : currentUserService.getUserEntityId();
+        var employees = employeeService.getAll(name, email, active, excludeEmployeeId);
+        return ResponseEntity.ok().body(employees);
     }
 
     @PutMapping("/{idEmployee}")
