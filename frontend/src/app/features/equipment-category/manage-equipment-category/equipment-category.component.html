@@ -7,7 +7,7 @@
   </button>
 
   <!-- Formulário de categoria -->
-  <form #form="ngForm" [formGroup]="categoryForm" (ngSub.mit)="saveCategory()" class="space-y-4">
+  <form #form="ngForm" [formGroup]="categoryForm" (ngSubmit)="saveCategory()" class="space-y-4">
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>Nome da categoria</mat-label>
       <input matInput placeholder="e.g., Laptop" formControlName="name" />

@@ -136,7 +136,7 @@ export class EquipmentCategoryComponent implements OnInit {
         next: (response: DefaultResponse<EquipmentCategory>) => {
           if (response.isSuccess) {
             const createdCategory = response.data;
-            this.notificationService.success('Sucesso', 'Funcionário criado!');
+            this.notificationService.success('Sucesso', 'Categoria criada!');
             this.categories = [...this.categories, createdCategory];
           } else {
             this.notificationService.error('Erro', response.errors.join(', ') || 'Falha ao criar categoria');
