@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, input, output } from '@angular/core';
+import { Component, inject, input, OnInit, output } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
+import { NavigationItem, PermissionService } from '../../../core/services/permission.service';
 
 @Component({
   selector: 'app-sidenav',
@@ -9,37 +10,15 @@ import { RouterModule } from '@angular/router';
   templateUrl: './sidenav.component.html',
   styleUrl: './sidenav.component.css',
 })
-export class SidenavComponent {
+export class SidenavComponent implements OnInit {
   isSidebarCollapsed = input.required<boolean>();
   changeIsSidebarCollapsed = output<boolean>();
+  private readonly permissionService = inject(PermissionService);
 
-  items = [
-    {
-      routeLink: 'client/solicitations',
-      icon: 'table_view',
-      label: 'Solicitações do Cliente',
-    },
-    {
-      routeLink: 'employee',
-      icon: 'home',
-      label: 'Home do Funcionário',
-    },
-    {
-      routeLink: 'employee/solicitations',
-      icon: 'table_view',
-      label: 'Solicitações do Funcionário',
-    },
-    {
-      routeLink: 'employee/equipment-category',
-      icon: 'sell',
-      label: 'Categorias de Equipamento',
-    },
-    {
-      routeLink: 'employee/manage',
-      icon: 'badge',
-      label: 'Funcionários',
-    },
-  ];
+  items!: NavigationItem[];
+  ngOnInit(): void {
+    this.items = this.permissionService.permissedMenuItems();
+  }
 
   toggleCollapse(): void {
     this.changeIsSidebarCollapsed.emit(!this.isSidebarCollapsed());

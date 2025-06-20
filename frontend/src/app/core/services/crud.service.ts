@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
@@ -11,8 +11,9 @@ export class CrudService {
 
   constructor(private http: HttpClient) {}
 
-  get<T>(endpoint: string, apiUrl: string = this.baseUrl): Observable<T> {
-    return this.http.get<T>(`${apiUrl}${endpoint}`);
+  get<T>(endpoint: string, params?: HttpParams, apiUrl: string = this.baseUrl): Observable<T> {
+    const options = params ? { params } : {};
+    return this.http.get<T>(`${apiUrl}${endpoint}`, options);
   }
 
   getById<T>(endpoint: string, id: number | string): Observable<T> {

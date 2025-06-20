@@ -7,7 +7,6 @@ import {
   FormsModule,
   ReactiveFormsModule,
   ValidationErrors,
-  ValidatorFn,
   Validators,
 } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -20,7 +19,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { Router, RouterModule } from '@angular/router';
 import { NgxMaskDirective } from 'ngx-mask';
-import { catchError, map, Observable, of, startWith, switchMap } from 'rxjs';
+import { catchError, of, switchMap } from 'rxjs';
 import { AddressService } from '../../../shared/services/address.service';
 import { City } from '../models/city';
 import { State } from '../models/state';
@@ -55,8 +54,6 @@ export class RegisterComponent implements OnInit {
 
   cities: City[] = [];
   states: State[] = [];
-  filteredStates: Observable<State[]> | undefined;
-  filteredCities: Observable<City[]> | undefined;
 
   registerForm!: FormGroup;
 
@@ -72,27 +69,22 @@ export class RegisterComponent implements OnInit {
     return isValidCity ? null : { invalidCity: true };
   };
 
-  ngOnInit(): void {
-    this.registerForm = this.fb.group(
-      {
-        password: ['', [Validators.required]],
-        confirmPassword: ['', [Validators.required]],
-        cpf: ['', [Validators.required, Validators.pattern(/^.{11}$/)]],
-        name: ['', [Validators.required]],
-        email: ['', [Validators.required, Validators.email]],
-        zipcode: ['', [Validators.required, Validators.pattern(/^.{8}$/)]],
-        phone: ['', [Validators.required, Validators.pattern(/^.{10,11}$/)]],
-        street: ['', [Validators.required]],
-        number: ['', [Validators.required, Validators.pattern('^[0-9]{1,6}$')]],
-        neighbourhood: ['', [Validators.required]],
-        city: ['', [Validators.required, this.cityValidator]],
-        state: ['', [Validators.required, this.stateValidator]],
-        complement: [''],
-      },
-      { validators: passwordMatchValidator }
-    );
+  zipCodeFlag = false;
 
-    let zipCodeFlag = false;
+  ngOnInit(): void {
+    this.registerForm = this.fb.group({
+      cpf: ['', [Validators.required, Validators.pattern(/^.{11}$/)]],
+      name: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email]],
+      zipcode: ['', [Validators.required, Validators.pattern(/^.{8}$/)]],
+      phone: ['', [Validators.required, Validators.pattern(/^.{10,11}$/)]],
+      street: [{ value: '', disabled: true }, [Validators.required]],
+      number: ['', [Validators.required, Validators.pattern('^[0-9]{1,6}$')]],
+      neighbourhood: [{ value: '', disabled: true }, [Validators.required]],
+      city: [{ value: '', disabled: true }, [Validators.required, this.cityValidator]],
+      state: [{ value: '', disabled: true }, [Validators.required, this.stateValidator]],
+      complement: [''],
+    });
 
     this.registerForm
       .get('zipcode')
@@ -119,7 +111,7 @@ export class RegisterComponent implements OnInit {
             this.registerForm.get('state')?.setValue(endereco.estado, { emitEvent: false });
             this.registerForm.get('city')?.setValue(endereco.localidade, { emitEvent: false });
             this.registerForm.get('city')?.updateValueAndValidity();
-            zipCodeFlag = true;
+            this.zipCodeFlag = true;
           }
         },
         error: (message: string) => {
@@ -131,11 +123,6 @@ export class RegisterComponent implements OnInit {
       this.states = data.sort((a, b) => a.nome.localeCompare(b.nome));
       this.registerForm.get('state')!.setValue(this.registerForm.get('state')!.value || '');
     });
-
-    this.filteredStates = this.registerForm.get('state')?.valueChanges.pipe(
-      startWith(''),
-      map(value => this._filterStates(value || ''))
-    );
 
     this.registerForm
       .get('state')
@@ -156,32 +143,10 @@ export class RegisterComponent implements OnInit {
       .subscribe((data: City[] | null) => {
         if (data) {
           this.cities = data.sort((a, b) => a.nome.localeCompare(b.nome));
-          this.filteredCities = this.registerForm.get('city')?.valueChanges.pipe(
-            startWith(''),
-            map(value => this._filterCities(value || ''))
-          );
-        } else {
-          this.cities = [];
-          this.filteredCities = of([]);
         }
-
-        if (!zipCodeFlag) {
-          this.registerForm.get('city')?.setValue(null);
-        }
-
         this.registerForm.get('city')?.updateValueAndValidity();
-        zipCodeFlag = false;
+        this.zipCodeFlag = false;
       });
-  }
-
-  private _filterStates(value: string): State[] {
-    const filterValue = value.toLowerCase();
-    return this.states.filter(state => state.nome.toLowerCase().includes(filterValue));
-  }
-
-  private _filterCities(value: string): City[] {
-    const filterValue = value.toLowerCase();
-    return this.cities.filter(city => city.nome.toLowerCase().includes(filterValue));
   }
 
   onSubmit() {
@@ -189,17 +154,26 @@ export class RegisterComponent implements OnInit {
       return;
     }
 
-    this.authService.register(this.registerForm.value).subscribe(() => {
-      this.router.navigate(['/login']);
+    const raw = this.registerForm.value;
+
+    const payload = {
+      cpf: raw.cpf,
+      name: raw.name,
+      email: raw.email,
+      phone: raw.phone,
+      address: {
+        zipcode: raw.zipcode,
+        street: raw.street,
+        number: raw.number,
+        neighbourhood: raw.neighbourhood,
+        city: raw.city,
+        state: raw.state,
+        complement: raw.complement,
+      },
+    };
+
+    this.authService.register(payload).subscribe(() => {
+      this.router.navigate(['client/requests']);
     });
   }
 }
-
-export const passwordMatchValidator: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
-  const password = control.get('password')?.value;
-  const confirmPassword = control.get('confirmPassword')?.value;
-  const haveError =
-    password !== confirmPassword && control.get('confirmPassword')?.dirty && control.get('password')?.dirty;
-
-  return !haveError ? null : { passwordMismatch: true };
-};

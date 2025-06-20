@@ -1,0 +1,16 @@
+<app-base-maintenance-request-details [requestId]="requestId()" (requestLoaded)="onRequestLoaded($event)">
+  <div slot="before-main">
+    @if (request()) {
+      <section class="bg-gray-50 p-6 rounded-lg border border-gray-200 shadow-sm">
+        <h3 class="text-xl font-bold text-blue-900 mb-4">Informações do Cliente</h3>
+        <ul class="space-y-2 text-gray-800 text-sm">
+          <li><strong class="text-gray-600">Nome:</strong> {{ request()!.client.name }}</li>
+          <li><strong class="text-gray-600">Email:</strong> {{ request()!.client.email }}</li>
+          <li><strong class="text-gray-600">Telefone:</strong> {{ request()!.client.phone }}</li>
+          <li><strong class="text-gray-600">Bairro:</strong> {{ request()!.client.address.neighbourhood }}</li>
+          <li><strong class="text-gray-600">Cidade:</strong> {{ request()!.client.address.city }}</li>
+        </ul>
+      </section>
+    }
+  </div>
+</app-base-maintenance-request-details>

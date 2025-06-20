@@ -1,10 +1,15 @@
-import { Address } from '../../../shared/models/address';
-
 export interface RegisterRequest {
-  email: string;
-  password: string;
-  telephone: string;
+  cpf: string;
   name: string;
-  zipcode: string;
-  address: Address;
+  email: string;
+  phone: string;
+  address: {
+    zipcode: string;
+    street: string;
+    number: string;
+    neighbourhood: string;
+    city: string;
+    state: string;
+    complement?: string;
+  };
 }

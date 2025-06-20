@@ -1,25 +1,30 @@
 import { Routes } from '@angular/router';
-
+import { MAINTENANCE_REQUEST_STRATEGY } from '../requests/shared/models/maintenanceActionComponent';
+import { EmployeeMaintenanceRequestStrategy } from './requests/EmployeeMaintenanceRequestStrategy';
 export const employeeRoutes: Routes = [
   {
-    path: 'employee',
-    loadComponent: () => import('./employee-home/employee-home.component').then(m => m.EmployeeHomeComponent),
-  },
-  {
-    path: 'employee/solicitations',
+    path: 'employee/requests',
     loadComponent: () =>
-      import('./employee-solicitation-list/employee-solicitation-list.component').then(
-        m => m.EmployeeSolicitationListComponent
+      import('./requests/employee-request-list/employee-request-list.component').then(
+        m => m.EmployeeRequestListComponent
       ),
   },
   {
-    path: 'employee/budget/:solicitationId',
-    loadComponent: () => import('./employee-budget/employee-budget.component').then(m => m.EmployeeBudgetComponent),
+    path: 'employee/manage',
+    loadComponent: () => import('./manage/manage-employees.component').then(m => m.ManageEmployeesComponent),
   },
   {
-    path: 'employee/equipment-category',
+    path: 'employee/requests/:requestId',
     loadComponent: () =>
-      import('./equipment-category/equipment-category.component').then(m => m.EquipmentCategoryComponent),
+      import('./requests/employee-maintenance-request-details/employee-maintenance-request-details.component').then(
+        m => m.EmployeeMaintenanceRequestDetailsComponent
+      ),
+    providers: [
+      {
+        provide: MAINTENANCE_REQUEST_STRATEGY,
+        useClass: EmployeeMaintenanceRequestStrategy,
+      },
+    ],
   },
   {
     path: 'employee/manage',

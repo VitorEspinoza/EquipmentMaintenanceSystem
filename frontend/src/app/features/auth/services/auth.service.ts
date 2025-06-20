@@ -4,6 +4,7 @@ import { CrudService } from '../../../core/services/crud.service';
 import { LoginRequest } from '../models/loginRequest';
 import { LoginResponse } from '../models/loginResponse';
 import { RegisterRequest } from '../models/registerRequest';
+import { DefaultResponse } from './../../../shared/models/DefaultResponse';
 
 @Injectable({
   providedIn: 'root',
@@ -12,6 +13,7 @@ export class AuthService {
   private authenticatedSign = signal(false);
   private crudService = inject(CrudService);
   authPrefix = 'auth';
+  clientPrefix = 'clients';
 
   isAuthenticated(): boolean {
     return this.authenticatedSign();
@@ -21,8 +23,8 @@ export class AuthService {
     this.authenticatedSign.set(value);
   }
 
-  login(credentials: LoginRequest): Observable<LoginResponse> {
-    return this.crudService.post<LoginResponse>(`${this.authPrefix}/login`, credentials).pipe(
+  login(credentials: LoginRequest): Observable<DefaultResponse<LoginResponse>> {
+    return this.crudService.post<DefaultResponse<LoginResponse>>(`${this.authPrefix}/login`, credentials).pipe(
       map(response => {
         this.setAuthenticated(true);
         return response;
@@ -30,8 +32,8 @@ export class AuthService {
     );
   }
 
-  register(credentials: RegisterRequest): Observable<LoginResponse> {
-    return this.crudService.post<LoginResponse>(`${this.authPrefix}/register`, credentials);
+  register(credentials: RegisterRequest): Observable<DefaultResponse<LoginResponse>> {
+    return this.crudService.post<DefaultResponse<LoginResponse>>(`${this.clientPrefix}`, credentials);
   }
 
   logout(): Observable<void> {
