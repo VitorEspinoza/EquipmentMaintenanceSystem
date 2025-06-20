@@ -51,10 +51,6 @@ public class EmployeeMaintenanceRequestServiceImpl implements EmployeeMaintenanc
         
         var employee = getEmployeeById(employeeId);
 
-        if(!request.getAssignedToEmployee().getId().equals(employeeId)) {
-            throw new EmployeeNotResponsibleException("Employee not responsible for this request");
-        }
-
         request.Quote(value, employee);
         
         maintenanceRequestRepository.save(request);

@@ -2,6 +2,7 @@ package br.com.backend.backend.Controllers;
 
 import br.com.backend.backend.DTOs.MaintenanceRequest.MaintenanceInfo;
 import br.com.backend.backend.DTOs.MaintenanceRequest.MaintenanceRequestViewDTO;
+import br.com.backend.backend.DTOs.MaintenanceRequest.QuoteInputDTO;
 import br.com.backend.backend.DTOs.ResultViewModel;
 import br.com.backend.backend.Enums.EnMaintenanceRequestState;
 import br.com.backend.backend.Enums.EnDateFilter;
@@ -58,8 +59,8 @@ public class EmployeeMaintenanceRequestController {
     }
 
     @PostMapping("{id}/quote")
-    public ResponseEntity<Void> QuoteMaintenance(@PathVariable Integer id, @RequestParam(required = false) BigDecimal price) {
-        service.quote(id, price, currentUserService.getUserEntityId());
+    public ResponseEntity<Void> QuoteMaintenance(@PathVariable Integer id, @RequestBody QuoteInputDTO quoteInfo) {
+        service.quote(id, quoteInfo.price(), currentUserService.getUserEntityId());
 
         return ResponseEntity.noContent().build();
     }
