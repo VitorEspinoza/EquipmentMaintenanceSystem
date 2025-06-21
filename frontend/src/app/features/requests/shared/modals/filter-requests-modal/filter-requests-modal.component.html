@@ -32,6 +32,10 @@
       ) {
         <mat-error>Data de término inválida</mat-error>
       }
+
+      @if (filtersForm.get('from')?.hasError('required') || filtersForm.get('to')?.hasError('required')) {
+        <mat-error>As datas de início e fim são obrigatórias para o intervalo.</mat-error>
+      }
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="pt-2">
@@ -47,15 +51,12 @@
 </mat-dialog-content>
 <mat-dialog-actions>
   <button mat-raised-button type="button" mat-dialog-close>Cancelar</button>
-  <button mat-stroked-button type="button" (click)="clearFilters()" [mat-dialog-close]="cleanFilters">
-    Limpar Filtros
-  </button>
+  <button mat-stroked-button type="button" (click)="clearFilters()">Limpar Filtros</button>
   <button
     mat-flat-button
     type="button"
-    (click)="saveFilters()"
-    [disabled]="!filtersForm.valid"
-    [mat-dialog-close]="filtersFormToParams()"
+    (click)="applyFilters()"
+    [disabled]="!filtersForm.valid || !hasFiltersApplied()"
   >
     Filtrar
   </button>

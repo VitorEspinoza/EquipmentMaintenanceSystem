@@ -11,7 +11,11 @@ export class FiltersStateService {
     return this.filters();
   }
 
-  saveFilters(filtersFormValue: FiltersFormValue) {
+  resetFilters() {
+    this.filters.set(null);
+  }
+
+  updateFilters(filtersFormValue: FiltersFormValue) {
     this.filters.set(filtersFormValue);
   }
 }

@@ -1,7 +1,7 @@
-import { HttpParams } from '@angular/common/http';
 import { Component, computed, inject, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { MatDialog } from '@angular/material/dialog';
+import { FiltersFormValue } from './../../../requests/shared/models/FiltersFormValue';
 import { RequestState } from './../../../requests/shared/models/RequestState';
 
 import { map, startWith, switchMap } from 'rxjs';
@@ -10,9 +10,9 @@ import { DataListViewComponent } from '../../../../shared/components/data-list-v
 import { DynamicTableComponent } from '../../../../shared/components/dynamic-table/dynamic-table.component';
 import { DataViewAction, TableAction, TableColumn } from '../../../../shared/models/TableColumn';
 import { FilterRequestsModalComponent } from '../../../requests/shared/modals/filter-requests-modal/filter-requests-modal.component';
-import { FiltersFormValue } from '../../../requests/shared/models/FiltersFormValue';
 import { MaintenanceAction } from '../../../requests/shared/models/maintenanceActionComponent';
 import { MaintenanceRequest } from '../../../requests/shared/models/maintenanceRequest';
+import { FiltersStateService } from '../../../requests/shared/services/filters-state.service';
 import { EmployeeRequestService } from '../../services/employee-request.service';
 
 const SMART_COMPONENTS = [DataListViewComponent, DynamicTableComponent];
@@ -24,28 +24,27 @@ const SMART_COMPONENTS = [DataListViewComponent, DynamicTableComponent];
   styleUrl: './employee-request-list.component.css',
 })
 export class EmployeeRequestListComponent {
-  private requestService: EmployeeRequestService = inject(EmployeeRequestService);
-  private notificationService = inject(NotificationService);
+  private readonly requestService: EmployeeRequestService = inject(EmployeeRequestService);
+  private readonly notificationService = inject(NotificationService);
+  private readonly filtersService = inject(FiltersStateService);
   private dialog = inject(MatDialog);
 
-  private readonly filtersSignal = signal<HttpParams>(new HttpParams().set('state', 'OPEN'));
   private readonly manualRefresh = signal(0);
 
   readonly requestTrigger = computed(() => ({
-    params: this.filtersSignal(),
     refreshTick: this.manualRefresh(),
   }));
 
   readonly requests = toSignal(
     toObservable(this.requestTrigger).pipe(
-      switchMap(({ params }) => this.requestService.getAll(params).pipe(map(response => response.data))),
+      switchMap(() => this.requestService.getAll().pipe(map(response => response.data))),
       startWith([])
     ),
     { initialValue: [] }
   );
 
   toolbarActions = computed<DataViewAction[]>(() => {
-    const haveFilters = this.filtersSignal().keys().length > 0;
+    const haveFilters = this.filtersService.recoveryFilters() !== null;
     const filterAction = {
       icon: haveFilters ? 'filter_list' : 'filter_list_off',
       label: 'Adicionar Filtro',
@@ -177,11 +176,8 @@ export class EmployeeRequestListComponent {
   };
 
   openFilterModal(): void {
-    const openStateKey =
-      Object.keys(RequestState).find(k => RequestState[k as keyof typeof RequestState] === RequestState.OPEN) || null;
-
-    const dialogData: { filters: Partial<FiltersFormValue> } = {
-      filters: { dateFilter: 'ALL', state: openStateKey },
+    const dialogData: { filters: Partial<FiltersFormValue> | null } = {
+      filters: this.filtersService.recoveryFilters(),
     };
 
     this.dialog
@@ -192,9 +188,15 @@ export class EmployeeRequestListComponent {
         data: dialogData,
       })
       .afterClosed()
-      .subscribe(params => {
-        if (!params) return;
-        this.filtersSignal.set(params);
+      .subscribe((result: FiltersFormValue | { clear: boolean } | undefined) => {
+        if (!result) return;
+        if ('clear' in result && result.clear) {
+          this.filtersService.resetFilters();
+        } else {
+          this.filtersService.updateFilters(result as FiltersFormValue);
+        }
+
+        this.manualRefresh.update(value => value + 1);
       });
   }
 }

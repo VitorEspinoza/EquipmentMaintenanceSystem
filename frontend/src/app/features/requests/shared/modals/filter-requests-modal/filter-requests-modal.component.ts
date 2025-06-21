@@ -1,15 +1,14 @@
-import { HttpParams } from '@angular/common/http';
-import { Component, computed, inject, OnInit } from '@angular/core';
+import { Component, computed, effect, inject, OnInit } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
+import { map, startWith } from 'rxjs';
 import { RequestState } from '../../models/RequestState';
 import { FiltersFormValue } from './../../models/FiltersFormValue';
-import { FiltersStateService } from './../../services/filters-state.service';
 @Component({
   selector: 'app-filter-requests-modal',
   imports: [
@@ -25,26 +24,13 @@ import { FiltersStateService } from './../../services/filters-state.service';
 })
 export class FilterRequestsModalComponent implements OnInit {
   private fb = inject(FormBuilder);
-  private FiltersStateService = inject(FiltersStateService);
   private dialogData: { filters: FiltersFormValue } = inject(MAT_DIALOG_DATA);
+  private dialogRef = inject(MatDialogRef<FilterRequestsModalComponent>);
 
   readonly requestStates = Object.entries(RequestState).map(([key, value]) => ({
     key: key as keyof typeof RequestState,
     label: value,
   }));
-
-  filtersForm: FormGroup = this.fb.group({
-    dateFilter: [null],
-    from: [null],
-    to: [null],
-    state: [null],
-  });
-
-  cleanFilters = new HttpParams();
-
-  private readonly dateFilterValue = toSignal(this.filtersForm.get('dateFilter')!.valueChanges);
-
-  disableDateRange = computed(() => this.dateFilterValue() != 'DATE_RANGE');
 
   readonly dateFilterList = [
     {
@@ -61,49 +47,54 @@ export class FilterRequestsModalComponent implements OnInit {
     },
   ];
 
-  ngOnInit(): void {
-    const savedFilters = this.FiltersStateService.recoveryFilters();
-    const filters = savedFilters ? savedFilters : this.dialogData.filters;
-    if (filters) {
-      this.filtersForm.patchValue(filters);
-      this.filtersForm.updateValueAndValidity();
-    }
+  filtersForm: FormGroup = this.fb.group({
+    dateFilter: [null],
+    from: [null],
+    to: [null],
+    state: [null],
+  });
+
+  private readonly dateFilterValue = toSignal(this.filtersForm.get('dateFilter')!.valueChanges);
+
+  readonly hasFiltersApplied = toSignal(
+    this.filtersForm.valueChanges.pipe(
+      startWith(this.filtersForm.value),
+      map(formValue => Object.values(formValue).some(value => value !== null && value !== ''))
+    ),
+    { initialValue: false }
+  );
+
+  disableDateRange = computed(() => this.dateFilterValue() != 'DATE_RANGE');
+
+  constructor() {
+    effect(() => {
+      const value = this.dateFilterValue();
+
+      const fromControl = this.filtersForm.get('from')!;
+      const toControl = this.filtersForm.get('to')!;
+
+      if (value === 'DATE_RANGE') {
+        fromControl.setValidators([Validators.required]);
+        toControl.setValidators([Validators.required]);
+      } else {
+        fromControl.clearValidators();
+        toControl.clearValidators();
+      }
+
+      fromControl.updateValueAndValidity({ emitEvent: false });
+      toControl.updateValueAndValidity({ emitEvent: false });
+    });
   }
-
-  filtersFormToParams(): HttpParams {
-    const filters = this.filtersForm.value;
-
-    let params = new HttpParams();
-
-    if (filters.dateFilter) {
-      params = params.set('dateFilter', filters.dateFilter);
+  ngOnInit(): void {
+    if (this.dialogData?.filters) {
+      this.filtersForm.patchValue(this.dialogData.filters);
     }
-
-    if (filters.from && filters.to) {
-      params = params.set('from', this.formatDateOnly(filters.from));
-      params = params.set('to', this.formatDateOnly(filters.to));
-    }
-
-    if (filters.state) {
-      params = params.set('state', filters.state);
-    }
-
-    return params;
   }
 
   clearFilters() {
-    this.filtersForm.reset();
-    this.FiltersStateService.saveFilters(this.filtersForm.getRawValue());
+    this.dialogRef.close({ clear: true });
   }
-
-  saveFilters() {
-    this.FiltersStateService.saveFilters(this.filtersForm.getRawValue());
-  }
-
-  private formatDateOnly(date: Date): string {
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const day = date.getDate().toString().padStart(2, '0');
-    return `${year}-${month}-${day}`;
+  applyFilters() {
+    this.dialogRef.close(this.filtersForm.getRawValue());
   }
 }
