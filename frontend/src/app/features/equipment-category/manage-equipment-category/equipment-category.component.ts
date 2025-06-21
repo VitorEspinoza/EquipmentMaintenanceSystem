@@ -2,16 +2,18 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { NotificationService } from '../../../core/services/notification.service';
-import { DefaultResponse } from '../../../shared/models/DefaultResponse';
-import { EquipmentCategoryService } from '../services/equipment-category.service';
 import { DynamicTableComponent } from '../../../shared/components/dynamic-table/dynamic-table.component';
-import { TableAction, TableColumn } from '../../../shared/models/TableColumn';
+import { ConfirmDeleteModalComponent } from '../../../shared/confirm-dialog/confirm-dialog/confirm-dialog.component';
+import { DefaultResponse } from '../../../shared/models/DefaultResponse';
 import { EquipmentCategory } from '../../../shared/models/EquipmentCategory';
+import { TableAction, TableColumn } from '../../../shared/models/TableColumn';
+import { EquipmentCategoryService } from '../services/equipment-category.service';
 
 @Component({
   standalone: true,
@@ -32,6 +34,7 @@ export class EquipmentCategoryComponent implements OnInit {
   private readonly equipmentCategoryService = inject(EquipmentCategoryService);
   private readonly notificationService = inject(NotificationService);
   private readonly fb = inject(FormBuilder);
+  private readonly dialog = inject(MatDialog);
   @ViewChild('form') form: any;
 
   categories: EquipmentCategory[] = [];
@@ -59,7 +62,7 @@ export class EquipmentCategoryComponent implements OnInit {
     if (action === 'EDIT') {
       this.editCategory(event.element);
     } else if (action === 'DELETE') {
-      this.deleteCategory(event.element.id);
+      this.deleteCategory(event.element);
     }
   }
   getRowActions = (): TableAction<'EDIT' | 'DELETE'>[] => {
@@ -157,18 +160,31 @@ export class EquipmentCategoryComponent implements OnInit {
     this.categoryForm.patchValue({ ...cat });
   }
 
-  deleteCategory(id: number): void {
-    this.equipmentCategoryService.deleteEquipmentCategory(id).subscribe({
-      next: () => {
-        this.loadCategories();
-        this.notificationService.success('Sucesso', 'Categoria excluída com sucesso!');
-      },
-      error: err => {
-        console.error('Erro ao excluir categoria:', err);
-        this.notificationService.error('Erro', 'Erro de comunicação com o servidor');
+  deleteCategory(category: EquipmentCategory): void {
+    const dialogRef = this.dialog.open(ConfirmDeleteModalComponent, {
+      width: '400px',
+      data: {
+        message: `Você tem certeza que deseja excluir "${category.name}"?`,
       },
     });
-    this.resetForm();
+
+    dialogRef.afterClosed().subscribe((confirmed: boolean) => {
+      if (confirmed) {
+        this.equipmentCategoryService.deleteEquipmentCategory(category.id).subscribe({
+          next: () => {
+            this.loadCategories();
+            this.notificationService.success('Sucesso', 'Categoria excluída com sucesso!');
+          },
+          error: err => {
+            console.error('Erro ao excluir categoria:', err);
+            this.notificationService.error('Erro', 'Erro de comunicação com o servidor');
+          },
+        });
+        this.resetForm();
+      } else {
+        this.notificationService.info('Cancelado', 'Exclusão cancelada.');
+      }
+    });
   }
 
   resetForm(): void {
