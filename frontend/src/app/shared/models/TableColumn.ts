@@ -15,10 +15,10 @@ export interface TableAction<T> {
   route?: string[];
 }
 
-export interface DataViewAction {
+export interface DataViewAction<T> {
   icon: string;
   label: string;
   color?: string;
-  action: string;
+  action: T;
   disabled?: boolean;
 }

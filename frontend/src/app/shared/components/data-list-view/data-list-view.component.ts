@@ -11,10 +11,10 @@ import { DataViewAction } from '../../models/TableColumn';
   templateUrl: './data-list-view.component.html',
   styleUrl: './data-list-view.component.css',
 })
-export class DataListViewComponent {
+export class DataListViewComponent<TAction> {
   title = input<string>();
   subtitle = input<string>();
-  actions = input<DataViewAction[]>([]);
+  actions = input<DataViewAction<TAction>[]>([]);
 
   containerClass = input('p-12 bg-white shadow-md rounded-lg flex flex-col');
   titleClass = input('text-2xl font-semibold text-gray-800 mb-4 text-center');
@@ -24,7 +24,7 @@ export class DataListViewComponent {
   showToolbar = input(true);
   hasFooter = input(false);
 
-  actionClicked = output<DataViewAction>();
+  actionClicked = output<DataViewAction<TAction>>();
 
   headerContent = contentChild('[slot=header]');
   footerContent = contentChild('[slot=footer]');

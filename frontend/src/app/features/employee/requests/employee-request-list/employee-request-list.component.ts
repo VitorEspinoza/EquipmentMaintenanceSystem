@@ -2,21 +2,30 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { RequestState } from './../../../requests/shared/models/RequestState';
 
-import { map, startWith, switchMap } from 'rxjs';
+import { HttpResponse } from '@angular/common/http';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialog } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { filter, map, Observable, startWith, switchMap } from 'rxjs';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { DataListViewComponent } from '../../../../shared/components/data-list-view/data-list-view.component';
 import { DynamicTableComponent } from '../../../../shared/components/dynamic-table/dynamic-table.component';
 import { DataViewAction, TableAction, TableColumn } from '../../../../shared/models/TableColumn';
+import { FileDownloadService } from '../../../../shared/services/file-download.service';
 import { MaintenanceAction } from '../../../requests/shared/models/maintenanceActionComponent';
 import { MaintenanceRequest } from '../../../requests/shared/models/maintenanceRequest';
 import { CLEARED_FILTERS_STATE, FiltersStateService } from '../../../requests/shared/services/filters-state.service';
 import { EmployeeRequestService } from '../../services/employee-request.service';
+import { ReportFilters } from '../../shared/models/reportFilters';
+import { ReportFilterModalComponent } from '../report-filter-modal/report-filter-modal.component';
 
 const SMART_COMPONENTS = [DataListViewComponent, DynamicTableComponent];
-
+const MATERIAL_MODULES = [MatMenuModule, MatIconModule, MatButtonModule, MatTooltipModule];
 @Component({
   selector: 'app-employee-request-list',
-  imports: [...SMART_COMPONENTS],
+  imports: [...SMART_COMPONENTS, ...MATERIAL_MODULES],
   templateUrl: './employee-request-list.component.html',
   styleUrl: './employee-request-list.component.css',
 })
@@ -24,6 +33,8 @@ export class EmployeeRequestListComponent {
   private readonly requestService: EmployeeRequestService = inject(EmployeeRequestService);
   private readonly notificationService = inject(NotificationService);
   private readonly filtersService = inject(FiltersStateService);
+  private readonly fileDownloadService = inject(FileDownloadService);
+  private readonly dialog = inject(MatDialog);
 
   private readonly manualRefresh = signal(0);
 
@@ -45,7 +56,7 @@ export class EmployeeRequestListComponent {
     { initialValue: [] }
   );
 
-  toolbarActions = computed<DataViewAction[]>(() => {
+  toolbarActions = computed<DataViewAction<string>[]>(() => {
     const hasFilters = this.hasFilters();
     const filterAction = {
       icon: hasFilters ? 'filter_list' : 'filter_list_off',
@@ -56,14 +67,6 @@ export class EmployeeRequestListComponent {
 
     return [filterAction];
   });
-
-  handleToolbarAction(action: DataViewAction) {
-    switch (action.action) {
-      case 'filter':
-        this.filtersService.openFilterModal();
-        break;
-    }
-  }
 
   getStatusClass(status: RequestState): string {
     switch (status) {
@@ -141,6 +144,65 @@ export class EmployeeRequestListComponent {
       type: 'actions',
     },
   ]);
+
+  handleToolbarAction(toolbarAction: Partial<DataViewAction<string>>): void {
+    switch (toolbarAction.action) {
+      case 'filter':
+        this.filtersService.openFilterModal();
+        break;
+
+      case 'revenue_by_category_report':
+        this.downloadRevenueByCategoryReport();
+        break;
+
+      case 'filtered_revenue_report':
+        this.openFilteredRevenueReportDialog();
+        break;
+    }
+  }
+
+  private openFilteredRevenueReportDialog(): void {
+    const dialogRef = this.dialog.open(ReportFilterModalComponent, {
+      width: '400px',
+      minHeight: '250px',
+    });
+
+    dialogRef
+      .afterClosed()
+      .pipe(filter((result): result is ReportFilters => !!result))
+      .subscribe(filters => {
+        this.downloadFilteredRevenueReport(filters);
+      });
+  }
+
+  public downloadFilteredRevenueReport(filters: ReportFilters): void {
+    const reportRequest$ = this.requestService.downloadGeneralRevenueReport(filters);
+    const filename = 'relatorio_geral_de_receitas.pdf';
+    this._handleReportDownload(reportRequest$, filename);
+  }
+
+  public downloadRevenueByCategoryReport(): void {
+    const reportRequest$ = this.requestService.downloadRevenueByCategoryReport();
+    const filename = 'relatorio_receita_por_categoria.pdf';
+    this._handleReportDownload(reportRequest$, filename);
+  }
+
+  private _handleReportDownload(reportRequest$: Observable<HttpResponse<Blob>>, filename: string): void {
+    reportRequest$.subscribe({
+      next: response => {
+        const blob = response.body;
+        if (!blob || blob.size === 0) {
+          this.notificationService.error('Erro ao baixar: o arquivo retornado está vazio.');
+          return;
+        }
+        this.fileDownloadService.saveFile(blob, filename);
+      },
+      error: err => {
+        console.error('Falha no download do relatório:', err);
+        this.notificationService.error('Não foi possível baixar o relatório.');
+      },
+    });
+  }
 
   handleAction(event: { tableAction: TableAction<MaintenanceAction | any>; element: MaintenanceRequest }) {
     const action = event.tableAction.action;

@@ -1,6 +1,7 @@
-import { HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { EMPTY, map, Observable, switchMap } from 'rxjs';
+import { environment } from '../../../../environments/environment';
 import { CrudService } from '../../../core/services/crud.service';
 import { DefaultResponse } from '../../../shared/models/DefaultResponse';
 import { translateRequestState } from '../../../shared/utils';
@@ -23,6 +24,7 @@ import { MaintenanceInfo } from '../shared/models/maintenanceInfo';
 })
 export class EmployeeRequestService implements IMaintenanceRequestService {
   private readonly crudService = inject(CrudService);
+  private readonly httpClient = inject(HttpClient);
   private readonly filtersStateService = inject(FiltersStateService);
   private readonly actionService = inject(MaintenanceActionService);
 
@@ -127,6 +129,25 @@ export class EmployeeRequestService implements IMaintenanceRequestService {
     );
   }
 
+  downloadRevenueByCategoryReport(): Observable<HttpResponse<Blob>> {
+    return this.httpClient.get(`${environment.apiUrl}reports/revenue-by-category`, {
+      observe: 'response',
+      responseType: 'blob',
+    });
+  }
+
+  downloadGeneralRevenueReport(filters: { to: string; from: string }): Observable<HttpResponse<Blob>> {
+    let params = new HttpParams();
+    if (filters.from && filters.to) {
+      params = params.set('from', this.formatDateOnly(new Date(filters.from)));
+      params = params.set('to', this.formatDateOnly(new Date(filters.to)));
+    }
+    return this.httpClient.get(`${environment.apiUrl}reports/revenue`, {
+      observe: 'response',
+      responseType: 'blob',
+      params: params,
+    });
+  }
   private convertFormToParams(filters: FiltersFormValue): HttpParams {
     let params = new HttpParams();
     if (!filters) return params;
@@ -143,6 +164,7 @@ export class EmployeeRequestService implements IMaintenanceRequestService {
 
     return params;
   }
+
   private formatDateOnly(date: Date): string {
     const year = date.getFullYear();
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
