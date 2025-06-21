@@ -156,11 +156,11 @@ export class ManageEmployeesComponent implements OnInit {
         if (response.isSuccess) {
           this.employees = response.data;
         } else {
-          this.notificationService.error('Erro', response.errors.join(', ') || 'Falha ao carregar funcionários');
+          this.notificationService.error(response.errors.join(', ') || 'Falha ao carregar funcionários');
         }
       },
       error: err => {
-        this.notificationService.error('Erro', 'Erro de comunicação com o servidor');
+        this.notificationService.error('Erro de comunicação com o servidor');
       },
     });
   }
@@ -212,7 +212,7 @@ export class ManageEmployeesComponent implements OnInit {
       },
       error: err => {
         const errorMessage = err?.error?.errors?.join(', ') || 'Houve um erro ao criar o funcionário.';
-        this.notificationService.error('Erro', errorMessage);
+        this.notificationService.error(errorMessage);
       },
     });
   }
@@ -228,12 +228,12 @@ export class ManageEmployeesComponent implements OnInit {
   deleteEmployee = (emp: Employee): void => {
     const email = localStorage.getItem('email');
     if (emp.email === email) {
-      this.notificationService.error('Erro', 'Você não pode se remover.');
+      this.notificationService.error('Você não pode se remover.');
       return;
     }
 
     if (this.employees.length === 1) {
-      this.notificationService.error('Erro', 'Deve haver pelo menos um funcionário.');
+      this.notificationService.error('Deve haver pelo menos um funcionário.');
       return;
     }
 
@@ -249,14 +249,14 @@ export class ManageEmployeesComponent implements OnInit {
         this.employeeService.delete(emp.id).subscribe({
           next: () => {
             this.loadEmployees();
-            this.notificationService.success('Sucesso', 'Funcionário removido!');
+            this.notificationService.success('Funcionário removido!');
           },
           error: err => {
-            this.notificationService.error('Erro', 'Erro ao remover funcionário.' + (err.error?.message || ''));
+            this.notificationService.error('Erro ao remover funcionário.' + (err.error?.message || ''));
           },
         });
       } else {
-        this.notificationService.info('Cancelado', 'Exclusão cancelada.');
+        this.notificationService.info('Exclusão cancelada.', 'Cancelada');
       }
     });
   };
