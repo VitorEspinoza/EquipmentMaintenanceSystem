@@ -1,5 +1,4 @@
 import { CommonModule } from '@angular/common';
-import { HttpParams } from '@angular/common/http';
 import { Component, computed, inject, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
@@ -13,10 +12,10 @@ import { NotificationService } from '../../../../core/services/notification.serv
 import { DataListViewComponent } from '../../../../shared/components/data-list-view/data-list-view.component';
 import { DynamicTableComponent } from '../../../../shared/components/dynamic-table/dynamic-table.component';
 import { DataViewAction, TableAction, TableColumn } from '../../../../shared/models/TableColumn';
-import { FilterRequestsModalComponent } from '../../../requests/shared/modals/filter-requests-modal/filter-requests-modal.component';
 import { MaintenanceAction } from '../../../requests/shared/models/maintenanceActionComponent';
 import { MaintenanceRequest } from '../../../requests/shared/models/maintenanceRequest';
 import { RequestState } from '../../../requests/shared/models/RequestState';
+import { CLEARED_FILTERS_STATE, FiltersStateService } from '../../../requests/shared/services/filters-state.service';
 import { ClientRequestService } from '../../shared/services/client-request.service';
 import { CreateRequestModalComponent } from '../create-request-modal/create-request-modal.component';
 
@@ -33,23 +32,26 @@ const SMART_COMPONENTS = [DynamicTableComponent, DataListViewComponent];
 export class ClientRequestListComponent {
   private readonly requestService = inject(ClientRequestService);
   private readonly notificationService = inject(NotificationService);
+  private readonly filtersService = inject(FiltersStateService);
   private dialog = inject(MatDialog);
-
-  private readonly filtersSignal = signal<HttpParams>(new HttpParams());
   private readonly manualRefresh = signal(0);
 
   readonly requestTrigger = computed(() => ({
-    params: this.filtersSignal(),
     refreshTick: this.manualRefresh(),
   }));
 
   readonly requests = toSignal(
     toObservable(this.requestTrigger).pipe(
-      switchMap(({ params }) => this.requestService.getAll(params).pipe(map(response => response.data))),
+      switchMap(() => this.requestService.getAll().pipe(map(response => response.data))),
       startWith([])
     ),
     { initialValue: [] }
   );
+
+  readonly hasFilters = computed<boolean>(() => {
+    const current = this.filtersService.filters();
+    return JSON.stringify(current) !== JSON.stringify(CLEARED_FILTERS_STATE);
+  });
 
   tableColumns = signal<TableColumn[]>([
     {
@@ -128,12 +130,12 @@ export class ClientRequestListComponent {
   }
 
   toolbarActions = computed<DataViewAction[]>(() => {
-    const haveFilters = this.filtersSignal().keys().length > 0;
+    const hasFilters = this.hasFilters();
     const filterAction = {
-      icon: haveFilters ? 'filter_list' : 'filter_list_off',
+      icon: hasFilters ? 'filter_list' : 'filter_list_off',
       label: 'Adicionar Filtro',
       action: 'filter',
-      color: haveFilters ? 'accent' : 'primary',
+      color: hasFilters ? 'accent' : 'primary',
     };
 
     const addSolicitationAction = {
@@ -148,26 +150,12 @@ export class ClientRequestListComponent {
   handleToolbarAction(action: DataViewAction) {
     switch (action.action) {
       case 'filter':
-        this.openFilterModal();
+        this.filtersService.filters();
         break;
       case 'create':
         this.openCreateRequestModal();
         break;
     }
-  }
-
-  openFilterModal(): void {
-    this.dialog
-      .open(FilterRequestsModalComponent, {
-        maxWidth: '90vw',
-        minWidth: '400px',
-        maxHeight: '90vh',
-      })
-      .afterClosed()
-      .subscribe(params => {
-        if (!params) return;
-        this.filtersSignal.set(params);
-      });
   }
 
   openCreateRequestModal(): void {

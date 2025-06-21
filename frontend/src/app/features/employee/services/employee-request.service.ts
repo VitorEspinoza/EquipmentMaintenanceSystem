@@ -4,12 +4,14 @@ import { EMPTY, map, Observable, switchMap } from 'rxjs';
 import { CrudService } from '../../../core/services/crud.service';
 import { DefaultResponse } from '../../../shared/models/DefaultResponse';
 import { translateRequestState } from '../../../shared/utils';
+import { FiltersFormValue } from '../../requests/shared/models/FiltersFormValue';
 import {
   IMaintenanceRequestService,
   MaintenanceAction,
   MaintenanceActionData,
 } from '../../requests/shared/models/maintenanceActionComponent';
 import { MaintenanceRequest } from '../../requests/shared/models/maintenanceRequest';
+import { FiltersStateService } from '../../requests/shared/services/filters-state.service';
 import { MaintenanceActionService } from '../../requests/shared/services/maintenance-action.service';
 import { DoMaintenanceComponent } from '../requests/do-maintenance/do-maintenance.component';
 import { QuoteMaintenenceModalComponent } from '../requests/quote-maintenence/quote-maintenence.component';
@@ -21,11 +23,16 @@ import { MaintenanceInfo } from '../shared/models/maintenanceInfo';
 })
 export class EmployeeRequestService implements IMaintenanceRequestService {
   private readonly crudService = inject(CrudService);
+  private readonly filtersStateService = inject(FiltersStateService);
   private readonly actionService = inject(MaintenanceActionService);
 
   private endpoint = 'employee/maintenance-request';
 
-  getAll(params?: HttpParams): Observable<DefaultResponse<MaintenanceRequest[]>> {
+  getAll(): Observable<DefaultResponse<MaintenanceRequest[]>> {
+    const currentFilters = this.filtersStateService.filters();
+
+    const params = currentFilters ? this.convertFormToParams(currentFilters) : new HttpParams();
+
     return this.crudService.get<DefaultResponse<MaintenanceRequest[]>>(this.endpoint, params).pipe(
       map((response: DefaultResponse<MaintenanceRequest[]>) => ({
         ...response,
@@ -118,5 +125,28 @@ export class EmployeeRequestService implements IMaintenanceRequestService {
         return this.doMaintenence(requestId, maintenanceInfo);
       })
     );
+  }
+
+  private convertFormToParams(filters: FiltersFormValue): HttpParams {
+    let params = new HttpParams();
+    if (!filters) return params;
+
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value) {
+        if (key === 'from' || key === 'to') {
+          params = params.set(key, this.formatDateOnly(new Date(value)));
+        } else {
+          params = params.set(key, value);
+        }
+      }
+    });
+
+    return params;
+  }
+  private formatDateOnly(date: Date): string {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 }
