@@ -1,16 +1,10 @@
 <div class="p-6 space-y-6">
   <h2 class="text-2xl font-bold">Categorias de Equipamento</h2>
 
-  <!-- Botão de adicionar -->
-  <button mat-raised-button color="primary" class="mb-4" (click)="resetForm()" *ngIf="selectedCategory">
-    Nova Categoria
-  </button>
-
-  <!-- Formulário de categoria -->
   <form #form="ngForm" [formGroup]="categoryForm" (ngSubmit)="saveCategory()" class="space-y-4">
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>Nome da categoria</mat-label>
-      <input matInput placeholder="e.g., Laptop" formControlName="name" />
+      <input matInput placeholder="Notebook" formControlName="name" />
       <mat-error *ngIf="categoryForm.get('name')?.invalid && categoryForm.get('name')?.touched">
         Nome da categoria é obrigatório
       </mat-error>
@@ -22,7 +16,6 @@
     </button>
   </form>
 
-  <!-- Lista de categorias -->
   <div class="mt-8">
     <h3 class="text-lg font-semibold mb-2">Lista de Categorias</h3>
     <app-dynamic-table
