@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { AfterViewInit, Component, computed, effect, input, output, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -9,15 +8,7 @@ import { RouterModule } from '@angular/router';
 import { TableAction, TableColumn } from '../../models/TableColumn';
 @Component({
   selector: 'app-dynamic-table',
-  imports: [
-    CommonModule,
-    MatTableModule,
-    MatIconModule,
-    MatButtonModule,
-    MatTooltipModule,
-    RouterModule,
-    MatPaginatorModule,
-  ],
+  imports: [MatTableModule, MatIconModule, MatButtonModule, MatTooltipModule, RouterModule, MatPaginatorModule],
   templateUrl: './dynamic-table.component.html',
   styleUrl: './dynamic-table.component.css',
 })

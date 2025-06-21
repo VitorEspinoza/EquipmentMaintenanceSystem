@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, inject, input, OnInit, output } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterModule } from '@angular/router';
@@ -7,7 +6,7 @@ import { AuthService } from '../../auth/services/auth.service';
 
 @Component({
   selector: 'app-sidenav',
-  imports: [MatIconModule, CommonModule, RouterModule],
+  imports: [MatIconModule, RouterModule],
   templateUrl: './sidenav.component.html',
   styleUrl: './sidenav.component.css',
 })

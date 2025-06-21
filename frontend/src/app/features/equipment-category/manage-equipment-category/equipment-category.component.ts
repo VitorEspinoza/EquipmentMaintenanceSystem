@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -19,7 +18,6 @@ import { EquipmentCategoryService } from '../services/equipment-category.service
   standalone: true,
   selector: 'app-equipment-category',
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     MatInputModule,
     MatFormFieldModule,

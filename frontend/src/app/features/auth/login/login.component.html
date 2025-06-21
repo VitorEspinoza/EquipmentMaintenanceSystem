@@ -9,14 +9,20 @@
         <mat-form-field appearance="outline" class="w-full">
           <mat-label>Email</mat-label>
           <input matInput formControlName="email" type="email" />
-          <mat-error *ngIf="loginForm.get('email')?.hasError('required')">Email obrigatório</mat-error>
-          <mat-error *ngIf="loginForm.get('email')?.hasError('email')">Email inválido</mat-error>
+          @if (loginForm.get('email')?.hasError('required')) {
+            <mat-error>Email obrigatório</mat-error>
+          }
+          @if (loginForm.get('email')?.hasError('email')) {
+            <mat-error>Email inválido</mat-error>
+          }
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="w-full">
           <mat-label>Senha</mat-label>
           <input matInput formControlName="password" type="password" />
-          <mat-error *ngIf="loginForm.get('password')?.hasError('required')">Senha obrigatória</mat-error>
+          @if (loginForm.get('password')?.hasError('required')) {
+            <mat-error>Senha obrigatória</mat-error>
+          }
         </mat-form-field>
       </form>
     </mat-card-content>
