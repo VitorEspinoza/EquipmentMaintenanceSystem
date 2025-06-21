@@ -150,8 +150,8 @@ export class ManageEmployeesComponent implements OnInit {
     this.loadEmployees();
   }
 
-  loadEmployees(pageIndex = 0, pageSize = 10): void {
-    this.employeeService.getAll(pageIndex, pageSize, !this.isChecked).subscribe({
+  loadEmployees(): void {
+    this.employeeService.getAll(!this.isChecked).subscribe({
       next: (response: DefaultResponse<Employee[]>) => {
         if (response.isSuccess) {
           this.employees = response.data;

@@ -12,11 +12,8 @@ export class EmployeeService {
   private crudService = inject(CrudService);
   employeePrefix = 'employees';
 
-  getAll(page: number, size: number, isChecked: boolean): Observable<DefaultResponse<Employee[]>> {
-    const params = new HttpParams()
-      .set('pageNumber', page.toString())
-      .set('pageSize', size.toString())
-      .set('active', isChecked.toString());
+  getAll(isChecked: boolean): Observable<DefaultResponse<Employee[]>> {
+    const params = new HttpParams().set('active', isChecked.toString());
 
     const queryString = params.toString();
     const endpoint = `${this.employeePrefix}/all?${queryString}`;
