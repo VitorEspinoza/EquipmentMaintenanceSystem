@@ -4,12 +4,14 @@ import { EMPTY, map, Observable, switchMap } from 'rxjs';
 import { CrudService } from '../../../../core/services/crud.service';
 import { DefaultResponse } from '../../../../shared/models/DefaultResponse';
 import { translateRequestState } from '../../../../shared/utils';
+import { FiltersFormValue } from '../../../requests/shared/models/FiltersFormValue';
 import {
   IMaintenanceRequestService,
   MaintenanceAction,
   MaintenanceActionData,
 } from '../../../requests/shared/models/maintenanceActionComponent';
 import { MaintenanceRequest } from '../../../requests/shared/models/maintenanceRequest';
+import { FiltersStateService } from '../../../requests/shared/services/filters-state.service';
 import { MaintenanceActionService } from '../../../requests/shared/services/maintenance-action.service';
 import { BudgetRejectionModalComponent } from '../../requests/budget-rejection-modal/budget-rejection-modal.component';
 
@@ -19,9 +21,14 @@ import { BudgetRejectionModalComponent } from '../../requests/budget-rejection-m
 export class ClientRequestService implements IMaintenanceRequestService {
   private crudService = inject(CrudService);
   private actionService = inject(MaintenanceActionService);
+  private filtersService = inject(FiltersStateService);
   endpoint = 'client/maintenance-request';
 
-  getAll(params?: HttpParams): Observable<DefaultResponse<MaintenanceRequest[]>> {
+  getAll(): Observable<DefaultResponse<MaintenanceRequest[]>> {
+    const currentFilters = this.filtersService.filters();
+
+    const params = currentFilters ? this.convertFormToParams(currentFilters) : new HttpParams();
+
     return this.crudService.get<DefaultResponse<MaintenanceRequest[]>>(this.endpoint, params).pipe(
       map((response: DefaultResponse<MaintenanceRequest[]>) => ({
         ...response,
@@ -84,5 +91,28 @@ export class ClientRequestService implements IMaintenanceRequestService {
         return this.reject(requestId, rejectionReason);
       })
     );
+  }
+
+  private convertFormToParams(filters: FiltersFormValue): HttpParams {
+    let params = new HttpParams();
+    if (!filters) return params;
+
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value) {
+        if (key === 'from' || key === 'to') {
+          params = params.set(key, this.formatDateOnly(new Date(value)));
+        } else {
+          params = params.set(key, value);
+        }
+      }
+    });
+
+    return params;
+  }
+  private formatDateOnly(date: Date): string {
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 }
