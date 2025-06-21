@@ -114,7 +114,7 @@ export class ManageEmployeesComponent implements OnInit {
   handleAction(event: { tableAction: TableAction<'EDIT' | 'DELETE'>; element: Employee }) {
     const action = event.tableAction.action;
     const actionHandler = {
-      EDIT: this.editEmployee,
+      EDIT: this.setSelectedEmployee,
       DELETE: this.deleteEmployee,
     };
     actionHandler[action](event.element);
@@ -169,62 +169,68 @@ export class ManageEmployeesComponent implements OnInit {
   onSubmit(): void {
     if (this.employeeForm.invalid) return;
 
-    const emp = this.employeeForm.value;
+    const isUpdate = this.employeeForm.get('id')?.value;
 
-    if (emp.id) {
-      this.employeeService.update(emp).subscribe({
-        next: (response: DefaultResponse<Employee>) => {
-          if (response.isSuccess) {
-            const updatedEmp = response.data;
-            const index = this.employees.findIndex(e => e.id === updatedEmp.id);
-
-            if (index !== -1) {
-              this.employees[index] = updatedEmp;
-              this.employees = [...this.employees];
-              this.notificationService.success('Sucesso', 'Funcionário atualizado!');
-            } else {
-              console.error('Funcionário não encontrado na lista para atualização.');
-              this.notificationService.error('Erro', 'Funcionário não encontrado na lista.');
-            }
-          } else {
-            const msg = response.errors?.join(', ') || 'Falha ao atualizar funcionário.';
-            this.notificationService.error('Erro', msg);
-          }
-        },
-        error: () => {
-          this.notificationService.error('Erro', 'Erro ao atualizar funcionário.');
-        },
-      });
+    if (isUpdate) {
+      this.updateEmployee();
     } else {
-      this.employeeService.create(emp).subscribe({
-        next: (response: DefaultResponse<Employee>) => {
-          console.log('response:', response);
-          if (response.isSuccess) {
-            console.log('Funcionário criado com sucesso:', response.data);
-            const createdEmp = response.data;
-            this.notificationService.success('Sucesso', 'Funcionário criado!');
-            this.employees = [...this.employees, createdEmp];
-          } else {
-            this.notificationService.error('Erro', response.errors.join(', ') || 'Falha ao criar funcionário');
-          }
-        },
-        error: err => {
-          const errorMessage = err?.error?.errors?.join(', ') || 'Erro de comunicação com o servidor';
-          this.notificationService.error('Erro', errorMessage);
-        },
-      });
-
-      console.log('Adicionando novo funcionário:', emp);
+      this.createEmployee();
     }
-
-    console.log('Lista de Funcionários:', this.employees);
 
     this.selectedEmployee = null;
     this.employeeForm.reset();
     this.form.resetForm();
   }
 
-  editEmployee = (emp: Employee): void => {
+  updateEmployee() {
+    const employee = this.employeeForm.value;
+
+    this.employeeService.update(employee).subscribe({
+      next: (response: DefaultResponse<Employee>) => {
+        if (response.isSuccess) {
+          const updatedEmp = response.data;
+          const index = this.employees.findIndex(e => e.id === updatedEmp.id);
+
+          if (index !== -1) {
+            this.employees[index] = updatedEmp;
+            this.employees = [...this.employees];
+            this.notificationService.success('Sucesso', 'Funcionário atualizado!');
+          } else {
+            console.error('Funcionário não encontrado na lista para atualização.');
+            this.notificationService.error('Erro', 'Funcionário não encontrado na lista.');
+          }
+        } else {
+          const msg = response.errors?.join(', ') || 'Falha ao atualizar funcionário.';
+          this.notificationService.error('Erro', msg);
+        }
+      },
+      error: () => {
+        this.notificationService.error('Erro', 'Erro ao atualizar funcionário.');
+      },
+    });
+  }
+
+  createEmployee() {
+    this.employeeService.create(emp).subscribe({
+      next: (response: DefaultResponse<Employee>) => {
+        console.log('response:', response);
+        if (response.isSuccess) {
+          console.log('Funcionário criado com sucesso:', response.data);
+          const createdEmp = response.data;
+          this.notificationService.success('Sucesso', 'Funcionário criado!');
+          this.employees = [...this.employees, createdEmp];
+        } else {
+          this.notificationService.error('Erro', response.errors.join(', ') || 'Falha ao criar funcionário');
+        }
+      },
+      error: err => {
+        const errorMessage = err?.error?.errors?.join(', ') || 'Erro de comunicação com o servidor';
+        this.notificationService.error('Erro', errorMessage);
+      },
+    });
+  }
+
+  setSelectedEmployee = (emp: Employee): void => {
     this.selectedEmployee = emp;
     this.employeeForm.patchValue(emp);
 
