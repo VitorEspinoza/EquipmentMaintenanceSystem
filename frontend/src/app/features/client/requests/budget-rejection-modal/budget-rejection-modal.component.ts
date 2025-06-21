@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -14,7 +13,6 @@ import { FormState, MaintenanceActionComponent } from '../../../requests/shared/
 @Component({
   selector: 'app-budget-rejection-modal',
   imports: [
-    CommonModule,
     RouterModule,
     MatCardModule,
     MatButtonModule,

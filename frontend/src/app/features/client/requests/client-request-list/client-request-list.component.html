@@ -10,20 +10,7 @@
     [badgeClassResolver]="getBadgeClass"
     [actionsResolver]="getRowActions"
     (actionClicked)="handleAction($event)"
+    [showPaginator]="true"
     emptyMessage="Nenhuma solicitação encontrada para os filtros selecionados"
   />
 </app-data-list-view>
-
-<!-- Footer com paginação -->
-<!-- <div slot="footer" class="flex justify-between items-center">
-        <div class="text-sm text-gray-500">
-          Mostrando {{ paginationInfo().start }}-{{ paginationInfo().end }}
-          de {{ paginationInfo().total }} registros
-        </div>
-        <mat-paginator
-          [length]="paginationInfo().total"
-          [pageSize]="pageSize()"
-          [pageSizeOptions]="[10, 25, 50, 100]"
-          (page)="onPageChange($event)">
-        </mat-paginator>
-      </div> -->

@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, contentChild, input, output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -7,7 +6,7 @@ import { DataViewAction } from '../../models/TableColumn';
 
 @Component({
   selector: 'app-data-list-view',
-  imports: [CommonModule, MatButtonModule, MatIconModule, MatTooltipModule],
+  imports: [MatButtonModule, MatIconModule, MatTooltipModule],
   templateUrl: './data-list-view.component.html',
   styleUrl: './data-list-view.component.css',
 })

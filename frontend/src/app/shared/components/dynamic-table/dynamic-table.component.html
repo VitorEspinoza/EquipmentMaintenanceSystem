@@ -1,5 +1,5 @@
 <div class="overflow-x-auto">
-  <table mat-table [dataSource]="processedData()" [class]="tableClass()">
+  <table mat-table [dataSource]="internalDataSource" [class]="tableClass()">
     @for (column of columns(); track column.key) {
       <ng-container [matColumnDef]="column.key">
         <th mat-header-cell *matHeaderCellDef [class]="column.headerClass || 'text-center!'">
@@ -42,9 +42,13 @@
     <tr mat-row *matRowDef="let row; columns: displayedColumns()" [class]="rowClass()"></tr>
   </table>
 
-  @if (processedData().length === 0) {
+  @if (!internalDataSource.data || internalDataSource.data.length === 0) {
     <div class="text-center p-8 text-gray-500">
       {{ emptyMessage() }}
     </div>
+  }
+
+  @if (showPaginator()) {
+    <mat-paginator #paginator [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons> </mat-paginator>
   }
 </div>
