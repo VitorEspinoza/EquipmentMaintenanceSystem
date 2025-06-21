@@ -129,7 +129,7 @@ export class ClientRequestListComponent {
     });
   }
 
-  toolbarActions = computed<DataViewAction[]>(() => {
+  toolbarActions = computed<DataViewAction<string>[]>(() => {
     const hasFilters = this.hasFilters();
     const filterAction = {
       icon: hasFilters ? 'filter_list' : 'filter_list_off',
@@ -147,7 +147,7 @@ export class ClientRequestListComponent {
     return [filterAction, addSolicitationAction];
   });
 
-  handleToolbarAction(action: DataViewAction) {
+  handleToolbarAction(action: DataViewAction<string>) {
     switch (action.action) {
       case 'filter':
         this.filtersService.filters();
