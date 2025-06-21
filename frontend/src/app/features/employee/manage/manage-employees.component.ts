@@ -160,7 +160,6 @@ export class ManageEmployeesComponent implements OnInit {
         }
       },
       error: err => {
-        console.error('Erro ao carregar funcionários:', err);
         this.notificationService.error('Erro', 'Erro de comunicação com o servidor');
       },
     });
@@ -196,7 +195,6 @@ export class ManageEmployeesComponent implements OnInit {
             this.employees = [...this.employees];
             this.notificationService.success('Sucesso', 'Funcionário atualizado!');
           } else {
-            console.error('Funcionário não encontrado na lista para atualização.');
             this.notificationService.error('Erro', 'Funcionário não encontrado na lista.');
           }
         } else {
@@ -213,9 +211,7 @@ export class ManageEmployeesComponent implements OnInit {
   createEmployee() {
     this.employeeService.create(emp).subscribe({
       next: (response: DefaultResponse<Employee>) => {
-        console.log('response:', response);
         if (response.isSuccess) {
-          console.log('Funcionário criado com sucesso:', response.data);
           const createdEmp = response.data;
           this.notificationService.success('Sucesso', 'Funcionário criado!');
           this.employees = [...this.employees, createdEmp];
