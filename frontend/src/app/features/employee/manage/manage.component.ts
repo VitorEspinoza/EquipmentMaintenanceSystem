@@ -19,7 +19,7 @@ import moment from 'moment';
 import { NgxMaskDirective } from 'ngx-mask';
 import { NotificationService } from '../../../core/services/notification.service';
 import { ApiResponse } from '../../../shared/models/ApiResponse';
-import { Page } from '../../../shared/models/page';
+import { DefaultResponse } from '../../../shared/models/DefaultResponse';
 import { Employee } from '../models/Employee';
 import { EmployeeService } from '../services/employee.service';
 
@@ -102,11 +102,10 @@ export class ManageComponent implements OnInit {
 
   loadEmployees(pageIndex = 0, pageSize = 10): void {
     this.employeeService.getAll(pageIndex, pageSize, !this.isChecked).subscribe({
-      next: (response: ApiResponse<Page<Employee>>) => {
+      next: (response: DefaultResponse<Employee[]>) => {
         console.log('response:', response);
         if (response.isSuccess) {
-          this.employees = response.data.content;
-          this.totalElements = response.data.totalElements;
+          this.employees = response.data;
         } else {
           this.notificationService.error('Erro', response.errors.join(', ') || 'Falha ao carregar funcionários');
         }

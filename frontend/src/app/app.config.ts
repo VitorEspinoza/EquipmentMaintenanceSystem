@@ -5,6 +5,7 @@ import { ApplicationConfig, inject, LOCALE_ID, provideAppInitializer, provideZon
 import { MAT_DATE_FORMATS, provideNativeDateAdapter } from '@angular/material/core';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { provideEnvironmentNgxMask } from 'ngx-mask';
+import { catchError, EMPTY } from 'rxjs';
 import { routes } from './app.routes';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
 import { AuthService } from './features/auth/services/auth.service';
@@ -31,8 +32,10 @@ export const appConfig: ApplicationConfig = {
     { provide: LOCALE_ID, useValue: 'pt-BR' },
     provideNativeDateAdapter(),
     { provide: MAT_DATE_FORMATS, useValue: BR_DATE_FORMATS },
-    provideAppInitializer(() => {
-      inject(AuthService).getAccount().subscribe();
-    }),
+    provideAppInitializer(() =>
+      inject(AuthService)
+        .getAccount()
+        .pipe(catchError(() => EMPTY))
+    ),
   ],
 };

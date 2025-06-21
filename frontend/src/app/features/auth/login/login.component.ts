@@ -9,9 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { map } from 'rxjs';
-import { Role } from '../../../core/models/role';
 import { NotificationService } from '../../../core/services/notification.service';
-import { PermissionService } from '../../../core/services/permission.service';
 import { AuthService } from '../services/auth.service';
 
 const MATERIAL_MODULES = [MatFormFieldModule, MatInputModule, MatButtonModule, MatCardModule, MatIconModule];
@@ -30,7 +28,7 @@ export class LoginComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly notificationService = inject(NotificationService);
   private readonly authService = inject(AuthService);
-  private readonly permissionService = inject(PermissionService);
+
   loginForm!: FormGroup;
 
   ngOnInit(): void {
@@ -45,26 +43,12 @@ export class LoginComponent implements OnInit {
       .login(this.loginForm.value)
       .pipe(map(response => response.data))
       .subscribe({
-        next: account => {
-          const roleActions = {
-            [Role.EMPLOYEE]: this.employeeActions,
-            [Role.CLIENT]: this.clientActions,
-          };
-          const userRole = account.role as keyof typeof Role;
-
-          roleActions[userRole]();
+        next: () => {
+          this.router.navigate(['/']);
 
           this.notificationService.success('Login feito com sucesso');
         },
         error: () => this.notificationService.error('Erro ao fazer login'),
       });
   }
-
-  employeeActions = () => {
-    this.router.navigate(['/employee/requests']);
-  };
-
-  clientActions = () => {
-    this.router.navigate(['/client/requests']);
-  };
 }

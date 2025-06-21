@@ -43,6 +43,12 @@ export class PermissionService {
 
     return this.items.filter(item => item.permissedRoles.includes(role));
   });
+
+  userIsAllowed(roles: Role[]) {
+    const userRole = this.authService.account()?.role;
+    if (!userRole) return false;
+    return roles.includes(userRole);
+  }
 }
 
 export interface NavigationItem {

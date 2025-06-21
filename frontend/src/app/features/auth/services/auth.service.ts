@@ -1,4 +1,4 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { CrudService } from '../../../core/services/crud.service';
 import { Account } from '../models/account';
@@ -16,9 +16,11 @@ export class AuthService {
   clientPrefix = 'clients';
   account = signal<Account | null>(null);
 
-  isAuthenticated(): boolean {
-    return this.account() != null;
-  }
+  isAuthenticated = computed(() => {
+    const account = this.account();
+    console.log(account, 'isAuthenticated');
+    return account != null;
+  });
 
   private setAccount(authRequest$: Observable<DefaultResponse<Account>>): Observable<DefaultResponse<Account>> {
     return authRequest$.pipe(tap(response => this.account.set(response.data)));
@@ -42,6 +44,11 @@ export class AuthService {
   }
 
   logout(): Observable<void> {
-    return this.crudService.post<void>(`${this.authPrefix}/logout`, {}).pipe(tap(() => this.account.set(null)));
+    return this.crudService.post<void>(`${this.authPrefix}/logout`, {}).pipe(
+      tap(() => {
+        console.log('tapeei por aqui');
+        this.account.set(null);
+      })
+    );
   }
 }

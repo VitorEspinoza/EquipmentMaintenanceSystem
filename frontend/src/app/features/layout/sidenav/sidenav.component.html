@@ -3,10 +3,8 @@
     <button mat-icon-button class="btn-transparent" (click)="toggleCollapse()">
       <mat-icon>menu</mat-icon>
     </button>
-
     @if (!isSidebarCollapsed()) {
       <div class="logo-text">Menu</div>
-
       <button mat-icon-button class="btn-transparent" (click)="closeSidenav()">
         <mat-icon>close</mat-icon>
       </button>
@@ -30,4 +28,17 @@
       </li>
     }
   </ul>
+
+  <div class="sidenav-footer">
+    <ul class="sidenav-nav">
+      <li class="sidenav-nav-item">
+        <button class="sidenav-nav-link" (click)="logout()">
+          <mat-icon class="sidenav-link-icon">logout</mat-icon>
+          @if (!isSidebarCollapsed()) {
+            <span class="sidenav-link-text">Sair</span>
+          }
+        </button>
+      </li>
+    </ul>
+  </div>
 </div>
