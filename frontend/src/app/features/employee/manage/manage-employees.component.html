@@ -46,6 +46,9 @@
 
   <div class="mt-8">
     <h3 class="text-lg font-semibold mb-2">Lista de Funcionários</h3>
+    <mat-slide-toggle class="mb-2" [(ngModel)]="isChecked" (change)="onToggleChange()" labelPosition="before">
+      <b>Inativos</b>
+    </mat-slide-toggle>
     <app-dynamic-table
       [dataSource]="employees"
       [columns]="tableColumns()"
