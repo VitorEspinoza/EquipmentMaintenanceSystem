@@ -1,4 +1,5 @@
+import { Account } from './account';
+
 export interface LoginResponse {
-  message: string;
-  role: string;
+  account: Account;
 }

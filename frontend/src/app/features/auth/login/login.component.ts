@@ -8,9 +8,8 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
-import { Role } from '../../../core/models/role';
+import { map } from 'rxjs';
 import { NotificationService } from '../../../core/services/notification.service';
-import { PermissionService } from '../../../core/services/permission.service';
 import { AuthService } from '../services/auth.service';
 
 const MATERIAL_MODULES = [MatFormFieldModule, MatInputModule, MatButtonModule, MatCardModule, MatIconModule];
@@ -29,7 +28,7 @@ export class LoginComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly notificationService = inject(NotificationService);
   private readonly authService = inject(AuthService);
-  private readonly permissionService = inject(PermissionService);
+
   loginForm!: FormGroup;
 
   ngOnInit(): void {
@@ -40,30 +39,16 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit() {
-    this.authService.login(this.loginForm.value).subscribe({
-      next: response => {
-        this.notificationService.success('Sucesso', 'Login');
-        localStorage.setItem('email', this.loginForm.value.email);
+    this.authService
+      .login(this.loginForm.value)
+      .pipe(map(response => response.data))
+      .subscribe({
+        next: () => {
+          this.router.navigate(['/']);
 
-        const roleActions = {
-          [Role.EMPLOYEE]: this.employeeActions,
-          [Role.CLIENT]: this.clientActions,
-        };
-        const userRole = response.data.role as keyof typeof Role;
-
-        roleActions[userRole]();
-      },
-      error: () => this.notificationService.error('Error', 'Login'),
-    });
+          this.notificationService.success('Login feito com sucesso');
+        },
+        error: () => this.notificationService.error('Erro ao fazer login'),
+      });
   }
-
-  employeeActions = () => {
-    this.router.navigate(['/employee/requests']);
-    this.permissionService.accountRole.set(Role.EMPLOYEE);
-  };
-
-  clientActions = () => {
-    this.router.navigate(['/client/requests']);
-    this.permissionService.accountRole.set(Role.CLIENT);
-  };
 }

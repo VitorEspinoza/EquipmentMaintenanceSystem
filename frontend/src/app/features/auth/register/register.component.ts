@@ -173,7 +173,7 @@ export class RegisterComponent implements OnInit {
     };
 
     this.authService.register(payload).subscribe(() => {
-      this.router.navigate(['client/requests']);
+      this.router.navigate(['/']);
     });
   }
 }

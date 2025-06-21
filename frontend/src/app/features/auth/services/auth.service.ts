@@ -1,6 +1,7 @@
-import { inject, Injectable, signal } from '@angular/core';
-import { map, Observable, tap } from 'rxjs';
+import { computed, inject, Injectable, signal } from '@angular/core';
+import { Observable, tap } from 'rxjs';
 import { CrudService } from '../../../core/services/crud.service';
+import { Account } from '../models/account';
 import { LoginRequest } from '../models/loginRequest';
 import { LoginResponse } from '../models/loginResponse';
 import { RegisterRequest } from '../models/registerRequest';
@@ -10,33 +11,44 @@ import { DefaultResponse } from './../../../shared/models/DefaultResponse';
   providedIn: 'root',
 })
 export class AuthService {
-  private authenticatedSign = signal(false);
   private crudService = inject(CrudService);
   authPrefix = 'auth';
   clientPrefix = 'clients';
+  account = signal<Account | null>(null);
 
-  isAuthenticated(): boolean {
-    return this.authenticatedSign();
+  isAuthenticated = computed(() => {
+    const account = this.account();
+    console.log(account, 'isAuthenticated');
+    return account != null;
+  });
+
+  private setAccount(authRequest$: Observable<DefaultResponse<Account>>): Observable<DefaultResponse<Account>> {
+    return authRequest$.pipe(tap(response => this.account.set(response.data)));
   }
 
-  private setAuthenticated(value: boolean) {
-    this.authenticatedSign.set(value);
-  }
+  login(credentials: LoginRequest): Observable<DefaultResponse<Account>> {
+    const url = `${this.authPrefix}/login`;
+    const request$ = this.crudService.post<DefaultResponse<Account>>(url, credentials);
 
-  login(credentials: LoginRequest): Observable<DefaultResponse<LoginResponse>> {
-    return this.crudService.post<DefaultResponse<LoginResponse>>(`${this.authPrefix}/login`, credentials).pipe(
-      map(response => {
-        this.setAuthenticated(true);
-        return response;
-      })
-    );
+    return this.setAccount(request$);
   }
 
   register(credentials: RegisterRequest): Observable<DefaultResponse<LoginResponse>> {
     return this.crudService.post<DefaultResponse<LoginResponse>>(`${this.clientPrefix}`, credentials);
   }
 
+  getAccount(): Observable<DefaultResponse<Account>> {
+    return this.crudService
+      .get<DefaultResponse<Account>>(`${this.authPrefix}/me`)
+      .pipe(tap(response => this.account.set(response.data)));
+  }
+
   logout(): Observable<void> {
-    return this.crudService.post<void>(`${this.authPrefix}/logout`, {}).pipe(tap(() => this.setAuthenticated(false)));
+    return this.crudService.post<void>(`${this.authPrefix}/logout`, {}).pipe(
+      tap(() => {
+        console.log('tapeei por aqui');
+        this.account.set(null);
+      })
+    );
   }
 }
