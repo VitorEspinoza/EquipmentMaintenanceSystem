@@ -1,6 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { RequestState } from './../../../requests/shared/models/RequestState';
 
 import { HttpResponse } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
@@ -14,8 +13,9 @@ import { DataListViewComponent } from '../../../../shared/components/data-list-v
 import { DynamicTableComponent } from '../../../../shared/components/dynamic-table/dynamic-table.component';
 import { DataViewAction, TableAction, TableColumn } from '../../../../shared/models/TableColumn';
 import { FileDownloadService } from '../../../../shared/services/file-download.service';
-import { MaintenanceAction } from '../../../requests/shared/models/maintenanceActionComponent';
-import { MaintenanceRequest } from '../../../requests/shared/models/maintenanceRequest';
+import { MaintenanceAction } from '../../../requests/shared/models/maintenance-action/maintenance-action';
+import { MaintenanceRequest } from '../../../requests/shared/models/maintenance-request';
+import { MaintenanceRequestState } from '../../../requests/shared/models/maintenance-request-state';
 import { CLEARED_FILTERS_STATE, FiltersStateService } from '../../../requests/shared/services/filters-state.service';
 import { EmployeeRequestService } from '../../services/employee-request.service';
 import { ReportFilters } from '../../shared/models/reportFilters';
@@ -73,23 +73,23 @@ export class EmployeeRequestListComponent {
     return [filterAction];
   });
 
-  getStatusClass(status: RequestState): string {
+  getStatusClass(status: MaintenanceRequestState): string {
     switch (status) {
-      case RequestState.OPEN:
+      case MaintenanceRequestState.OPEN:
         return 'bg-gray-300 text-gray-600';
-      case RequestState.QUOTED:
+      case MaintenanceRequestState.QUOTED:
         return 'bg-amber-300 text-gray-600';
-      case RequestState.REJECTED:
+      case MaintenanceRequestState.REJECTED:
         return 'bg-red-300 text-gray-600';
-      case RequestState.APPROVED:
+      case MaintenanceRequestState.APPROVED:
         return 'bg-yellow-300 text-gray-600';
-      case RequestState.REDIRECTED:
+      case MaintenanceRequestState.REDIRECTED:
         return 'bg-purple-300 text-gray-600';
-      case RequestState.FIXED:
+      case MaintenanceRequestState.FIXED:
         return 'bg-blue-300 text-gray-600';
-      case RequestState.PAID:
+      case MaintenanceRequestState.PAID:
         return 'bg-orange-300 text-gray-600';
-      case RequestState.COMPLETED:
+      case MaintenanceRequestState.COMPLETED:
         return 'bg-green-300 text-gray-600';
       default:
         return 'bg-gray-300 text-gray-600';
@@ -99,14 +99,14 @@ export class EmployeeRequestListComponent {
   getBadgeClass = (element: MaintenanceRequest, columnKey: string): string => {
     if (columnKey === 'translatedState') {
       const stateClassMap: Record<string, string> = {
-        [RequestState.OPEN]: 'bg-gray-200',
-        [RequestState.QUOTED]: 'bg-orange-900',
-        [RequestState.REJECTED]: 'bg-red-200',
-        [RequestState.REDIRECTED]: 'bg-purple-200',
-        [RequestState.FIXED]: 'bg-blue-200',
-        [RequestState.APPROVED]: 'bg-yellow-200',
-        [RequestState.PAID]: 'bg-orange-200',
-        [RequestState.COMPLETED]: 'bg-green-200',
+        [MaintenanceRequestState.OPEN]: 'bg-gray-200',
+        [MaintenanceRequestState.QUOTED]: 'bg-orange-900',
+        [MaintenanceRequestState.REJECTED]: 'bg-red-200',
+        [MaintenanceRequestState.REDIRECTED]: 'bg-purple-200',
+        [MaintenanceRequestState.FIXED]: 'bg-blue-200',
+        [MaintenanceRequestState.APPROVED]: 'bg-yellow-200',
+        [MaintenanceRequestState.PAID]: 'bg-orange-200',
+        [MaintenanceRequestState.COMPLETED]: 'bg-green-200',
       };
 
       return stateClassMap[element.translatedState];
@@ -230,16 +230,16 @@ export class EmployeeRequestListComponent {
     };
 
     switch (element.translatedState) {
-      case RequestState.REDIRECTED:
-      case RequestState.APPROVED:
+      case MaintenanceRequestState.REDIRECTED:
+      case MaintenanceRequestState.APPROVED:
         return [{ ...defaultAction, label: 'Efetuar manutenção' }];
 
-      case RequestState.OPEN:
+      case MaintenanceRequestState.OPEN:
         return [{ ...defaultAction, label: 'Efetuar orçamento' }];
-      case RequestState.PAID:
+      case MaintenanceRequestState.PAID:
         return [{ label: 'Finalizar Serviço', action: MaintenanceAction.COMPLETE }];
       default: {
-        return element.translatedState !== RequestState.APPROVED ? [defaultAction] : [];
+        return element.translatedState !== MaintenanceRequestState.APPROVED ? [defaultAction] : [];
       }
     }
   };

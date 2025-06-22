@@ -1,4 +1,4 @@
-export enum RequestState {
+export enum MaintenanceRequestState {
   OPEN = 'ABERTA',
   QUOTED = 'ORÇADA',
   APPROVED = 'APROVADA',

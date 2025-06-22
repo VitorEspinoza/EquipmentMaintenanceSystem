@@ -12,7 +12,9 @@ import {
 } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
-import { FormState, MaintenanceActionComponent, MaintenanceActionData } from '../../models/maintenanceActionComponent';
+import { FormState } from '../../models/maintenance-action/form-state';
+import { IMaintenanceActionComponent } from '../../models/maintenance-action/maintenance-action-component';
+import { MaintenanceActionData } from '../../models/maintenance-action/maintenance-action-data';
 @Component({
   selector: 'app-maintenance-request-action-details-modal',
   imports: [MatDialogModule, MatButtonModule],
@@ -22,7 +24,7 @@ import { FormState, MaintenanceActionComponent, MaintenanceActionData } from '..
 export class MaintenanceRequestActionDetailsModalComponent<TFormData = 'any'> implements OnInit, OnDestroy {
   @ViewChild('dynamicComponentContainer', { read: ViewContainerRef, static: true })
   dynamicComponentContainer!: ViewContainerRef;
-  private componentRef = signal<ComponentRef<MaintenanceActionComponent<TFormData>> | null>(null);
+  private componentRef = signal<ComponentRef<IMaintenanceActionComponent<TFormData>> | null>(null);
   readonly data: MaintenanceActionData<TFormData> = inject(MAT_DIALOG_DATA);
   readonly dialogRef = inject(MatDialogRef<MaintenanceRequestActionDetailsModalComponent>);
 
@@ -46,7 +48,7 @@ export class MaintenanceRequestActionDetailsModalComponent<TFormData = 'any'> im
   private loadDynamicComponent(): void {
     this.dynamicComponentContainer.clear();
 
-    const componentRef: ComponentRef<MaintenanceActionComponent> = this.dynamicComponentContainer.createComponent(
+    const componentRef: ComponentRef<IMaintenanceActionComponent> = this.dynamicComponentContainer.createComponent(
       this.data.component
     );
 

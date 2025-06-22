@@ -4,7 +4,8 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { map, startWith } from 'rxjs';
-import { FormState, MaintenanceActionComponent } from '../../../requests/shared/models/maintenanceActionComponent';
+import { FormState } from '../../../requests/shared/models/maintenance-action/form-state';
+import { IMaintenanceActionComponent } from '../../../requests/shared/models/maintenance-action/maintenance-action-component';
 import { MaintenanceInfo } from '../../shared/models/maintenanceInfo';
 
 @Component({
@@ -13,7 +14,7 @@ import { MaintenanceInfo } from '../../shared/models/maintenanceInfo';
   templateUrl: './do-maintenance.component.html',
   styleUrl: './do-maintenance.component.css',
 })
-export class DoMaintenanceComponent implements MaintenanceActionComponent {
+export class DoMaintenanceComponent implements IMaintenanceActionComponent {
   private fb = inject(FormBuilder);
   maintenanceInfoForm: FormGroup = this.fb.group({
     maintenanceDescription: ['', Validators.required],

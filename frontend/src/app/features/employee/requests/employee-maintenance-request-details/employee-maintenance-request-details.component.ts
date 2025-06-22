@@ -1,6 +1,6 @@
 import { Component, input, signal } from '@angular/core';
 import { BaseMaintenanceRequestDetailsComponent } from '../../../requests/shared/components/base-maintenance-request-details/base-maintenance-request-details.component';
-import { MaintenanceRequest } from '../../../requests/shared/models/maintenanceRequest';
+import { MaintenanceRequest } from '../../../requests/shared/models/maintenance-request';
 
 @Component({
   selector: 'app-employee-maintenance-request-details',

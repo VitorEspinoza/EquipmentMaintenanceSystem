@@ -5,13 +5,12 @@ import { environment } from '../../../../environments/environment';
 import { CrudService } from '../../../core/services/crud.service';
 import { DefaultResponse } from '../../../shared/models/DefaultResponse';
 import { translateRequestState } from '../../../shared/utils';
-import { FiltersFormValue } from '../../requests/shared/models/FiltersFormValue';
-import {
-  IMaintenanceRequestService,
-  MaintenanceAction,
-  MaintenanceActionData,
-} from '../../requests/shared/models/maintenanceActionComponent';
-import { MaintenanceRequest } from '../../requests/shared/models/maintenanceRequest';
+import { FiltersFormValue } from '../../requests/shared/models/filters-form-value';
+import { MaintenanceRequest } from '../../requests/shared/models/maintenance-request';
+
+import { MaintenanceAction } from '../../requests/shared/models/maintenance-action/maintenance-action';
+import { MaintenanceActionData } from '../../requests/shared/models/maintenance-action/maintenance-action-data';
+import { IMaintenanceRequestService } from '../../requests/shared/models/maintenance-request-service';
 import { FiltersStateService } from '../../requests/shared/services/filters-state.service';
 import { MaintenanceActionService } from '../../requests/shared/services/maintenance-action.service';
 import { DoMaintenanceComponent } from '../requests/do-maintenance/do-maintenance.component';

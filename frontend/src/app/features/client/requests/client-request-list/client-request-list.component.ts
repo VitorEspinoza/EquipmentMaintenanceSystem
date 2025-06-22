@@ -6,9 +6,9 @@ import { NotificationService } from '../../../../core/services/notification.serv
 import { DataListViewComponent } from '../../../../shared/components/data-list-view/data-list-view.component';
 import { DynamicTableComponent } from '../../../../shared/components/dynamic-table/dynamic-table.component';
 import { DataViewAction, TableAction, TableColumn } from '../../../../shared/models/TableColumn';
-import { MaintenanceAction } from '../../../requests/shared/models/maintenanceActionComponent';
-import { MaintenanceRequest } from '../../../requests/shared/models/maintenanceRequest';
-import { RequestState } from '../../../requests/shared/models/RequestState';
+import { MaintenanceAction } from '../../../requests/shared/models/maintenance-action/maintenance-action';
+import { MaintenanceRequest } from '../../../requests/shared/models/maintenance-request';
+import { MaintenanceRequestState } from '../../../requests/shared/models/maintenance-request-state';
 import { CLEARED_FILTERS_STATE, FiltersStateService } from '../../../requests/shared/services/filters-state.service';
 import { ClientRequestService } from '../../shared/services/client-request.service';
 import { CreateRequestModalComponent } from '../create-request-modal/create-request-modal.component';
@@ -71,14 +71,14 @@ export class ClientRequestListComponent {
   getBadgeClass = (element: MaintenanceRequest, columnKey: string): string => {
     if (columnKey === 'translatedState') {
       const stateClassMap: Record<string, string> = {
-        [RequestState.OPEN]: 'bg-gray-200',
-        [RequestState.QUOTED]: 'bg-orange-900',
-        [RequestState.REJECTED]: 'bg-red-200',
-        [RequestState.REDIRECTED]: 'bg-purple-200',
-        [RequestState.FIXED]: 'bg-blue-200',
-        [RequestState.APPROVED]: 'bg-yellow-200',
-        [RequestState.PAID]: 'bg-orange-200',
-        [RequestState.COMPLETED]: 'bg-green-200',
+        [MaintenanceRequestState.OPEN]: 'bg-gray-200',
+        [MaintenanceRequestState.QUOTED]: 'bg-orange-900',
+        [MaintenanceRequestState.REJECTED]: 'bg-red-200',
+        [MaintenanceRequestState.REDIRECTED]: 'bg-purple-200',
+        [MaintenanceRequestState.FIXED]: 'bg-blue-200',
+        [MaintenanceRequestState.APPROVED]: 'bg-yellow-200',
+        [MaintenanceRequestState.PAID]: 'bg-orange-200',
+        [MaintenanceRequestState.COMPLETED]: 'bg-green-200',
       };
 
       return stateClassMap[element.translatedState];
@@ -94,14 +94,14 @@ export class ClientRequestListComponent {
     };
 
     switch (element.translatedState) {
-      case RequestState.QUOTED:
+      case MaintenanceRequestState.QUOTED:
         return [{ ...defaultAction, label: 'Aprovar ou Rejeitar' }];
-      case RequestState.REJECTED:
+      case MaintenanceRequestState.REJECTED:
         return [{ label: 'Resgatar Serviço', action: MaintenanceAction.RESCUE }];
-      case RequestState.FIXED:
+      case MaintenanceRequestState.FIXED:
         return [{ ...defaultAction, label: 'Pagar Serviço' }];
       default: {
-        return element.translatedState !== RequestState.APPROVED ? [defaultAction] : [];
+        return element.translatedState !== MaintenanceRequestState.APPROVED ? [defaultAction] : [];
       }
     }
   };

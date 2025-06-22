@@ -15,13 +15,14 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { DynamicTableComponent } from '../../../../../shared/components/dynamic-table/dynamic-table.component';
 import { TableColumn } from '../../../../../shared/models/TableColumn';
+import { MaintenanceRequest } from '../../models/maintenance-request';
+
+import { MaintenanceAction } from '../../models/maintenance-action/maintenance-action';
+import { MaintenanceRequestState } from '../../models/maintenance-request-state';
 import {
-  MAINTENANCE_REQUEST_STRATEGY,
-  MaintenanceAction,
-  MaintenanceRequestStrategy,
-} from '../../models/maintenanceActionComponent';
-import { RequestState } from '../../models/RequestState';
-import { MaintenanceRequest } from './../../models/maintenanceRequest';
+  MAINTENANCE_REQUEST_DETAILS_STRATEGY,
+  MaintenanceRequestDetailsStrategy,
+} from '../../models/strategies/maintenance-request-details-strategy';
 @Component({
   selector: 'app-base-maintenance-request-details',
   imports: [
@@ -42,7 +43,7 @@ import { MaintenanceRequest } from './../../models/maintenanceRequest';
 })
 export class BaseMaintenanceRequestDetailsComponent {
   requestId = input.required<string>();
-  private strategy: MaintenanceRequestStrategy = inject(MAINTENANCE_REQUEST_STRATEGY);
+  private strategy: MaintenanceRequestDetailsStrategy = inject(MAINTENANCE_REQUEST_DETAILS_STRATEGY);
   private readonly notificationService = inject(NotificationService);
   private refreshTrigger = signal(0);
 
@@ -90,15 +91,15 @@ export class BaseMaintenanceRequestDetailsComponent {
     }
     const state = this.request()!.state;
 
-    const map: Record<RequestState, string> = {
-      [RequestState.OPEN]: 'bg-gray-500 text-white',
-      [RequestState.QUOTED]: 'bg-yellow-800 text-white',
-      [RequestState.REJECTED]: 'bg-red-600 text-white',
-      [RequestState.APPROVED]: 'bg-yellow-500 text-white',
-      [RequestState.REDIRECTED]: 'bg-purple-600 text-white',
-      [RequestState.FIXED]: 'bg-blue-500 text-white',
-      [RequestState.PAID]: 'bg-orange-500 text-white',
-      [RequestState.COMPLETED]: 'bg-green-600 text-white',
+    const map: Record<MaintenanceRequestState, string> = {
+      [MaintenanceRequestState.OPEN]: 'bg-gray-500 text-white',
+      [MaintenanceRequestState.QUOTED]: 'bg-yellow-800 text-white',
+      [MaintenanceRequestState.REJECTED]: 'bg-red-600 text-white',
+      [MaintenanceRequestState.APPROVED]: 'bg-yellow-500 text-white',
+      [MaintenanceRequestState.REDIRECTED]: 'bg-purple-600 text-white',
+      [MaintenanceRequestState.FIXED]: 'bg-blue-500 text-white',
+      [MaintenanceRequestState.PAID]: 'bg-orange-500 text-white',
+      [MaintenanceRequestState.COMPLETED]: 'bg-green-600 text-white',
     };
 
     return map[state] || defaultClass;

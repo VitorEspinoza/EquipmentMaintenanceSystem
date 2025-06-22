@@ -1,8 +1,8 @@
 import { Routes } from '@angular/router';
 import { Role } from '../../core/models/role';
 import { permissionsGuard } from '../auth/guards/permissions.guard';
-import { MAINTENANCE_REQUEST_STRATEGY } from '../requests/shared/models/maintenanceActionComponent';
-import { EmployeeMaintenanceRequestStrategy } from './requests/EmployeeMaintenanceRequestStrategy';
+import { MAINTENANCE_REQUEST_DETAILS_STRATEGY } from '../requests/shared/models/strategies/maintenance-request-details-strategy';
+import { EmployeeMaintenanceRequestDetailStrategy } from './requests/strategies/employee-maintenance-request-strategy';
 export const employeeRoutes: Routes = [
   {
     path: 'employee/requests',
@@ -29,8 +29,8 @@ export const employeeRoutes: Routes = [
     canActivate: [permissionsGuard],
     providers: [
       {
-        provide: MAINTENANCE_REQUEST_STRATEGY,
-        useClass: EmployeeMaintenanceRequestStrategy,
+        provide: MAINTENANCE_REQUEST_DETAILS_STRATEGY,
+        useClass: EmployeeMaintenanceRequestDetailStrategy,
       },
     ],
   },
