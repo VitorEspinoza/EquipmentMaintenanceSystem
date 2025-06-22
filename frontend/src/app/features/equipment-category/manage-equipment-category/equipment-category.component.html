@@ -1,7 +1,7 @@
 <div class="p-6 space-y-6">
   <h2 class="text-2xl font-bold">Categorias de Equipamento</h2>
 
-  <form #form="ngForm" [formGroup]="categoryForm" (ngSubmit)="saveCategory()" class="space-y-4">
+  <form [formGroup]="categoryForm" (ngSubmit)="saveCategory()" class="space-y-4">
     <mat-form-field appearance="outline" class="w-full">
       <mat-label>Nome da categoria</mat-label>
       <input matInput placeholder="Notebook" formControlName="name" />
@@ -14,14 +14,17 @@
     </mat-form-field>
 
     <button mat-raised-button color="accent" type="submit" [disabled]="categoryForm.invalid">
-      {{ selectedCategory ? 'Atualizar' : 'Adicionar' }}
+      {{ selectedCategory() ? 'Atualizar' : 'Adicionar' }}
     </button>
   </form>
 
   <div class="mt-8">
     <h3 class="text-lg font-semibold mb-2">Lista de Categorias</h3>
+    <mat-slide-toggle class="mb-2" (change)="onToggleChange()" labelPosition="before">
+      <b>Inativos</b>
+    </mat-slide-toggle>
     <app-dynamic-table
-      [dataSource]="categories"
+      [dataSource]="categories()"
       [columns]="tableColumns()"
       [actionsResolver]="getRowActions"
       (actionClicked)="handleAction($event)"
