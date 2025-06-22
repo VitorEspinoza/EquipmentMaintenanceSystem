@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, signal, ViewChild } from '@angular/core';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import {
   FormBuilder,
   FormGroup,
@@ -20,17 +21,17 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
 import { NgxMaskDirective } from 'ngx-mask';
+import { catchError, map, of, switchMap } from 'rxjs';
 import { NotificationService } from '../../../core/services/notification.service';
 import { DynamicTableComponent } from '../../../shared/components/dynamic-table/dynamic-table.component';
 import { ConfirmDeleteModalComponent } from '../../../shared/confirm-dialog/confirm-dialog/confirm-dialog.component';
-import { DefaultResponse } from '../../../shared/models/DefaultResponse';
 import { TableColumn } from '../../../shared/models/TableColumn';
 import { AuthService } from '../../auth/services/auth.service';
 import { Employee } from '../models/Employee';
 import { EmployeeService } from '../services/employee.service';
+import { DefaultResponse } from './../../../shared/models/DefaultResponse';
 import { TableAction } from './../../../shared/models/TableColumn';
 
 const MATERIAL_MODULES = [
@@ -42,7 +43,6 @@ const MATERIAL_MODULES = [
   MatOptionModule,
   MatSelectModule,
   MatAutocompleteModule,
-  MatTableModule,
   MatDatepickerModule,
   MatNativeDateModule,
   MatSlideToggleModule,
@@ -88,12 +88,27 @@ export class ManageEmployeesComponent implements OnInit {
 
   @ViewChild(FormGroupDirective) private formDirective!: FormGroupDirective;
 
-  employees: Employee[] = [];
-  selectedEmployee: Employee | null = null;
+  readonly employees = signal<Employee[]>([]);
+
+  private filterByActiveEmployees = signal<boolean>(true);
+
+  private readonly employees$ = toObservable(this.filterByActiveEmployees).pipe(
+    takeUntilDestroyed(),
+    switchMap(active =>
+      this.employeeService.getAll(active).pipe(
+        map(response => response.data),
+        catchError(err => {
+          const errorMessage = err?.error?.errors?.join(', ') || 'Falha ao carregar funcionários';
+          this.notificationService.error(errorMessage);
+          return of([]);
+        })
+      )
+    )
+  );
+
+  selectedEmployee = signal<Employee | null>(null);
 
   employeeForm!: FormGroup;
-
-  isChecked = false;
 
   tableColumns = signal<TableColumn[]>([
     {
@@ -142,7 +157,8 @@ export class ManageEmployeesComponent implements OnInit {
 
     const actions = [editAction];
 
-    const canDelete = this.authService.account()?.email != element.email;
+    const filterByActiveEmployees = this.filterByActiveEmployees();
+    const canDelete = this.authService.account()?.email != element.email && filterByActiveEmployees;
     if (canDelete) actions.push(deleteAction);
     return actions;
   };
@@ -156,18 +172,8 @@ export class ManageEmployeesComponent implements OnInit {
       password: ['', Validators.required],
     });
 
-    this.loadEmployees();
-  }
-
-  loadEmployees(): void {
-    this.employeeService.getAll(!this.isChecked).subscribe({
-      next: (response: DefaultResponse<Employee[]>) => {
-        this.employees = response.data;
-      },
-      error: err => {
-        const errorMessage = err?.error?.errors?.join(', ') || 'Falha ao carregar funcionários';
-        this.notificationService.error(errorMessage);
-      },
+    this.employees$.subscribe(fetchedEmployees => {
+      this.employees.set(fetchedEmployees);
     });
   }
 
@@ -187,7 +193,7 @@ export class ManageEmployeesComponent implements OnInit {
   }
 
   private clearSelectionAndResetForm(): void {
-    this.selectedEmployee = null;
+    this.selectedEmployee.set(null);
     this.employeeForm.reset();
     if (this.formDirective) {
       this.formDirective.resetForm();
@@ -200,12 +206,18 @@ export class ManageEmployeesComponent implements OnInit {
     this.employeeService.update(employee).subscribe({
       next: (response: DefaultResponse<Employee>) => {
         const updatedEmployee = response.data;
-        const updatedEmployeeIndex = this.employees.findIndex(e => e.id === updatedEmployee.id);
-        if (updatedEmployeeIndex === -1) return;
+        this.employees.update(currentEmployees => {
+          const updatedEmployeeIndex = currentEmployees.findIndex(e => e.id === updatedEmployee.id);
 
-        const newEmployees = [...this.employees];
-        newEmployees[updatedEmployeeIndex] = updatedEmployee;
-        this.employees = newEmployees;
+          if (updatedEmployeeIndex === -1) {
+            return currentEmployees;
+          }
+
+          const newEmployees = [...currentEmployees];
+          newEmployees[updatedEmployeeIndex] = updatedEmployee;
+
+          return newEmployees;
+        });
 
         this.notificationService.success('Funcionário atualizado!');
         this.clearSelectionAndResetForm();
@@ -222,7 +234,7 @@ export class ManageEmployeesComponent implements OnInit {
       next: (response: DefaultResponse<Employee>) => {
         const createdEmp = response.data;
         this.notificationService.success('Funcionário criado!');
-        this.employees = [...this.employees, createdEmp];
+        this.employees.update(currentEmployes => [...currentEmployes, createdEmp]);
         this.clearSelectionAndResetForm();
       },
       error: err => {
@@ -232,9 +244,9 @@ export class ManageEmployeesComponent implements OnInit {
     });
   }
 
-  setSelectedEmployee = (emp: Employee): void => {
-    this.selectedEmployee = emp;
-    this.employeeForm.patchValue(emp);
+  setSelectedEmployee = (employee: Employee): void => {
+    this.selectedEmployee.set(employee);
+    this.employeeForm.patchValue(employee);
 
     this.employeeForm.get('password')?.clearValidators();
     this.employeeForm.get('password')?.updateValueAndValidity();
@@ -263,7 +275,7 @@ export class ManageEmployeesComponent implements OnInit {
       if (confirmed) {
         this.employeeService.delete(emp.id).subscribe({
           next: () => {
-            this.loadEmployees();
+            this.employees.update(currentEmployees => currentEmployees.filter(e => e.id !== emp.id));
             this.notificationService.success('Funcionário removido!');
           },
           error: err => {
@@ -284,6 +296,6 @@ export class ManageEmployeesComponent implements OnInit {
   }
 
   onToggleChange(): void {
-    this.loadEmployees();
+    this.filterByActiveEmployees.update(value => !value);
   }
 }
