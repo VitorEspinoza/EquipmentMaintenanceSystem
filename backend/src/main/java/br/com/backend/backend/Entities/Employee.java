@@ -32,11 +32,10 @@ public class Employee {
     @Column(name = "birth_date")
     private LocalDate birthDate;
 
-    public void update(String name, String email, String role, LocalDate birthDate) {
+    public void update(String name, String email, LocalDate birthDate) {
         this.name = name;
         this.birthDate = birthDate;
         this.account.setEmail(email);
-        this.account.setRole(role);
     }
 
     public void inactivate() {

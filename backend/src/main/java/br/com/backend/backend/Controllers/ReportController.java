@@ -24,24 +24,24 @@ public class ReportController {
 
     @GetMapping("/revenue")
     public ResponseEntity<byte[]> getRevenue(
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
-            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to
+            @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+            @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to
     ) throws IOException {
-        ResultViewModel<byte[]> pdfBytes = reportService.getRevenueReport(from, to);
+        byte[] pdfBytes = reportService.getRevenueReport(from, to);
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=reporte-receita.pdf")
                 .contentType(MediaType.APPLICATION_PDF)
-                .body(pdfBytes.getData());
+                .body(pdfBytes);
     }
 
     @GetMapping("/revenue-by-category")
     public ResponseEntity<byte[]> getRevenueByCategory() throws IOException {
-        ResultViewModel<byte[]> pdfBytes = reportService.getRevenueByEquipmentCategoryReport();
+        byte[] pdfBytes = reportService.getRevenueByEquipmentCategoryReport();
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=reporte-receita.pdf")
                 .contentType(MediaType.APPLICATION_PDF)
-                .body(pdfBytes.getData());
+                .body(pdfBytes);
     }
 }

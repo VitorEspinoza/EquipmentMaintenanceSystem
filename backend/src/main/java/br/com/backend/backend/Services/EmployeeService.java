@@ -68,7 +68,7 @@ public class EmployeeService {
             throw new AccountAlreadyExists("email");
         }
 
-        employee.update(dto.getName(), dto.getEmail(), dto.getRole(), dto.getBirthDate());
+        employee.update(dto.getName(), dto.getEmail(), dto.getBirthDate());
         employeeRepository.save(employee);
         return ResultViewModel.success(EmployeeDTO.fromEntity(employee));
     }

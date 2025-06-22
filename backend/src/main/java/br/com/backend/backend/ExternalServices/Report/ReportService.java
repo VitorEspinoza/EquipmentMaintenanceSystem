@@ -24,7 +24,7 @@ import java.util.List;
 public class ReportService {
     private final MaintenanceRequestRepository maintenanceRequestRepository;
 
-    public ResultViewModel<byte[]> getRevenueReport(LocalDate from, LocalDate to) throws IOException {
+    public byte[] getRevenueReport(LocalDate from, LocalDate to) throws IOException {
         if (from != null && to != null && from.isAfter(to)) {
             throw new IllegalArgumentException("Start date cannot be after end date");
         }
@@ -38,10 +38,10 @@ public class ReportService {
         IData<RevenueReportProjection> dataExtractor = new RevenueReportDataExtractor();
         IPdfReportBuilder<IData<RevenueReportProjection>> pdfBuilder = new PdfReportBuilder<>();
         ReportTemplate template = new RevenueReportTemplate(data, pdfBuilder, dataExtractor);
-        return ResultViewModel.success(template.render());
+        return template.render();
     }
 
-    public ResultViewModel<byte[]> getRevenueByEquipmentCategoryReport() throws IOException {
+    public byte[] getRevenueByEquipmentCategoryReport() throws IOException {
         List<RevenueReportByCategoryProjection> data = maintenanceRequestRepository.getRevenueByCategoryReport();
 
         if (data.isEmpty()) {
@@ -51,7 +51,7 @@ public class ReportService {
         IData<RevenueReportByCategoryProjection> dataExtractor = new RevenueReportByCategoryDataExtractor();
         IPdfReportBuilder<IData<RevenueReportByCategoryProjection>> pdfBuilder = new PdfReportBuilder<>();
         ReportTemplate template = new RevenueReportByCategoryTemplate(data, pdfBuilder, dataExtractor);
-        return ResultViewModel.success(template.render());
+        return template.render();
     }
 
     private List<RevenueReportProjection> fetchRevenueData(LocalDate from, LocalDate to) {
