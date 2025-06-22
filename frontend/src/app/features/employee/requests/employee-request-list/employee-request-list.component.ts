@@ -21,11 +21,16 @@ import { EmployeeRequestService } from '../../services/employee-request.service'
 import { ReportFilters } from '../../shared/models/reportFilters';
 import { ReportFilterModalComponent } from '../report-filter-modal/report-filter-modal.component';
 
-const SMART_COMPONENTS = [DataListViewComponent, DynamicTableComponent];
-const MATERIAL_MODULES = [MatMenuModule, MatIconModule, MatButtonModule, MatTooltipModule];
 @Component({
   selector: 'app-employee-request-list',
-  imports: [...SMART_COMPONENTS, ...MATERIAL_MODULES],
+  imports: [
+    DataListViewComponent,
+    DynamicTableComponent,
+    MatMenuModule,
+    MatIconModule,
+    MatButtonModule,
+    MatTooltipModule,
+  ],
   templateUrl: './employee-request-list.component.html',
   styleUrl: './employee-request-list.component.css',
 })

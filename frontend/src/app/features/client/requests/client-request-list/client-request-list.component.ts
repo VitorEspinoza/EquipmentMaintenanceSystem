@@ -1,12 +1,6 @@
-import { CommonModule } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatIconModule } from '@angular/material/icon';
-import { MatTableModule } from '@angular/material/table';
-import { RouterModule } from '@angular/router';
 import { EMPTY, map, startWith, switchMap } from 'rxjs';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { DataListViewComponent } from '../../../../shared/components/data-list-view/data-list-view.component';
@@ -19,13 +13,9 @@ import { CLEARED_FILTERS_STATE, FiltersStateService } from '../../../requests/sh
 import { ClientRequestService } from '../../shared/services/client-request.service';
 import { CreateRequestModalComponent } from '../create-request-modal/create-request-modal.component';
 
-const MATERIAL_MODULES = [MatTableModule, MatButtonModule, MatDividerModule, MatIconModule];
-const COMMON_MODULES = [CommonModule, MatButtonModule];
-const CORE_MODULES = [RouterModule];
-const SMART_COMPONENTS = [DynamicTableComponent, DataListViewComponent];
 @Component({
   selector: 'app-client-request-list',
-  imports: [...MATERIAL_MODULES, ...CORE_MODULES, ...COMMON_MODULES, ...SMART_COMPONENTS],
+  imports: [DynamicTableComponent, DataListViewComponent],
   templateUrl: './client-request-list.component.html',
   styleUrls: ['./client-request-list.component.css'],
 })
