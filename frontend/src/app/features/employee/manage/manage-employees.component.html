@@ -1,7 +1,7 @@
 <div class="p-4 md:p-8">
   <h2 class="text-xl font-bold mb-4">Gerenciar Funcionários</h2>
 
-  <form #form="ngForm" [formGroup]="employeeForm" (ngSubmit)="onSubmit()" class="grid gap-4 md:grid-cols-2">
+  <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()" class="grid gap-4 md:grid-cols-2">
     <mat-form-field appearance="outline">
       <mat-label>Nome</mat-label>
       <input matInput formControlName="name" required />
@@ -28,7 +28,7 @@
         name="birthDate"
         [formControlName]="'birthDate'"
         [matDatepicker]="picker"
-        (input)="formatDate($event)"
+        placeholder="DD/MM/AAAA"
         maxlength="10"
         required
       />
@@ -39,7 +39,7 @@
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
 
-    @if (!selectedEmployee) {
+    @if (!selectedEmployee()) {
       <mat-form-field appearance="outline">
         <mat-label>Senha</mat-label>
         <input matInput formControlName="password" type="password" required />
@@ -51,18 +51,18 @@
 
     <div class="md:col-span-2">
       <button mat-raised-button color="primary" type="submit" [disabled]="!employeeForm.valid">
-        {{ selectedEmployee ? 'Atualizar' : 'Adicionar' }} Funcionário
+        {{ selectedEmployee() ? 'Atualizar' : 'Adicionar' }} Funcionário
       </button>
     </div>
   </form>
 
   <div class="mt-8">
     <h3 class="text-lg font-semibold mb-2">Lista de Funcionários</h3>
-    <mat-slide-toggle class="mb-2" [(ngModel)]="isChecked" (change)="onToggleChange()" labelPosition="before">
+    <mat-slide-toggle class="mb-2" (change)="onToggleChange()" labelPosition="before">
       <b>Inativos</b>
     </mat-slide-toggle>
     <app-dynamic-table
-      [dataSource]="employees"
+      [dataSource]="employees()"
       [columns]="tableColumns()"
       [actionsResolver]="getRowActions"
       (actionClicked)="handleAction($event)"

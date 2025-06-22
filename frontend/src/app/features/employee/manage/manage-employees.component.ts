@@ -1,6 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, signal, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import {
+  FormBuilder,
+  FormGroup,
+  FormGroupDirective,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { provideMomentDateAdapter } from '@angular/material-moment-adapter';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
@@ -13,16 +21,17 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatTableModule } from '@angular/material/table';
 import { RouterModule } from '@angular/router';
 import { NgxMaskDirective } from 'ngx-mask';
+import { catchError, map, of, switchMap } from 'rxjs';
 import { NotificationService } from '../../../core/services/notification.service';
 import { DynamicTableComponent } from '../../../shared/components/dynamic-table/dynamic-table.component';
 import { ConfirmDeleteModalComponent } from '../../../shared/confirm-dialog/confirm-dialog/confirm-dialog.component';
-import { DefaultResponse } from '../../../shared/models/DefaultResponse';
 import { TableColumn } from '../../../shared/models/TableColumn';
+import { AuthService } from '../../auth/services/auth.service';
 import { Employee } from '../models/Employee';
 import { EmployeeService } from '../services/employee.service';
+import { DefaultResponse } from './../../../shared/models/DefaultResponse';
 import { TableAction } from './../../../shared/models/TableColumn';
 
 const MATERIAL_MODULES = [
@@ -34,7 +43,6 @@ const MATERIAL_MODULES = [
   MatOptionModule,
   MatSelectModule,
   MatAutocompleteModule,
-  MatTableModule,
   MatDatepickerModule,
   MatNativeDateModule,
   MatSlideToggleModule,
@@ -75,16 +83,32 @@ export class ManageEmployeesComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly employeeService = inject(EmployeeService);
   private readonly notificationService = inject(NotificationService);
+  private readonly authService = inject(AuthService);
   private readonly dialog = inject(MatDialog);
-  @ViewChild('form') form: any;
 
-  employees: Employee[] = [];
-  selectedEmployee: Employee | null = null;
+  @ViewChild(FormGroupDirective) private formDirective!: FormGroupDirective;
+
+  readonly employees = signal<Employee[]>([]);
+
+  private filterByActiveEmployees = signal<boolean>(true);
+
+  private readonly employees$ = toObservable(this.filterByActiveEmployees).pipe(
+    takeUntilDestroyed(),
+    switchMap(active =>
+      this.employeeService.getAll(active).pipe(
+        map(response => response.data),
+        catchError(err => {
+          const errorMessage = err?.error?.errors?.join(', ') || 'Falha ao carregar funcionários';
+          this.notificationService.error(errorMessage);
+          return of([]);
+        })
+      )
+    )
+  );
+
+  selectedEmployee = signal<Employee | null>(null);
 
   employeeForm!: FormGroup;
-
-  isChecked = false;
-  loggedEmail = localStorage.getItem('email');
 
   tableColumns = signal<TableColumn[]>([
     {
@@ -114,7 +138,7 @@ export class ManageEmployeesComponent implements OnInit {
   handleAction(event: { tableAction: TableAction<'EDIT' | 'DELETE'>; element: Employee }) {
     const action = event.tableAction.action;
     const actionHandler = {
-      EDIT: this.editEmployee,
+      EDIT: this.setSelectedEmployee,
       DELETE: this.deleteEmployee,
     };
     actionHandler[action](event.element);
@@ -133,7 +157,9 @@ export class ManageEmployeesComponent implements OnInit {
 
     const actions = [editAction];
 
-    if (element.email != this.loggedEmail) actions.push(deleteAction);
+    const filterByActiveEmployees = this.filterByActiveEmployees();
+    const canDelete = this.authService.account()?.email != element.email && filterByActiveEmployees;
+    if (canDelete) actions.push(deleteAction);
     return actions;
   };
 
@@ -144,89 +170,83 @@ export class ManageEmployeesComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       birthDate: [null, Validators.required],
       password: ['', Validators.required],
-      role: ['EMPLOYEE'],
     });
 
-    this.loadEmployees();
-  }
-
-  loadEmployees(): void {
-    this.employeeService.getAll(!this.isChecked).subscribe({
-      next: (response: DefaultResponse<Employee[]>) => {
-        if (response.isSuccess) {
-          this.employees = response.data;
-        } else {
-          this.notificationService.error('Erro', response.errors.join(', ') || 'Falha ao carregar funcionários');
-        }
-      },
-      error: err => {
-        console.error('Erro ao carregar funcionários:', err);
-        this.notificationService.error('Erro', 'Erro de comunicação com o servidor');
-      },
+    this.employees$.subscribe(fetchedEmployees => {
+      this.employees.set(fetchedEmployees);
     });
   }
 
   onSubmit(): void {
-    if (this.employeeForm.invalid) return;
-
-    const emp = this.employeeForm.value;
-
-    if (emp.id) {
-      this.employeeService.update(emp).subscribe({
-        next: (response: DefaultResponse<Employee>) => {
-          if (response.isSuccess) {
-            const updatedEmp = response.data;
-            const index = this.employees.findIndex(e => e.id === updatedEmp.id);
-
-            if (index !== -1) {
-              this.employees[index] = updatedEmp;
-              this.employees = [...this.employees];
-              this.notificationService.success('Sucesso', 'Funcionário atualizado!');
-            } else {
-              console.error('Funcionário não encontrado na lista para atualização.');
-              this.notificationService.error('Erro', 'Funcionário não encontrado na lista.');
-            }
-          } else {
-            const msg = response.errors?.join(', ') || 'Falha ao atualizar funcionário.';
-            this.notificationService.error('Erro', msg);
-          }
-        },
-        error: () => {
-          this.notificationService.error('Erro', 'Erro ao atualizar funcionário.');
-        },
-      });
-    } else {
-      this.employeeService.create(emp).subscribe({
-        next: (response: DefaultResponse<Employee>) => {
-          console.log('response:', response);
-          if (response.isSuccess) {
-            console.log('Funcionário criado com sucesso:', response.data);
-            const createdEmp = response.data;
-            this.notificationService.success('Sucesso', 'Funcionário criado!');
-            this.employees = [...this.employees, createdEmp];
-          } else {
-            this.notificationService.error('Erro', response.errors.join(', ') || 'Falha ao criar funcionário');
-          }
-        },
-        error: err => {
-          const errorMessage = err?.error?.errors?.join(', ') || 'Erro de comunicação com o servidor';
-          this.notificationService.error('Erro', errorMessage);
-        },
-      });
-
-      console.log('Adicionando novo funcionário:', emp);
+    if (this.employeeForm.invalid) {
+      this.employeeForm.markAllAsTouched();
+      return;
     }
 
-    console.log('Lista de Funcionários:', this.employees);
+    const isUpdate = this.employeeForm.get('id')?.value;
 
-    this.selectedEmployee = null;
-    this.employeeForm.reset();
-    this.form.resetForm();
+    if (isUpdate) {
+      this.updateEmployee();
+    } else {
+      this.createEmployee();
+    }
   }
 
-  editEmployee = (emp: Employee): void => {
-    this.selectedEmployee = emp;
-    this.employeeForm.patchValue(emp);
+  private clearSelectionAndResetForm(): void {
+    this.selectedEmployee.set(null);
+    this.employeeForm.reset();
+    if (this.formDirective) {
+      this.formDirective.resetForm();
+    }
+  }
+
+  updateEmployee() {
+    const employee = this.employeeForm.value;
+
+    this.employeeService.update(employee).subscribe({
+      next: (response: DefaultResponse<Employee>) => {
+        const updatedEmployee = response.data;
+        this.employees.update(currentEmployees => {
+          const updatedEmployeeIndex = currentEmployees.findIndex(e => e.id === updatedEmployee.id);
+
+          if (updatedEmployeeIndex === -1) {
+            return currentEmployees;
+          }
+
+          const newEmployees = [...currentEmployees];
+          newEmployees[updatedEmployeeIndex] = updatedEmployee;
+
+          return newEmployees;
+        });
+
+        this.notificationService.success('Funcionário atualizado!');
+        this.clearSelectionAndResetForm();
+      },
+      error: () => {
+        this.notificationService.error('Erro ao atualizar funcionário.');
+      },
+    });
+  }
+
+  createEmployee() {
+    const employee = this.employeeForm.value;
+    this.employeeService.create(employee).subscribe({
+      next: (response: DefaultResponse<Employee>) => {
+        const createdEmp = response.data;
+        this.notificationService.success('Funcionário criado!');
+        this.employees.update(currentEmployes => [...currentEmployes, createdEmp]);
+        this.clearSelectionAndResetForm();
+      },
+      error: err => {
+        const errorMessage = err?.error?.errors?.join(', ') || 'Houve um erro ao criar o funcionário.';
+        this.notificationService.error(errorMessage);
+      },
+    });
+  }
+
+  setSelectedEmployee = (employee: Employee): void => {
+    this.selectedEmployee.set(employee);
+    this.employeeForm.patchValue(employee);
 
     this.employeeForm.get('password')?.clearValidators();
     this.employeeForm.get('password')?.updateValueAndValidity();
@@ -235,12 +255,12 @@ export class ManageEmployeesComponent implements OnInit {
   deleteEmployee = (emp: Employee): void => {
     const email = localStorage.getItem('email');
     if (emp.email === email) {
-      this.notificationService.error('Erro', 'Você não pode se remover.');
+      this.notificationService.error('Você não pode se remover.');
       return;
     }
 
     if (this.employees.length === 1) {
-      this.notificationService.error('Erro', 'Deve haver pelo menos um funcionário.');
+      this.notificationService.error('Deve haver pelo menos um funcionário.');
       return;
     }
 
@@ -255,27 +275,20 @@ export class ManageEmployeesComponent implements OnInit {
       if (confirmed) {
         this.employeeService.delete(emp.id).subscribe({
           next: () => {
-            this.loadEmployees();
-            this.notificationService.success('Sucesso', 'Funcionário removido!');
+            this.employees.update(currentEmployees => currentEmployees.filter(e => e.id !== emp.id));
+            this.notificationService.success('Funcionário removido!');
           },
           error: err => {
-            this.notificationService.error('Erro', 'Erro ao remover funcionário.' + (err.error?.message || ''));
+            this.notificationService.error('Erro ao remover funcionário.' + (err.error?.message || ''));
           },
         });
       } else {
-        this.notificationService.info('Cancelado', 'Exclusão cancelada.');
+        this.notificationService.info('Exclusão cancelada.', 'Cancelada');
       }
     });
   };
 
-  formatDate(event: any) {
-    let input = event.target.value.replace(/\D/g, '');
-    if (input.length > 2) input = input.slice(0, 2) + '/' + input.slice(2);
-    if (input.length > 5) input = input.slice(0, 5) + '/' + input.slice(5);
-    event.target.value = input;
-  }
-
   onToggleChange(): void {
-    this.loadEmployees();
+    this.filterByActiveEmployees.update(value => !value);
   }
 }
