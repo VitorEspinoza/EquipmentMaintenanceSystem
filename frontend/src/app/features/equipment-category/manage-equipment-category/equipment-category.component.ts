@@ -1,11 +1,14 @@
 import { Component, inject, OnInit, signal, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { FormBuilder, FormGroup, FormGroupDirective, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { catchError, map, of, switchMap } from 'rxjs';
 import { NotificationService } from '../../../core/services/notification.service';
 import { DynamicTableComponent } from '../../../shared/components/dynamic-table/dynamic-table.component';
 import { ConfirmDeleteModalComponent } from '../../../shared/confirm-dialog/confirm-dialog/confirm-dialog.component';
@@ -25,6 +28,7 @@ import { EquipmentCategoryService } from '../services/equipment-category.service
     MatListModule,
     MatIconModule,
     DynamicTableComponent,
+    MatSlideToggleModule,
   ],
   templateUrl: './equipment-category.component.html',
 })
@@ -33,14 +37,14 @@ export class EquipmentCategoryComponent implements OnInit {
   private readonly notificationService = inject(NotificationService);
   private readonly fb = inject(FormBuilder);
   private readonly dialog = inject(MatDialog);
-  @ViewChild('form') form: any;
+  @ViewChild(FormGroupDirective) formDirective!: FormGroupDirective;
 
-  categories: EquipmentCategory[] = [];
-  selectedCategory: EquipmentCategory | null = null;
+  categories = signal<EquipmentCategory[]>([]);
+  filterByActiveCategories = signal<boolean>(true);
+
+  selectedCategory = signal<EquipmentCategory | null>(null);
 
   categoryForm!: FormGroup;
-
-  isChecked = false;
 
   tableColumns = signal<TableColumn[]>([
     {
@@ -55,10 +59,24 @@ export class EquipmentCategoryComponent implements OnInit {
       type: 'actions',
     },
   ]);
+
+  private readonly categories$ = toObservable(this.filterByActiveCategories).pipe(
+    takeUntilDestroyed(),
+    switchMap(active =>
+      this.equipmentCategoryService.getEquipmentCategories(active).pipe(
+        map(response => response.data),
+        catchError(err => {
+          const errorMessage = err?.error?.errors?.join(', ') || 'Falha ao carregar categorias';
+          this.notificationService.error(errorMessage);
+          return of([]);
+        })
+      )
+    )
+  );
   handleAction(event: { tableAction: TableAction<'EDIT' | 'DELETE'>; element: EquipmentCategory }) {
     const action = event.tableAction.action;
     if (action === 'EDIT') {
-      this.editCategory(event.element);
+      this.setSelectedCategory(event.element);
     } else if (action === 'DELETE') {
       this.deleteCategory(event.element);
     }
@@ -73,8 +91,9 @@ export class EquipmentCategoryComponent implements OnInit {
       label: 'Excluir',
       action: 'DELETE',
     };
+    const actions = [editAction];
+    if (this.filterByActiveCategories()) actions.push(deleteAction);
 
-    const actions = [editAction, deleteAction];
     return actions;
   };
 
@@ -84,78 +103,72 @@ export class EquipmentCategoryComponent implements OnInit {
       name: ['', [Validators.required, Validators.pattern(/\S+/)]],
     });
 
-    this.loadCategories();
-  }
-
-  loadCategories(): void {
-    this.equipmentCategoryService.getEquipmentCategories(!this.isChecked).subscribe({
-      next: (response: DefaultResponse<EquipmentCategory[]>) => {
-        if (response.isSuccess) {
-          this.categories = response.data;
-        } else {
-          this.notificationService.error('Erro', response.errors.join(', ') || 'Falha ao carregar categorias');
-        }
-      },
-      error: err => {
-        console.error('Erro ao carregar categorias:', err);
-        this.notificationService.error('Erro', 'Erro de comunicação com o servidor');
-      },
+    this.categories$.subscribe(fetchedCategories => {
+      this.categories.set(fetchedCategories);
     });
   }
 
   saveCategory(): void {
-    if (this.categoryForm.invalid) return;
-
-    const category = this.categoryForm.value;
-    console.log('Salvando categoria:', category);
-    if (category.id) {
-      this.equipmentCategoryService.updateEquipmentCategory(category).subscribe({
-        next: (response: DefaultResponse<EquipmentCategory>) => {
-          if (response.isSuccess) {
-            const updatedCategory = response.data;
-            const index = this.categories.findIndex(e => e.id === updatedCategory.id);
-
-            if (index !== -1) {
-              this.categories[index] = updatedCategory;
-              this.categories = [...this.categories];
-              this.notificationService.success('Sucesso', 'Categoria atualizado!');
-            } else {
-              console.error('Categoria não encontrado na lista para atualização.');
-              this.notificationService.error('Erro', 'Categoria não encontrado na lista.');
-            }
-          } else {
-            const msg = response.errors?.join(', ') || 'Falha ao atualizar Categoria.';
-            this.notificationService.error('Erro', msg);
-          }
-        },
-        error: () => {
-          this.notificationService.error('Erro', 'Erro ao atualizar categoria.');
-        },
-      });
-    } else {
-      this.equipmentCategoryService.createEquipmentCategory(category).subscribe({
-        next: (response: DefaultResponse<EquipmentCategory>) => {
-          if (response.isSuccess) {
-            const createdCategory = response.data;
-            this.notificationService.success('Sucesso', 'Categoria criada!');
-            this.categories = [...this.categories, createdCategory];
-          } else {
-            this.notificationService.error('Erro', response.errors.join(', ') || 'Falha ao criar categoria');
-          }
-        },
-        error: err => {
-          const errorMessage = err?.error?.errors?.join(', ') || 'Erro de comunicação com o servidor';
-          this.notificationService.error('Erro', errorMessage);
-        },
-      });
+    if (this.categoryForm.invalid) {
+      this.categoryForm.markAllAsTouched();
+      return;
     }
 
-    this.resetForm();
+    const category = this.categoryForm.value;
+    const isUpdate = !!category.id;
+    if (isUpdate) {
+      this.updateCategory();
+    } else {
+      this.createCategory();
+    }
   }
 
-  editCategory(cat: EquipmentCategory): void {
-    this.selectedCategory = cat;
-    this.categoryForm.patchValue({ ...cat });
+  createCategory() {
+    const category = this.categoryForm.value;
+    this.equipmentCategoryService.createEquipmentCategory(category).subscribe({
+      next: (response: DefaultResponse<EquipmentCategory>) => {
+        const createdCategory = response.data;
+        this.categories.update(categories => [...categories, createdCategory]);
+        this.notificationService.success('Categoria criada!');
+
+        this.clearSelectionAndResetForm();
+      },
+      error: err => {
+        const errorMessage = err?.error?.errors?.join(', ') || 'Erro ao criar categoria, tente novamente mais tarde.';
+        this.notificationService.error(errorMessage);
+      },
+    });
+  }
+
+  updateCategory(): void {
+    const category = this.categoryForm.value;
+    this.equipmentCategoryService.updateEquipmentCategory(category).subscribe({
+      next: (response: DefaultResponse<EquipmentCategory>) => {
+        const updatedCategory = response.data;
+        this.categories.update(categories => {
+          const updatedCategoryIndex = categories.findIndex(e => e.id === updatedCategory.id);
+
+          if (updatedCategoryIndex === -1) {
+            return categories;
+          }
+
+          const newCategories = [...categories];
+          newCategories[updatedCategoryIndex] = updatedCategory;
+
+          return newCategories;
+        });
+        this.notificationService.success('Categoria atualizada!');
+        this.clearSelectionAndResetForm();
+      },
+      error: () => {
+        this.notificationService.error('Erro ao atualizar categoria.');
+      },
+    });
+  }
+
+  setSelectedCategory(category: EquipmentCategory): void {
+    this.selectedCategory.set(category);
+    this.categoryForm.patchValue({ ...category });
   }
 
   deleteCategory(category: EquipmentCategory): void {
@@ -170,24 +183,29 @@ export class EquipmentCategoryComponent implements OnInit {
       if (confirmed) {
         this.equipmentCategoryService.deleteEquipmentCategory(category.id).subscribe({
           next: () => {
-            this.loadCategories();
-            this.notificationService.success('Sucesso', 'Categoria excluída com sucesso!');
+            this.categories.update(currentCategories => currentCategories.filter(c => c.id !== category.id));
+            this.notificationService.success('Categoria excluída com sucesso!');
           },
-          error: err => {
-            console.error('Erro ao excluir categoria:', err);
-            this.notificationService.error('Erro', 'Erro de comunicação com o servidor');
+          error: () => {
+            this.notificationService.error('Erro ao excluir categoria, tente novamente mais tarde.');
           },
         });
-        this.resetForm();
+        this.clearSelectionAndResetForm();
       } else {
-        this.notificationService.info('Cancelado', 'Exclusão cancelada.');
+        this.notificationService.info('Exclusão cancelada.', 'Cancelada');
       }
     });
   }
 
-  resetForm(): void {
-    this.selectedCategory = null;
-    this.categoryForm.reset({ name: '' });
-    this.form.resetForm();
+  private clearSelectionAndResetForm(): void {
+    this.selectedCategory.set(null);
+    this.categoryForm.reset();
+    if (this.formDirective) {
+      this.formDirective.resetForm();
+    }
+  }
+
+  onToggleChange(): void {
+    this.filterByActiveCategories.update(value => !value);
   }
 }
