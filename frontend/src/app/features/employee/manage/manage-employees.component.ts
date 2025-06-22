@@ -288,13 +288,6 @@ export class ManageEmployeesComponent implements OnInit {
     });
   };
 
-  formatDate(event: any) {
-    let input = event.target.value.replace(/\D/g, '');
-    if (input.length > 2) input = input.slice(0, 2) + '/' + input.slice(2);
-    if (input.length > 5) input = input.slice(0, 5) + '/' + input.slice(5);
-    event.target.value = input;
-  }
-
   onToggleChange(): void {
     this.filterByActiveEmployees.update(value => !value);
   }
