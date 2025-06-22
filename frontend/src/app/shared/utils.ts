@@ -1,14 +1,14 @@
-import { RequestState } from '../features/requests/shared/models/RequestState';
+import { MaintenanceRequestState } from '../features/requests/shared/models/maintenance-request-state';
 
 const translateRequestState = <T extends { state: string; stateHistory?: { state: string }[] }>(
   request: T
 ): T & { translatedState: string; stateHistory?: any[] } => {
   return {
     ...request,
-    translatedState: RequestState[request.state as keyof typeof RequestState],
+    translatedState: MaintenanceRequestState[request.state as keyof typeof MaintenanceRequestState],
     stateHistory: request.stateHistory?.map(historyItem => ({
       ...historyItem,
-      translatedState: RequestState[historyItem.state as keyof typeof RequestState],
+      translatedState: MaintenanceRequestState[historyItem.state as keyof typeof MaintenanceRequestState],
     })),
   };
 };

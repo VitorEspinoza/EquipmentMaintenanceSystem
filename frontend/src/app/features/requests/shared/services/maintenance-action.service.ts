@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { MaintenanceRequestActionDetailsModalComponent } from '../modals/maintenance-request-action-details-modal/maintenance-request-action-details-modal.component';
-import { MaintenanceActionData } from '../models/maintenanceActionComponent';
+import { MaintenanceActionData } from '../models/maintenance-action/maintenance-action-data';
 
 @Injectable({
   providedIn: 'root',

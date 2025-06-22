@@ -8,7 +8,8 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { RouterModule } from '@angular/router';
-import { FormState, MaintenanceActionComponent } from '../../../requests/shared/models/maintenanceActionComponent';
+import { FormState } from '../../../requests/shared/models/maintenance-action/form-state';
+import { IMaintenanceActionComponent } from '../../../requests/shared/models/maintenance-action/maintenance-action-component';
 
 @Component({
   selector: 'app-budget-rejection-modal',
@@ -25,7 +26,7 @@ import { FormState, MaintenanceActionComponent } from '../../../requests/shared/
   templateUrl: './budget-rejection-modal.component.html',
   styleUrl: './budget-rejection-modal.component.css',
 })
-export class BudgetRejectionModalComponent implements MaintenanceActionComponent<string | null> {
+export class BudgetRejectionModalComponent implements IMaintenanceActionComponent<string | null> {
   rejectionReasonControl = new FormControl<string>('', Validators.required);
 
   rejectionReason = toSignal(this.rejectionReasonControl.valueChanges, {

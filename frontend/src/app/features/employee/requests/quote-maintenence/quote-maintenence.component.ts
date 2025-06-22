@@ -4,7 +4,8 @@ import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { NgxMaskDirective, provideNgxMask } from 'ngx-mask';
-import { FormState, MaintenanceActionComponent } from '../../../requests/shared/models/maintenanceActionComponent';
+import { FormState } from '../../../requests/shared/models/maintenance-action/form-state';
+import { IMaintenanceActionComponent } from '../../../requests/shared/models/maintenance-action/maintenance-action-component';
 
 @Component({
   selector: 'app-quote-maintenence',
@@ -13,7 +14,7 @@ import { FormState, MaintenanceActionComponent } from '../../../requests/shared/
   styleUrl: './quote-maintenence.component.css',
   providers: [provideNgxMask()],
 })
-export class QuoteMaintenenceModalComponent implements MaintenanceActionComponent<string | null> {
+export class QuoteMaintenenceModalComponent implements IMaintenanceActionComponent<string | null> {
   quotePriceControl = new FormControl<string>('', Validators.required);
 
   quotePrice = toSignal(this.quotePriceControl.valueChanges, {

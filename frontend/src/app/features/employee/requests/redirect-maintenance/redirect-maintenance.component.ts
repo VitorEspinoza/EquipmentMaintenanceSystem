@@ -17,7 +17,8 @@ import { CrudService } from '../../../../core/services/crud.service';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { DefaultResponse } from '../../../../shared/models/DefaultResponse';
 import { Employee } from '../../../../shared/models/employee';
-import { FormState, MaintenanceActionComponent } from '../../../requests/shared/models/maintenanceActionComponent';
+import { FormState } from '../../../requests/shared/models/maintenance-action/form-state';
+import { IMaintenanceActionComponent } from '../../../requests/shared/models/maintenance-action/maintenance-action-component';
 
 export function requireObjectSelection(control: AbstractControl): ValidationErrors | null {
   const value = control.value;
@@ -40,7 +41,7 @@ export function requireObjectSelection(control: AbstractControl): ValidationErro
   templateUrl: './redirect-maintenance.component.html',
   styleUrl: './redirect-maintenance.component.css',
 })
-export class RedirectMaintenanceComponent implements MaintenanceActionComponent, OnInit {
+export class RedirectMaintenanceComponent implements IMaintenanceActionComponent, OnInit {
   private readonly notificationService = inject(NotificationService);
   private readonly crudService = inject(CrudService);
   private readonly destroyRef = inject(DestroyRef);

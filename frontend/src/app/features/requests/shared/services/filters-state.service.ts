@@ -1,7 +1,7 @@
 import { inject, Injectable, Signal, signal } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { FilterRequestsModalComponent } from '../modals/filter-requests-modal/filter-requests-modal.component';
-import { FiltersFormValue } from '../models/FiltersFormValue';
+import { FiltersFormValue } from '../models/filters-form-value';
 
 export const INITIAL_FILTERS_STATE: FiltersFormValue = {
   dateFilter: 'ALL',

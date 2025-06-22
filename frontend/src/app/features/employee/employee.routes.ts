@@ -1,8 +1,6 @@
 import { Routes } from '@angular/router';
 import { Role } from '../../core/models/role';
 import { permissionsGuard } from '../auth/guards/permissions.guard';
-import { MAINTENANCE_REQUEST_STRATEGY } from '../requests/shared/models/maintenanceActionComponent';
-import { EmployeeMaintenanceRequestStrategy } from './requests/EmployeeMaintenanceRequestStrategy';
 export const employeeRoutes: Routes = [
   {
     path: 'employee/requests',
@@ -27,11 +25,5 @@ export const employeeRoutes: Routes = [
       ),
     data: { permissions: [Role.EMPLOYEE] },
     canActivate: [permissionsGuard],
-    providers: [
-      {
-        provide: MAINTENANCE_REQUEST_STRATEGY,
-        useClass: EmployeeMaintenanceRequestStrategy,
-      },
-    ],
   },
 ];

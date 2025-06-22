@@ -7,8 +7,8 @@ import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/materia
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { map, startWith } from 'rxjs';
-import { RequestState } from '../../models/RequestState';
-import { FiltersFormValue } from './../../models/FiltersFormValue';
+import { FiltersFormValue } from '../../models/filters-form-value';
+import { MaintenanceRequestState } from '../../models/maintenance-request-state';
 @Component({
   selector: 'app-filter-requests-modal',
   imports: [
@@ -27,8 +27,8 @@ export class FilterRequestsModalComponent implements OnInit {
   private dialogData: { filters: FiltersFormValue } = inject(MAT_DIALOG_DATA);
   private dialogRef = inject(MatDialogRef<FilterRequestsModalComponent>);
 
-  readonly requestStates = Object.entries(RequestState).map(([key, value]) => ({
-    key: key as keyof typeof RequestState,
+  readonly requestStates = Object.entries(MaintenanceRequestState).map(([key, value]) => ({
+    key: key as keyof typeof MaintenanceRequestState,
     label: value,
   }));
 

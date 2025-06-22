@@ -1,16 +1,1 @@
-<app-data-list-view
-  title="Solicitações"
-  subtitle="Gerencie todas as suas solicitações do sistema"
-  [actions]="toolbarActions()"
-  (actionClicked)="handleToolbarAction($event)"
->
-  <app-dynamic-table
-    [dataSource]="requests()"
-    [columns]="tableColumns()"
-    [badgeClassResolver]="getBadgeClass"
-    [actionsResolver]="getRowActions"
-    (actionClicked)="handleAction($event)"
-    [showPaginator]="true"
-    emptyMessage="Nenhuma solicitação encontrada para os filtros selecionados"
-  />
-</app-data-list-view>
+<app-base-maintenance-request-list />

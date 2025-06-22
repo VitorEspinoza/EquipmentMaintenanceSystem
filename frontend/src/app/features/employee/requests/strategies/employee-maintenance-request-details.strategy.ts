@@ -1,12 +1,12 @@
 import { inject, Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 
-import { MaintenanceAction, MaintenanceRequestStrategy } from '../../requests/shared/models/maintenanceActionComponent';
-import { MaintenanceRequest } from '../../requests/shared/models/maintenanceRequest';
-import { RequestState } from '../../requests/shared/models/RequestState';
-import { EmployeeRequestService } from '../services/employee-request.service';
+import { MaintenanceAction } from '../../../requests/shared/models/maintenance-action/maintenance-action';
+import { MaintenanceRequest } from '../../../requests/shared/models/maintenance-request';
+import { MaintenanceRequestState } from '../../../requests/shared/models/maintenance-request-state';
+import { EmployeeRequestService } from '../../services/employee-request.service';
 @Injectable()
-export class EmployeeMaintenanceRequestStrategy implements MaintenanceRequestStrategy {
+export class EmployeeMaintenanceRequestDetailStrategy {
   readonly requestService = inject(EmployeeRequestService);
 
   getRequest(requestId: string): Observable<MaintenanceRequest> {
@@ -14,13 +14,13 @@ export class EmployeeMaintenanceRequestStrategy implements MaintenanceRequestStr
   }
   getAvailableActions(request: MaintenanceRequest): MaintenanceAction[] {
     switch (request.translatedState) {
-      case RequestState.OPEN:
+      case MaintenanceRequestState.OPEN:
         return [MaintenanceAction.QUOTE];
-      case RequestState.APPROVED:
+      case MaintenanceRequestState.APPROVED:
         return [MaintenanceAction.REDIRECT, MaintenanceAction.DO_MAINTENANCE];
-      case RequestState.REDIRECTED:
+      case MaintenanceRequestState.REDIRECTED:
         return [MaintenanceAction.REDIRECT, MaintenanceAction.DO_MAINTENANCE];
-      case RequestState.PAID:
+      case MaintenanceRequestState.PAID:
         return [MaintenanceAction.COMPLETE];
       default:
         return [];
