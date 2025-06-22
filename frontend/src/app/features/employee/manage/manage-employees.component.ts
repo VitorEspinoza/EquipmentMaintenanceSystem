@@ -1,6 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, signal, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormGroupDirective,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { provideMomentDateAdapter } from '@angular/material-moment-adapter';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
@@ -21,6 +28,7 @@ import { DynamicTableComponent } from '../../../shared/components/dynamic-table/
 import { ConfirmDeleteModalComponent } from '../../../shared/confirm-dialog/confirm-dialog/confirm-dialog.component';
 import { DefaultResponse } from '../../../shared/models/DefaultResponse';
 import { TableColumn } from '../../../shared/models/TableColumn';
+import { AuthService } from '../../auth/services/auth.service';
 import { Employee } from '../models/Employee';
 import { EmployeeService } from '../services/employee.service';
 import { TableAction } from './../../../shared/models/TableColumn';
@@ -75,8 +83,10 @@ export class ManageEmployeesComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly employeeService = inject(EmployeeService);
   private readonly notificationService = inject(NotificationService);
+  private readonly authService = inject(AuthService);
   private readonly dialog = inject(MatDialog);
-  @ViewChild('form') form: any;
+
+  @ViewChild(FormGroupDirective) private formDirective!: FormGroupDirective;
 
   employees: Employee[] = [];
   selectedEmployee: Employee | null = null;
@@ -84,7 +94,6 @@ export class ManageEmployeesComponent implements OnInit {
   employeeForm!: FormGroup;
 
   isChecked = false;
-  loggedEmail = localStorage.getItem('email');
 
   tableColumns = signal<TableColumn[]>([
     {
@@ -133,7 +142,8 @@ export class ManageEmployeesComponent implements OnInit {
 
     const actions = [editAction];
 
-    if (element.email != this.loggedEmail) actions.push(deleteAction);
+    const canDelete = this.authService.account()?.email != element.email;
+    if (canDelete) actions.push(deleteAction);
     return actions;
   };
 
@@ -144,7 +154,6 @@ export class ManageEmployeesComponent implements OnInit {
       email: ['', [Validators.required, Validators.email]],
       birthDate: [null, Validators.required],
       password: ['', Validators.required],
-      role: ['EMPLOYEE'],
     });
 
     this.loadEmployees();
@@ -153,20 +162,20 @@ export class ManageEmployeesComponent implements OnInit {
   loadEmployees(): void {
     this.employeeService.getAll(!this.isChecked).subscribe({
       next: (response: DefaultResponse<Employee[]>) => {
-        if (response.isSuccess) {
-          this.employees = response.data;
-        } else {
-          this.notificationService.error(response.errors.join(', ') || 'Falha ao carregar funcionários');
-        }
+        this.employees = response.data;
       },
       error: err => {
-        this.notificationService.error('Erro de comunicação com o servidor');
+        const errorMessage = err?.error?.errors?.join(', ') || 'Falha ao carregar funcionários';
+        this.notificationService.error(errorMessage);
       },
     });
   }
 
   onSubmit(): void {
-    if (this.employeeForm.invalid) return;
+    if (this.employeeForm.invalid) {
+      this.employeeForm.markAllAsTouched();
+      return;
+    }
 
     const isUpdate = this.employeeForm.get('id')?.value;
 
@@ -175,10 +184,14 @@ export class ManageEmployeesComponent implements OnInit {
     } else {
       this.createEmployee();
     }
+  }
 
+  private clearSelectionAndResetForm(): void {
     this.selectedEmployee = null;
     this.employeeForm.reset();
-    this.form.resetForm();
+    if (this.formDirective) {
+      this.formDirective.resetForm();
+    }
   }
 
   updateEmployee() {
@@ -195,6 +208,7 @@ export class ManageEmployeesComponent implements OnInit {
         this.employees = newEmployees;
 
         this.notificationService.success('Funcionário atualizado!');
+        this.clearSelectionAndResetForm();
       },
       error: () => {
         this.notificationService.error('Erro ao atualizar funcionário.');
@@ -209,6 +223,7 @@ export class ManageEmployeesComponent implements OnInit {
         const createdEmp = response.data;
         this.notificationService.success('Funcionário criado!');
         this.employees = [...this.employees, createdEmp];
+        this.clearSelectionAndResetForm();
       },
       error: err => {
         const errorMessage = err?.error?.errors?.join(', ') || 'Houve um erro ao criar o funcionário.';

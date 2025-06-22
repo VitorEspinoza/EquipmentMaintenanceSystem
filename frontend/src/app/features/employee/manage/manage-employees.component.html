@@ -1,7 +1,7 @@
 <div class="p-4 md:p-8">
   <h2 class="text-xl font-bold mb-4">Gerenciar Funcionários</h2>
 
-  <form #form="ngForm" [formGroup]="employeeForm" (ngSubmit)="onSubmit()" class="grid gap-4 md:grid-cols-2">
+  <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()" class="grid gap-4 md:grid-cols-2">
     <mat-form-field appearance="outline">
       <mat-label>Nome</mat-label>
       <input matInput formControlName="name" required />
