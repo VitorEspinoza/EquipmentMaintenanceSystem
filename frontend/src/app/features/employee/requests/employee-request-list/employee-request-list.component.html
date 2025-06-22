@@ -1,38 +1,13 @@
-<app-data-list-view
-  title="Solicitações"
-  subtitle="Gerencie todas as solicitações do sistema"
-  [actions]="toolbarActions()"
-  (actionClicked)="handleToolbarAction($event)"
->
+<app-base-maintenance-request-list>
   <button
+    toolbar-extra-actions
     mat-fab
     color="accent"
     [matMenuTriggerFor]="downloadMenu"
     matTooltip="Baixar Relatórios"
-    toolbar
     aria-label="Opções de download de relatório"
   >
     <mat-icon>download</mat-icon>
   </button>
-
-  <mat-menu #downloadMenu="matMenu">
-    <button mat-menu-item (click)="handleToolbarAction({ action: 'revenue_report' })">
-      <mat-icon>picture_as_pdf</mat-icon>
-      <span>Relatório de Receitas</span>
-    </button>
-    <button mat-menu-item (click)="handleToolbarAction({ action: 'revenue_by_category_report' })">
-      <mat-icon>picture_as_pdf</mat-icon>
-      <span>Relatório de Receitas por Categoria</span>
-    </button>
-  </mat-menu>
-
-  <app-dynamic-table
-    [dataSource]="requests()"
-    [columns]="tableColumns()"
-    [badgeClassResolver]="getBadgeClass"
-    [actionsResolver]="getRowActions"
-    (actionClicked)="handleAction($event)"
-    emptyMessage="Nenhuma solicitação encontrada para os filtros selecionados"
-    [showPaginator]="true"
-  />
-</app-data-list-view>
+  <mat-menu #downloadMenu="matMenu"> </mat-menu>
+</app-base-maintenance-request-list>

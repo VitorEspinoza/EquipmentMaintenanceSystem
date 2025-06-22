@@ -1,8 +1,6 @@
 import { Routes } from '@angular/router';
 import { Role } from '../../core/models/role';
 import { permissionsGuard } from '../auth/guards/permissions.guard';
-import { MAINTENANCE_REQUEST_DETAILS_STRATEGY } from '../requests/shared/models/strategies/maintenance-request-details-strategy';
-import { ClientMaintenanceRequestDetailsStrategy } from './requests/strategies/client-maintenance-request-details-strategy';
 
 export const clientRoutes: Routes = [
   {
@@ -20,11 +18,5 @@ export const clientRoutes: Routes = [
       ),
     data: { permissions: [Role.CLIENT] },
     canActivate: [permissionsGuard],
-    providers: [
-      {
-        provide: MAINTENANCE_REQUEST_DETAILS_STRATEGY,
-        useClass: ClientMaintenanceRequestDetailsStrategy,
-      },
-    ],
   },
 ];

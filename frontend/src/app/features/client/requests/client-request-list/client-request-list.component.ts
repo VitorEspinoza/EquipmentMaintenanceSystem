@@ -1,172 +1,18 @@
-import { Component, computed, inject, signal } from '@angular/core';
-import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { MatDialog } from '@angular/material/dialog';
-import { EMPTY, map, startWith, switchMap } from 'rxjs';
-import { NotificationService } from '../../../../core/services/notification.service';
-import { DataListViewComponent } from '../../../../shared/components/data-list-view/data-list-view.component';
-import { DynamicTableComponent } from '../../../../shared/components/dynamic-table/dynamic-table.component';
-import { DataViewAction, TableAction, TableColumn } from '../../../../shared/models/TableColumn';
-import { MaintenanceAction } from '../../../requests/shared/models/maintenance-action/maintenance-action';
-import { MaintenanceRequest } from '../../../requests/shared/models/maintenance-request';
-import { MaintenanceRequestState } from '../../../requests/shared/models/maintenance-request-state';
-import { CLEARED_FILTERS_STATE, FiltersStateService } from '../../../requests/shared/services/filters-state.service';
-import { ClientRequestService } from '../../shared/services/client-request.service';
-import { CreateRequestModalComponent } from '../create-request-modal/create-request-modal.component';
+import { Component } from '@angular/core';
+import { BaseMaintenanceRequestListComponent } from '../../../requests/shared/components/base-maintenance-request-list/base-maintenance-request-list.component';
+import { REQUEST_LIST_STRATEGY } from '../../../requests/shared/models/strategies/maintenance-request-list.strategy';
+import { ClientRequestListStrategy } from '../strategies/client-maintenance-request-list.strategy';
 
 @Component({
   selector: 'app-client-request-list',
-  imports: [DynamicTableComponent, DataListViewComponent],
+  imports: [BaseMaintenanceRequestListComponent],
   templateUrl: './client-request-list.component.html',
   styleUrls: ['./client-request-list.component.css'],
+  providers: [
+    {
+      provide: REQUEST_LIST_STRATEGY,
+      useClass: ClientRequestListStrategy,
+    },
+  ],
 })
-export class ClientRequestListComponent {
-  private readonly requestService = inject(ClientRequestService);
-  private readonly notificationService = inject(NotificationService);
-  private readonly filtersService = inject(FiltersStateService);
-  private dialog = inject(MatDialog);
-  private readonly manualRefresh = signal(0);
-
-  readonly requestTrigger = computed(() => ({
-    refreshTick: this.manualRefresh(),
-  }));
-
-  readonly requests = toSignal(
-    toObservable(this.requestTrigger).pipe(
-      switchMap(() => this.requestService.getAll().pipe(map(response => response.data))),
-      startWith([])
-    ),
-    { initialValue: [] }
-  );
-
-  readonly hasFilters = computed<boolean>(() => {
-    const current = this.filtersService.filters();
-    return JSON.stringify(current) !== JSON.stringify(CLEARED_FILTERS_STATE);
-  });
-
-  tableColumns = signal<TableColumn[]>([
-    {
-      key: 'equipmentDescription',
-      header: 'Equipamento',
-      type: 'text',
-      slice: { start: 0, end: 30 },
-    },
-    {
-      key: 'createdAt',
-      header: 'Data',
-      type: 'date',
-      dateFormat: 'dd/MM/yyyy HH:mm',
-    },
-    {
-      key: 'translatedState',
-      header: 'Estado',
-      type: 'badge',
-    },
-    {
-      key: 'actions',
-      header: 'Ação',
-      type: 'actions',
-    },
-  ]);
-
-  getBadgeClass = (element: MaintenanceRequest, columnKey: string): string => {
-    if (columnKey === 'translatedState') {
-      const stateClassMap: Record<string, string> = {
-        [MaintenanceRequestState.OPEN]: 'bg-gray-200',
-        [MaintenanceRequestState.QUOTED]: 'bg-orange-900',
-        [MaintenanceRequestState.REJECTED]: 'bg-red-200',
-        [MaintenanceRequestState.REDIRECTED]: 'bg-purple-200',
-        [MaintenanceRequestState.FIXED]: 'bg-blue-200',
-        [MaintenanceRequestState.APPROVED]: 'bg-yellow-200',
-        [MaintenanceRequestState.PAID]: 'bg-orange-200',
-        [MaintenanceRequestState.COMPLETED]: 'bg-green-200',
-      };
-
-      return stateClassMap[element.translatedState];
-    }
-    return '';
-  };
-
-  getRowActions = (element: MaintenanceRequest): TableAction<MaintenanceAction | string>[] => {
-    const defaultAction = {
-      label: 'Visualizar Serviço',
-      action: 'view',
-      route: ['/client/requests', element.id.toString()],
-    };
-
-    switch (element.translatedState) {
-      case MaintenanceRequestState.QUOTED:
-        return [{ ...defaultAction, label: 'Aprovar ou Rejeitar' }];
-      case MaintenanceRequestState.REJECTED:
-        return [{ label: 'Resgatar Serviço', action: MaintenanceAction.RESCUE }];
-      case MaintenanceRequestState.FIXED:
-        return [{ ...defaultAction, label: 'Pagar Serviço' }];
-      default: {
-        return element.translatedState !== MaintenanceRequestState.APPROVED ? [defaultAction] : [];
-      }
-    }
-  };
-
-  handleAction(event: { tableAction: TableAction<MaintenanceAction | any>; element: MaintenanceRequest }) {
-    const action = event.tableAction.action;
-    this.requestService.executeAction(event.element.id.toString(), action).subscribe({
-      next: () => {
-        this.notificationService.success(`Ação "${action}" executada com sucesso!`);
-        this.manualRefresh.update(value => value + 1);
-      },
-      error: () => {
-        this.notificationService.error(`Não foi possível executar a ação de "${action}"`);
-      },
-    });
-  }
-
-  toolbarActions = computed<DataViewAction<string>[]>(() => {
-    const hasFilters = this.hasFilters();
-    const filterAction = {
-      icon: hasFilters ? 'filter_list' : 'filter_list_off',
-      label: 'Adicionar Filtro',
-      action: 'filter',
-      color: hasFilters ? 'accent' : 'primary',
-    };
-
-    const addSolicitationAction = {
-      icon: 'add',
-      label: 'Nova Solicitação',
-      action: 'create',
-      color: 'primary',
-    };
-    return [filterAction, addSolicitationAction];
-  });
-
-  handleToolbarAction(action: DataViewAction<string>) {
-    switch (action.action) {
-      case 'filter':
-        this.filtersService.filters();
-        break;
-      case 'create':
-        this.openCreateRequestModal();
-        break;
-    }
-  }
-
-  openCreateRequestModal(): void {
-    this.dialog
-      .open(CreateRequestModalComponent, {
-        minWidth: '550px',
-      })
-      .afterClosed()
-      .pipe(
-        switchMap(response => {
-          if (!response) return EMPTY;
-          return this.requestService.create(response);
-        })
-      )
-      .subscribe({
-        next: () => {
-          this.manualRefresh.update(v => v + 1);
-        },
-        error: () => {
-          this.notificationService.error('Falha ao criar solicitação de manutenção');
-        },
-      });
-  }
-}
+export class ClientRequestListComponent {}

@@ -1,0 +1,18 @@
+<app-data-list-view
+  [title]="'Solicitações'"
+  [subtitle]="'Gerencie todas as solicitações do sistema'"
+  [actions]="toolbarActions()"
+  (actionClicked)="handleToolbarAction($event)"
+>
+  <ng-content toolbar select="[toolbar-extra-actions]"></ng-content>
+
+  <app-dynamic-table
+    [dataSource]="requests()"
+    [columns]="tableColumns()"
+    [badgeClassResolver]="getBadgeClass"
+    [actionsResolver]="getRowActions"
+    (actionClicked)="handleAction($event)"
+    [showPaginator]="true"
+    emptyMessage="Nenhuma solicitação encontrada para os filtros selecionados"
+  />
+</app-data-list-view>
