@@ -1,20 +1,24 @@
 package br.com.backend.backend.Entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(name = "equipment_category")
-@AllArgsConstructor
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-@Setter
 public class EquipmentCategory {
+
+    public EquipmentCategory(String name, String description) {
+        this.name = name;
+        this.description = description;
+        this.active = true;
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,7 +33,14 @@ public class EquipmentCategory {
 
     @Column(name = "active")
     private Boolean active;
+    
+    public void update(String name, String description) {
+        this.name = name;
+        this.description = description;
+    }
 
-    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
-    private Set<Equipment> equipments;
+    public void inactivate() {
+        this.active = false;
+    }
+
 }

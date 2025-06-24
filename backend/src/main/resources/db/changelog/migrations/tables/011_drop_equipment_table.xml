@@ -1,0 +1,32 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    
+    <changeSet id="1" author="vitor.espinoza">
+        
+        <sql dbms="postgresql">
+            DROP TABLE IF EXISTS equipment CASCADE;
+        </sql>
+        
+        <sql dbms="postgresql">
+            DROP TABLE IF EXISTS maintenance_request CASCADE;
+
+            CREATE TABLE maintenance_request (
+                                                 id SERIAL PRIMARY KEY,
+                                                 start_date TIMESTAMP NOT NULL,
+                                                 state VARCHAR(25) NOT NULL,
+                                                 equipment_description VARCHAR(255) NOT NULL,
+                                                 id_equipment_category INTEGER NOT NULL,
+                                                 defect_description VARCHAR(255) NOT NULL,
+                                                 id_client INTEGER NOT NULL,
+                                                 rejection_reason VARCHAR(255),
+                                                 budget_price DECIMAL(10,2),
+                                                 payment_date TIMESTAMP,
+                                                 FOREIGN KEY (id_equipment_category) REFERENCES equipment_category(id),
+                                                 FOREIGN KEY (id_client) REFERENCES client(id)
+            );
+        </sql>
+
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,98 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog 
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    
+    <changeSet id="1" author="vitor.espinoza">
+        
+        <addColumn tableName="maintenance_request">
+            
+            <column name="quoted_at" type="TIMESTAMP"/>
+            <column name="quoted_by_employee_id" type="INTEGER"/>
+
+            <column name="approved_at" type="TIMESTAMP"/>
+            <column name="rejected_at" type="TIMESTAMP"/>
+            
+            <column name="maintenance_description" type="VARCHAR(255)"/>
+            <column name="customer_guidelines" type="VARCHAR(255)"/>
+            <column name="maintenance_completed_at" type="TIMESTAMP"/>
+            <column name="maintenance_employee_id" type="INTEGER"/>
+            
+            <column name="paid_at" type="TIMESTAMP"/>
+            <column name="finalized_at" type="TIMESTAMP"/>
+            <column name="finalized_by_employee_id" type="INTEGER"/>
+            
+            <column name="assigned_to_employee_id" type="INTEGER"/>
+            
+        </addColumn>
+        
+        <addForeignKeyConstraint
+                baseTableName="maintenance_request"
+                baseColumnNames="quoted_by_employee_id"
+                referencedTableName="employee"
+                referencedColumnNames="id"
+                constraintName="fk_maintenance_request_quoted_by_employee"/>
+
+        <addForeignKeyConstraint
+                baseTableName="maintenance_request"
+                baseColumnNames="maintenance_employee_id"
+                referencedTableName="employee"
+                referencedColumnNames="id"
+                constraintName="fk_maintenance_request_maintenance_employee"/>
+
+        <addForeignKeyConstraint
+                baseTableName="maintenance_request"
+                baseColumnNames="finalized_by_employee_id"
+                referencedTableName="employee"
+                referencedColumnNames="id"
+                constraintName="fk_maintenance_request_finalized_by_employee"/>
+
+        <addForeignKeyConstraint
+                baseTableName="maintenance_request"
+                baseColumnNames="assigned_to_employee_id"
+                referencedTableName="employee"
+                referencedColumnNames="id"
+                constraintName="fk_maintenance_request_assigned_to_employee"/>
+        
+        <addColumn tableName="request_state_history">
+            <column name="changed_by_employee_id" type="INTEGER"/>
+        </addColumn>
+
+        <addForeignKeyConstraint
+                baseTableName="request_state_history"
+                baseColumnNames="changed_by_employee_id"
+                referencedTableName="employee"
+                referencedColumnNames="id"
+                constraintName="fk_request_state_history_employee"/>
+        
+        <renameColumn
+                tableName="maintenance_request"
+                oldColumnName="budget_price"
+                newColumnName="quoted_value"
+                columnDataType="DECIMAL(10,2)"/>
+
+        <renameColumn
+                tableName="maintenance_request"
+                oldColumnName="start_date"
+                newColumnName="created_at"
+                columnDataType="TIMESTAMP"/>
+
+
+        <renameColumn
+                tableName="request_state_history"
+                oldColumnName="change_date"
+                newColumnName="changed_at"
+                columnDataType="TIMESTAMP"/>
+        
+        
+        <dropColumn tableName="maintenance_request" columnName="payment_date"/>
+
+        <dropColumn tableName="request_state_history" columnName="previous_state"/>
+        <renameColumn
+                tableName="request_state_history"
+                oldColumnName="new_state"
+                newColumnName="state"
+                columnDataType="VARCHAR(20)"/>
+    </changeSet>
+</databaseChangeLog>

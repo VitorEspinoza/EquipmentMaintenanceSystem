@@ -15,4 +15,9 @@
     <include file="/db/changelog/migrations/tables/009_create_maintenance_history_table.xml"/>
     <include file="/db/changelog/migrations/tables/010_create_request_state_history_table.xml"/>
     <include file="db/changelog/migrations/indexes/001_create_indexes.xml"/>
+    <include file="/db/changelog/migrations/tables/011_drop_equipment_table.xml"/>
+    <include file="/db/changelog/migrations/tables/012_refactor_maintenance_request_workflow.xml"/>
+    <include file="/db/changelog/migrations/tables/013_remove_maintenance_history_and_maintenance_tables.xml"/>
+    <include file="/db/changelog/migrations/tables/014_create_default_admin.xml"/>
+    <include file="/db/changelog/migrations/db.changelong-1.0.xml"/>
 </databaseChangeLog>

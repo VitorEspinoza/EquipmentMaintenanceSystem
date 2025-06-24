@@ -12,9 +12,15 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class Employee {
 
+    public Employee (Account account, String name, LocalDate birthDate) {
+        this.account = account;
+        this.name = name;
+        this.birthDate = birthDate;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_account", nullable = false)
@@ -25,4 +31,14 @@ public class Employee {
 
     @Column(name = "birth_date")
     private LocalDate birthDate;
+
+    public void update(String name, String email, LocalDate birthDate) {
+        this.name = name;
+        this.birthDate = birthDate;
+        this.account.setEmail(email);
+    }
+
+    public void inactivate() {
+        this.account.setActive(false);
+    }
 }
