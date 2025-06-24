@@ -1,0 +1,13 @@
+<div class="flex flex-col items-center justify-center">
+  <h2 mat-dialog-title>{{ data.title }}</h2>
+  <mat-dialog-content class="w-full">
+    <ng-container #dynamicComponentContainer></ng-container>
+  </mat-dialog-content>
+  <mat-dialog-actions class="mt-5 mb-2 w-full flex justify-between">
+    <button mat-raised-button class="w-[49%]" type="button" (click)="this.dialogRef.close(false)">Cancelar</button>
+
+    <button mat-flat-button [disabled]="!isFormValid()" class="w-[49%]" (click)="this.dialogRef.close(formData())">
+      {{ data.actionName }}
+    </button>
+  </mat-dialog-actions>
+</div>

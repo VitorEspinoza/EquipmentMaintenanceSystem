@@ -1,0 +1,10 @@
+export enum MaintenanceRequestState {
+  OPEN = 'ABERTA',
+  QUOTED = 'ORÇADA',
+  APPROVED = 'APROVADA',
+  REJECTED = 'REJEITADA',
+  REDIRECTED = 'REDIRECIONADA',
+  FIXED = 'ARRUMADA',
+  PAID = 'PAGA',
+  COMPLETED = 'FINALIZADA',
+}

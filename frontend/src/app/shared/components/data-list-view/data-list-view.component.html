@@ -1,0 +1,42 @@
+<div [class]="containerClass()">
+  <header class="mb-6">
+    @if (title()) {
+      <h2 [class]="titleClass()">{{ title() }}</h2>
+    }
+    @if (subtitle()) {
+      <p class="text-gray-600 text-center">{{ subtitle() }}</p>
+    }
+
+    <ng-content select="[header]"></ng-content>
+  </header>
+
+  <div [class]="contentClass()">
+    @if (showToolbar()) {
+      <div [class]="toolbarClass()">
+        @for (action of actions(); track action.action) {
+          <button
+            mat-fab
+            [matTooltip]="action.label"
+            [color]="action.color || 'primary'"
+            [disabled]="action.disabled"
+            [attr.aria-label]="action.label"
+            (click)="actionClicked.emit(action)"
+          >
+            <mat-icon>{{ action.icon }}</mat-icon>
+          </button>
+        }
+
+        <ng-content select="[toolbar]"></ng-content>
+      </div>
+    }
+
+    <ng-content select="[content]"></ng-content>
+    <ng-content></ng-content>
+  </div>
+
+  @if (hasFooter()) {
+    <footer class="mt-6">
+      <ng-content select="[footer]"></ng-content>
+    </footer>
+  }
+</div>
