@@ -14,16 +14,6 @@ import lombok.Setter;
 @Setter
 public class Address {
 
-    public Address(String zipcode, String neighbourhood, String street, String city, String state, String number, String complement) {
-        this.zipcode = zipcode;
-        this.neighbourhood = neighbourhood;
-        this.street = street;
-        this.city = city;
-        this.state = state;
-        this.number = number;
-        this.complement = complement;
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")

@@ -7,24 +7,22 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "account")
+@Table(name = "equipment")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class Account {
+public class Equipment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Integer id;
 
-    @Column(name = "email")
-    private String email;
+    @Column(name = "description_equipment")
+    private String description;
 
-    @Column(name = "password")
-    private String password;
-
-    @Column(name = "active")
-    private Boolean active;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_equipment_category")
+    private EquipmentCategory category;
 }
