@@ -1,4 +1,5 @@
 import { CommonModule, NgIf } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, OnInit } from '@angular/core';
 import {
   AbstractControl,
@@ -20,6 +21,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { Router, RouterModule } from '@angular/router';
 import { NgxMaskDirective } from 'ngx-mask';
 import { catchError, of, switchMap } from 'rxjs';
+import { NotificationService } from '../../../core/services/notification.service';
 import { AddressService } from '../../../shared/services/address.service';
 import { City } from '../models/city';
 import { State } from '../models/state';
@@ -51,6 +53,7 @@ export class RegisterComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly router = inject(Router);
   private readonly addressService = inject(AddressService);
+  private readonly notificationService = inject(NotificationService);
 
   cities: City[] = [];
   states: State[] = [];
@@ -99,23 +102,19 @@ export class RegisterComponent implements OnInit {
         })
       )
       .subscribe({
-        next: (endereco: { logradouro: string; bairro: string; localidade: string; estado: string }) => {
-          if (endereco) {
-            this.registerForm.patchValue({
-              street: endereco.logradouro,
-              neighbourhood: endereco.bairro,
-              city: endereco.localidade,
-              state: endereco.estado,
-            });
+        next: (response: { logradouro: string; bairro: string; localidade: string; estado: string; erro: boolean }) => {
+          if (response.erro) return this.notificationService.error('CEP inválido ou não encontrado.');
+          this.registerForm.patchValue({
+            street: response.logradouro,
+            neighbourhood: response.bairro,
+            city: response.localidade,
+            state: response.estado,
+          });
 
-            this.registerForm.get('state')?.setValue(endereco.estado, { emitEvent: false });
-            this.registerForm.get('city')?.setValue(endereco.localidade, { emitEvent: false });
-            this.registerForm.get('city')?.updateValueAndValidity();
-            this.zipCodeFlag = true;
-          }
-        },
-        error: (message: string) => {
-          console.error(message);
+          this.registerForm.get('state')?.setValue(response.estado, { emitEvent: false });
+          this.registerForm.get('city')?.setValue(response.localidade, { emitEvent: false });
+          this.registerForm.get('city')?.updateValueAndValidity();
+          this.zipCodeFlag = true;
         },
       });
   }
@@ -125,8 +124,7 @@ export class RegisterComponent implements OnInit {
       return;
     }
 
-    const raw = this.registerForm.value;
-
+    const raw = this.registerForm.getRawValue();
     const payload = {
       cpf: raw.cpf,
       name: raw.name,
@@ -143,8 +141,29 @@ export class RegisterComponent implements OnInit {
       },
     };
 
-    this.authService.register(payload).subscribe(() => {
-      this.router.navigate(['/']);
+    this.authService.register(payload).subscribe({
+      next: () => {
+        this.router.navigate(['/']);
+      },
+      error: (error: HttpErrorResponse) => {
+        const errorMessage: string = error.error?.errors?.[0] || '';
+
+        const errorMap: Record<string, string> = {
+          'phone already in use': 'Este telefone já está cadastrado. Tente fazer login ou use outro telefone.',
+          'email already in use': 'Este email já está cadastrado. Tente fazer login ou use outro email.',
+          'cpf already in use': 'Este CPF já está cadastrado. Tente fazer login ou use outro CPF.',
+          'cpf: número do registro': 'CPF inválido. Verifique e tente novamente.',
+          'invalid phone number.': 'Número de telefone inválido. Verifique e tente novamente.',
+        };
+
+        const matchedMessage = Object.entries(errorMap).find(([key]) => errorMessage.toLowerCase().includes(key));
+
+        if (matchedMessage) {
+          this.notificationService.error(matchedMessage[1]);
+        } else {
+          this.notificationService.error('Erro ao registrar. Tente novamente mais tarde.');
+        }
+      },
     });
   }
 }
