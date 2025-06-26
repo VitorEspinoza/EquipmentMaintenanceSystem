@@ -1,34 +1,51 @@
-<div class="p-6 space-y-6">
-  <h2 class="text-2xl font-bold">Categorias de Equipamento</h2>
+<div class="bg-white shadow-md rounded-lg">
+  <div class="p-6 space-y-8">
+    <header class="text-center border-b pb-4">
+      <h2 class="text-2xl font-semibold text-gray-800">Categorias de Equipamento</h2>
+      <p class="text-sm text-gray-500">Adicione, edite e gerencie as categorias.</p>
+    </header>
 
-  <form [formGroup]="categoryForm" (ngSubmit)="saveCategory()" class="space-y-4">
-    <mat-form-field appearance="outline" class="w-full">
-      <mat-label>Nome da categoria</mat-label>
-      <input matInput placeholder="Notebook" formControlName="name" />
-      @if (categoryForm.get('name')?.invalid && categoryForm.get('name')?.touched) {
-        <mat-error> Nome da categoria é obrigatório </mat-error>
-      }
-      @if (categoryForm.get('name')?.hasError('pattern')) {
-        <mat-error> Nome não pode ser vazio </mat-error>
-      }
-    </mat-form-field>
+    <section>
+      <form [formGroup]="categoryForm" (ngSubmit)="saveCategory()" class="space-y-4 max-w-lg mx-auto">
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Nome da categoria</mat-label>
+          <input matInput placeholder="Ex: Notebooks, Monitores" formControlName="name" />
+          @if (categoryForm.get('name')?.invalid && categoryForm.get('name')?.touched) {
+            <mat-error> Nome da categoria é obrigatório </mat-error>
+          }
+          @if (categoryForm.get('name')?.hasError('pattern')) {
+            <mat-error> Nome não pode ser vazio </mat-error>
+          }
+        </mat-form-field>
 
-    <button mat-raised-button color="accent" type="submit" [disabled]="categoryForm.invalid">
-      {{ selectedCategory() ? 'Atualizar' : 'Adicionar' }}
-    </button>
-  </form>
+        <div class="flex justify-end">
+          <button mat-raised-button color="primary" type="submit" [disabled]="categoryForm.invalid">
+            <mat-icon class="mr-2">{{ selectedCategory() ? 'edit' : 'add' }}</mat-icon>
+            <span>{{ selectedCategory() ? 'Atualizar Categoria' : 'Adicionar Categoria' }}</span>
+          </button>
+        </div>
+      </form>
+    </section>
 
-  <div class="mt-8">
-    <h3 class="text-lg font-semibold mb-2">Lista de Categorias</h3>
-    <mat-slide-toggle class="mb-2" (change)="onToggleChange()" labelPosition="before">
-      <b>Inativos</b>
-    </mat-slide-toggle>
-    <app-dynamic-table
-      [dataSource]="categories()"
-      [columns]="tableColumns()"
-      [actionsResolver]="getRowActions"
-      (actionClicked)="handleAction($event)"
-      [showPaginator]="true"
-    />
+    <mat-divider></mat-divider>
+
+    <section>
+      <div class="flex justify-between items-center mb-4 flex-wrap gap-4">
+        <h3 class="text-lg font-semibold text-gray-700">Lista de Categorias</h3>
+        <mat-slide-toggle (change)="onToggleChange()" labelPosition="before" [checked]="!filterByActiveCategories()">
+          <b>Mostrar Inativos</b>
+        </mat-slide-toggle>
+      </div>
+
+      <div class="overflow-x-auto rounded-lg">
+        <app-dynamic-table
+          [dataSource]="categories()"
+          [columns]="tableColumns()"
+          [actionsResolver]="getRowActions"
+          (actionClicked)="handleAction($event)"
+          [showPaginator]="true"
+        />
+      </div>
+    </section>
   </div>
 </div>

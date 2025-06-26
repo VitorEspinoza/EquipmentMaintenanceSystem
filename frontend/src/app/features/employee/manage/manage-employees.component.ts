@@ -19,6 +19,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatNativeDateModule, MatOptionModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -51,6 +52,7 @@ const MATERIAL_MODULES = [
   MatNativeDateModule,
   MatSlideToggleModule,
   MatDialogModule,
+  MatDividerModule,
 ];
 const FORM_MODULES = [ReactiveFormsModule, FormsModule];
 const COMMON_MODULES = [CommonModule];
@@ -94,7 +96,7 @@ export class ManageEmployeesComponent implements OnInit {
 
   readonly employees = signal<Employee[]>([]);
 
-  private filterByActiveEmployees = signal<boolean>(true);
+  filterByActiveEmployees = signal<boolean>(true);
 
   private readonly employees$ = toObservable(this.filterByActiveEmployees).pipe(
     takeUntilDestroyed(),
