@@ -3,6 +3,7 @@ package br.com.backend.backend.Services;
 import br.com.backend.backend.DTOs.Account.AccountDTO;
 import br.com.backend.backend.DTOs.Account.CreateAccountDTO;
 import br.com.backend.backend.DTOs.Auth.AuthRequestDTO;
+import br.com.backend.backend.DTOs.Auth.AuthResponseDTO;
 import br.com.backend.backend.DTOs.Client.ClientCreateResult;
 import br.com.backend.backend.DTOs.Client.ClientDTO;
 import br.com.backend.backend.DTOs.Client.CreateClientDTO;
@@ -17,6 +18,7 @@ import br.com.backend.backend.Repositories.ClientRepository;
 import br.com.backend.backend.Services.Interfaces.ClientPasswordEmailService;
 import br.com.backend.backend.Utils.PasswordGenerator;
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.util.bcel.Const;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +38,7 @@ public class ClientService {
     private final ZipCodeValidator zipCodeValidator;
 
     @Transactional
-    public ClientCreateResult create(CreateClientDTO dto) {
+    public AuthResponseDTO create(CreateClientDTO dto) {
         if(!invalidClientCreationList(dto).isEmpty()) {
             throw new ClientCreationInvalidException(invalidClientCreationList(dto));
         }
@@ -60,15 +62,8 @@ public class ClientService {
         Client clientCreated = clientRepository.save(client);
 
         clientPasswordEmailService.sendPasswordToClient(dto, randomPassword);
-
-        ClientDTO clientDTO = ClientDTO.fromEntity(clientCreated);
-
-        ResponseCookie cookie = authService.login(new AuthRequestDTO(clientCreated.getAccount().getEmail(), randomPassword)).getCookie();
-
-       return new ClientCreateResult(
-                ResultViewModel.success(clientDTO),
-                cookie
-        );
+        
+       return authService.login(new AuthRequestDTO(clientCreated.getAccount().getEmail(), randomPassword));
     }
 
     private List<String> invalidClientCreationList(CreateClientDTO dto) {
