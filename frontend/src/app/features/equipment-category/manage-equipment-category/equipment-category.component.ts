@@ -160,8 +160,9 @@ export class EquipmentCategoryComponent implements OnInit {
         this.notificationService.success('Categoria atualizada!');
         this.clearSelectionAndResetForm();
       },
-      error: () => {
-        this.notificationService.error('Erro ao atualizar categoria.');
+      error: err => {
+        const errorMessage = err?.error?.errors?.join(', ') || 'Erro ao criar categoria, tente novamente mais tarde.';
+        this.notificationService.error(errorMessage);
       },
     });
   }
