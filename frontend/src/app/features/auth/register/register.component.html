@@ -64,7 +64,7 @@
         <div class="flex space-x-4">
           <mat-form-field appearance="outline" class="w-2/3">
             <mat-label>Rua</mat-label>
-            <input matInput formControlName="street" type="text" [disabled]="true" />
+            <input matInput formControlName="street" type="text" />
             @if (registerForm.get('street')?.hasError('required')) {
               <mat-error>Rua obrigatória</mat-error>
             }
@@ -89,7 +89,7 @@
 
         <mat-form-field appearance="outline">
           <mat-label>Bairro</mat-label>
-          <input matInput formControlName="neighbourhood" type="text" [disabled]="true" />
+          <input matInput formControlName="neighbourhood" type="text" />
           @if (registerForm.get('neighbourhood')?.hasError('required')) {
             <mat-error>Bairro obrigatório</mat-error>
           }
@@ -97,7 +97,7 @@
 
         <mat-form-field appearance="outline">
           <mat-label>Cidade</mat-label>
-          <input type="text" matInput formControlName="city" type="text" [disabled]="true" />
+          <input type="text" matInput formControlName="city" type="text" />
           @if (registerForm.get('city')?.hasError('required')) {
             <mat-error>Cidade obrigatória</mat-error>
           }
@@ -108,7 +108,7 @@
 
         <mat-form-field appearance="outline">
           <mat-label>Estado</mat-label>
-          <input type="text" matInput formControlName="state" type="text" [disabled]="true" />
+          <input type="text" matInput formControlName="state" type="text" />
           @if (registerForm.get('state')?.hasError('required')) {
             <mat-error>Estado obrigatório</mat-error>
           }

@@ -1,15 +1,7 @@
 import { CommonModule, NgIf } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, OnInit } from '@angular/core';
-import {
-  AbstractControl,
-  FormBuilder,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-  ValidationErrors,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
@@ -23,8 +15,6 @@ import { NgxMaskDirective } from 'ngx-mask';
 import { catchError, of, switchMap } from 'rxjs';
 import { NotificationService } from '../../../core/services/notification.service';
 import { AddressService } from '../../../shared/services/address.service';
-import { City } from '../models/city';
-import { State } from '../models/state';
 import { AuthService } from '../services/auth.service';
 
 const MATERIAL_MODULES = [
@@ -55,22 +45,7 @@ export class RegisterComponent implements OnInit {
   private readonly addressService = inject(AddressService);
   private readonly notificationService = inject(NotificationService);
 
-  cities: City[] = [];
-  states: State[] = [];
-
   registerForm!: FormGroup;
-
-  stateValidator = (control: AbstractControl): ValidationErrors | null => {
-    const stateValue = control.value;
-    const isValidState = this.states.some(state => state.nome === stateValue);
-    return isValidState ? null : { invalidState: true };
-  };
-
-  cityValidator = (control: AbstractControl): ValidationErrors | null => {
-    const cityValue = control.value;
-    const isValidCity = this.cities.some(city => city.nome === cityValue);
-    return isValidCity ? null : { invalidCity: true };
-  };
 
   zipCodeFlag = false;
 
@@ -84,8 +59,8 @@ export class RegisterComponent implements OnInit {
       street: [{ value: '', disabled: true }, [Validators.required]],
       number: ['', [Validators.required, Validators.pattern('^[0-9]{1,6}$')]],
       neighbourhood: [{ value: '', disabled: true }, [Validators.required]],
-      city: [{ value: '', disabled: true }, [Validators.required, this.cityValidator]],
-      state: [{ value: '', disabled: true }, [Validators.required, this.stateValidator]],
+      city: [{ value: '', disabled: true }, [Validators.required]],
+      state: [{ value: '', disabled: true }, [Validators.required]],
       complement: [''],
     });
 
