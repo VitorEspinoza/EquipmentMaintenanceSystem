@@ -28,6 +28,18 @@
                                                                                   (NEXTVAL('client_id_seq'), (SELECT id FROM account WHERE email = 'joana@gmail.com'), (SELECT id FROM address WHERE zipcode = '83608136' AND number = '117'), 'joana', '67361312004', '4199206314'),
                                                                                   (NEXTVAL('client_id_seq'), (SELECT id FROM account WHERE email = 'joaquina@gmail.com'), (SELECT id FROM address WHERE zipcode = '83608136' AND number = '117'), 'joaquina', '95564520017', '41995146676');
 
+            INSERT INTO client (id, id_account, id_address, name, cpf, phone) VALUES
+                                                                                  (NEXTVAL('client_id_seq'), (SELECT id FROM account WHERE email = 'joao@gmail.com'), (SELECT id FROM address WHERE zipcode = '83608136' AND number = '117'), 'joao', '03493418000', '41998643751'),
+                                                                                  (NEXTVAL('client_id_seq'), (SELECT id FROM account WHERE email = 'jose@gmail.com'), (SELECT id FROM address WHERE zipcode = '83608136' AND number = '117'), 'jose', '10802688047', '41997248962'),
+                                                                                  (NEXTVAL('client_id_seq'), (SELECT id FROM account WHERE email = 'joana@gmail.com'), (SELECT id FROM address WHERE zipcode = '83608136' AND number = '117'), 'joana', '67361312004', '4199206314'),
+                                                                                  (NEXTVAL('client_id_seq'), (SELECT id FROM account WHERE email = 'joaquina@gmail.com'), (SELECT id FROM address WHERE zipcode = '83608136' AND number = '117'), 'joaquina', '95564520017', '41995146676');
+
+            INSERT INTO equipment_category(id, name, description) VALUES
+                                                                      (NEXTVAL('equipment_category_id_seq'), 'Notebook', 'Computadores portáteis'),
+                                                                      (NEXTVAL('equipment_category_id_seq'), 'Desktop', 'Computadores fixos'),
+                                                                      (NEXTVAL('equipment_category_id_seq'), 'Impressora', 'Dispositivos que fazem impressão'),
+                                                                      (NEXTVAL('equipment_category_id_seq'), 'Mouse', 'Controladores da seta na interface do computador'),
+                                                                      (NEXTVAL('equipment_category_id_seq'), 'Teclado', 'Dispositivos de digitação');
         </sql>
     </changeSet>
 </databaseChangeLog>
