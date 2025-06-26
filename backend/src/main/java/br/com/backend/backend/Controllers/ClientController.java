@@ -1,12 +1,8 @@
 package br.com.backend.backend.Controllers;
 
 import br.com.backend.backend.DTOs.Account.AccountDTO;
-import br.com.backend.backend.DTOs.Auth.AuthRequestDTO;
-import br.com.backend.backend.DTOs.Auth.AuthResponseDTO;
-import br.com.backend.backend.DTOs.Client.ClientDTO;
 import br.com.backend.backend.DTOs.Client.CreateClientDTO;
 import br.com.backend.backend.DTOs.ResultViewModel;
-import br.com.backend.backend.Services.AuthService;
 import br.com.backend.backend.Services.ClientService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class ClientController {
 
     private final ClientService clientService;
-    private final AuthService authService;
 
     @PostMapping
     public ResponseEntity<ResultViewModel<AccountDTO>> create(@Valid @RequestBody CreateClientDTO dto) {
@@ -35,5 +30,4 @@ public class ClientController {
                 .header(HttpHeaders.SET_COOKIE, response.getCookie().toString())
                 .body(ResultViewModel.success(response.getAccount()));
     }
-
 }
