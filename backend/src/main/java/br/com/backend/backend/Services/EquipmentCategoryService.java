@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -48,7 +49,7 @@ public class EquipmentCategoryService {
     public ResultViewModel<EquipmentCategoryResponseDTO> createCategory(EquipmentCategoryRequestDTO dto) {
         var categoryName = dto.name();
 
-        if (repository.findByNameIgnoreCase(categoryName).isPresent()) {
+        if (nameCategoryAlreadyInUse(categoryName, null)) {
             throw new CategoryAlreadyExists(categoryName);
         }
 
@@ -62,6 +63,10 @@ public class EquipmentCategoryService {
     public ResultViewModel<EquipmentCategoryResponseDTO> updateCategory(Integer id, EquipmentCategoryRequestDTO dto) {
         var category = repository.findById(id).orElseThrow(() -> new EquipmentCategoryNotFoundException(id));
 
+        if (nameCategoryAlreadyInUse(dto.name(), id)) {
+            throw new CategoryAlreadyExists(dto.name());
+        }
+
         category.update(dto.name(), dto.description());
         var updatedCategory = repository.save(category);
 
@@ -74,5 +79,12 @@ public class EquipmentCategoryService {
 
         category.inactivate();
         repository.save(category);
+    }
+
+    private boolean nameCategoryAlreadyInUse(String name, Integer id) {
+        return Optional.ofNullable(id)
+                .map(existingId -> repository.findByNameIgnoreCaseAndIdNot(name, id))
+                .orElseGet(() ->  repository.findByNameIgnoreCase(name))
+                .isPresent();
     }
 }

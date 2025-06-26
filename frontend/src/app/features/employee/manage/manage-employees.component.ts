@@ -2,11 +2,14 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, signal, ViewChild } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import {
+  AbstractControl,
   FormBuilder,
   FormGroup,
   FormGroupDirective,
   FormsModule,
   ReactiveFormsModule,
+  ValidationErrors,
+  ValidatorFn,
   Validators,
 } from '@angular/forms';
 import { provideMomentDateAdapter } from '@angular/material-moment-adapter';
@@ -23,6 +26,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { RouterModule } from '@angular/router';
+import moment from 'moment';
 import { NgxMaskDirective } from 'ngx-mask';
 import { catchError, map, of, switchMap } from 'rxjs';
 import { NotificationService } from '../../../core/services/notification.service';
@@ -170,7 +174,7 @@ export class ManageEmployeesComponent implements OnInit {
       id: [null],
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      birthDate: [null, Validators.required],
+      birthDate: [null, [Validators.required, this.minAgeValidator(18)]],
       password: ['', Validators.required],
     });
 
@@ -292,5 +296,23 @@ export class ManageEmployeesComponent implements OnInit {
 
   onToggleChange(): void {
     this.filterByActiveEmployees.update(value => !value);
+  }
+
+  minAgeValidator(minAge: number): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value = control.value;
+
+      if (!value) return null;
+
+      const birthDate = moment(value, 'YYYY-MM-DD', true);
+
+      if (!birthDate.isValid()) {
+        return { invalidDate: true };
+      }
+
+      const todayMinusMinAge = moment().subtract(minAge, 'years');
+
+      return birthDate.isSameOrBefore(todayMinusMinAge) ? null : { minAge: { requiredAge: minAge } };
+    };
   }
 }
