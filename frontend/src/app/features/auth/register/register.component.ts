@@ -118,35 +118,6 @@ export class RegisterComponent implements OnInit {
           console.error(message);
         },
       });
-
-    this.addressService.searchStates().subscribe((data: State[]) => {
-      this.states = data.sort((a, b) => a.nome.localeCompare(b.nome));
-      this.registerForm.get('state')!.setValue(this.registerForm.get('state')!.value || '');
-    });
-
-    this.registerForm
-      .get('state')
-      ?.valueChanges.pipe(
-        switchMap(stateName => {
-          if (stateName) {
-            const state = this.states.find(s => s.nome.toLowerCase() === stateName.toLowerCase());
-            if (state) {
-              console.log(state);
-              return this.addressService
-                .searchCitiesByState(state.id)
-                .pipe(catchError(() => of('Erro ao acessar cidades da api IBGE!')));
-            }
-          }
-          return of(null);
-        })
-      )
-      .subscribe((data: City[] | null) => {
-        if (data) {
-          this.cities = data.sort((a, b) => a.nome.localeCompare(b.nome));
-        }
-        this.registerForm.get('city')?.updateValueAndValidity();
-        this.zipCodeFlag = false;
-      });
   }
 
   onSubmit() {
