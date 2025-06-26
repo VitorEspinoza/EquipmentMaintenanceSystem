@@ -134,7 +134,11 @@ export class EquipmentCategoryComponent implements OnInit {
         this.clearSelectionAndResetForm();
       },
       error: err => {
-        const errorMessage = err?.error?.errors?.join(', ') || 'Erro ao criar categoria, tente novamente mais tarde.';
+        let errorMessage = err?.error?.errors?.join(', ') || 'Erro ao criar categoria, tente novamente mais tarde.';
+        errorMessage = errorMessage.includes('already exists')
+          ? `Categoria com o nome "${category.name}" já existente`
+          : errorMessage;
+
         this.notificationService.error(errorMessage);
       },
     });
@@ -160,8 +164,13 @@ export class EquipmentCategoryComponent implements OnInit {
         this.notificationService.success('Categoria atualizada!');
         this.clearSelectionAndResetForm();
       },
-      error: () => {
-        this.notificationService.error('Erro ao atualizar categoria.');
+      error: err => {
+        let errorMessage = err?.error?.errors?.join(', ') || 'Erro ao criar categoria, tente novamente mais tarde.';
+        errorMessage = errorMessage.cotains('already exists')
+          ? `Categoria com o nome "${category}" já existente`
+          : errorMessage;
+
+        this.notificationService.error(errorMessage);
       },
     });
   }
