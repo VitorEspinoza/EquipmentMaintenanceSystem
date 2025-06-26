@@ -40,7 +40,7 @@
 
           <mat-form-field appearance="outline">
             <mat-label>Telefone</mat-label>
-            <input matInput formControlName="phone" type="text" mask="(00) 00000-0000" />
+            <input matInput formControlName="phone" type="text" placeholder="(99) 99999-9999" mask="(00) 0000-00009" />
             @if (registerForm.get('phone')?.hasError('required')) {
               <mat-error>Telefone obrigatório</mat-error>
             }

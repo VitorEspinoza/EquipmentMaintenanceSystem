@@ -49,13 +49,15 @@ export class RegisterComponent implements OnInit {
 
   zipCodeFlag = false;
 
+  readonly validPhoneNumberPattern = /^(?:\(?([1-9][0-9])\)?\s?)?((?:9\d|[2-9])\d{3})-?(\d{4})$/;
+
   ngOnInit(): void {
     this.registerForm = this.fb.group({
       cpf: ['', [Validators.required, Validators.pattern(/^.{11}$/)]],
       name: ['', [Validators.required]],
       email: ['', [Validators.required, Validators.email]],
       zipcode: ['', [Validators.required, Validators.pattern(/^.{8}$/)]],
-      phone: ['', [Validators.required, Validators.pattern(/^.{10,11}$/)]],
+      phone: ['', [Validators.required, Validators.pattern(this.validPhoneNumberPattern)]],
       street: [{ value: '', disabled: true }, [Validators.required]],
       number: ['', [Validators.required, Validators.pattern('^[0-9]{1,6}$')]],
       neighbourhood: [{ value: '', disabled: true }, [Validators.required]],
