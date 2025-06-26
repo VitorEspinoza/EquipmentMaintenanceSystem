@@ -1,0 +1,49 @@
+<div class="flex flex-col items-center justify-center!">
+  <h2 mat-dialog-title>Criar Solicitação</h2>
+  <mat-dialog-content>
+    <form [formGroup]="maintenanceRequestForm" class="flex flex-col gap-6 w-full">
+      <div class="flex gap-4 pt-2">
+        <mat-form-field class="w-[48%]" appearance="outline">
+          <mat-label>Descrição do Equipamento</mat-label>
+          <input type="text" matInput formControlName="equipmentDescription" />
+          @if (maintenanceRequestForm.get('equipmentDescription')?.hasError('required')) {
+            <mat-error>A descrição do equipamento é obrigatória</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field class="w-[48%]" appearance="outline">
+          <mat-label>Categoria de Equipamento</mat-label>
+          <mat-select formControlName="equipmentCategoryId" name="food">
+            @for (equipmentCategory of equipmentCategories; track equipmentCategory.id) {
+              <mat-option [value]="equipmentCategory.id">{{ equipmentCategory.name }}</mat-option>
+            }
+          </mat-select>
+          @if (maintenanceRequestForm.get('equipmentCategoryId')?.hasError('required')) {
+            <mat-error>A categoria do equipamento é obrigatória</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Descrição do defeito</mat-label>
+        <textarea type="text" matInput formControlName="defectDescription" rows="4"></textarea>
+        @if (maintenanceRequestForm.get('defectDescription')?.hasError('required')) {
+          <mat-error>A descrição do defeito é obrigatória</mat-error>
+        }
+      </mat-form-field>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions class="mt-5 mb-2 w-full flex justify-between">
+    <button mat-raised-button class="w-[48%]" type="button" mat-dialog-close>Cancel</button>
+
+    <button
+      mat-flat-button
+      [disabled]="!maintenanceRequestForm.valid"
+      class="w-[48%]"
+      [mat-dialog-close]="maintenanceRequestForm.value"
+    >
+      Criar
+    </button>
+  </mat-dialog-actions>
+</div>

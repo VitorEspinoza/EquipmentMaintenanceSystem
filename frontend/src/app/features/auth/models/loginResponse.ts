@@ -1,3 +1,5 @@
+import { Account } from './account';
+
 export interface LoginResponse {
-  message: string;
+  account: Account;
 }

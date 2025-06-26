@@ -1,0 +1,72 @@
+<div class="p-4 md:p-8">
+  <h2 class="text-xl font-bold mb-4">Gerenciar Funcionários</h2>
+
+  <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()" class="grid gap-4 md:grid-cols-2">
+    <mat-form-field appearance="outline">
+      <mat-label>Nome</mat-label>
+      <input matInput formControlName="name" required />
+      @if (employeeForm.get('name')?.hasError('required')) {
+        <mat-error> Nome obrigatório</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>E-mail</mat-label>
+      <input matInput formControlName="email" required type="email" />
+      @if (employeeForm.get('email')?.hasError('required')) {
+        <mat-error> Email obrigatório</mat-error>
+      }
+      @if (employeeForm.get('email')?.hasError('email')) {
+        <mat-error> Email inválido</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Data de Nascimento</mat-label>
+      <input
+        matInput
+        name="birthDate"
+        [formControlName]="'birthDate'"
+        [matDatepicker]="picker"
+        placeholder="DD/MM/AAAA"
+        maxlength="10"
+        required
+      />
+      @if (employeeForm.get('birthDate')?.hasError('required')) {
+        <mat-error> Data de Nascimento obrigatória</mat-error>
+      }
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+    @if (!selectedEmployee()) {
+      <mat-form-field appearance="outline">
+        <mat-label>Senha</mat-label>
+        <input matInput formControlName="password" type="password" required />
+        @if (employeeForm.get('password')?.hasError('required')) {
+          <mat-error> Senha obrigatória</mat-error>
+        }
+      </mat-form-field>
+    }
+
+    <div class="md:col-span-2">
+      <button mat-raised-button color="primary" type="submit" [disabled]="!employeeForm.valid">
+        {{ selectedEmployee() ? 'Atualizar' : 'Adicionar' }} Funcionário
+      </button>
+    </div>
+  </form>
+
+  <div class="mt-8">
+    <h3 class="text-lg font-semibold mb-2">Lista de Funcionários</h3>
+    <mat-slide-toggle class="mb-2" (change)="onToggleChange()" labelPosition="before">
+      <b>Inativos</b>
+    </mat-slide-toggle>
+    <app-dynamic-table
+      [dataSource]="employees()"
+      [columns]="tableColumns()"
+      [actionsResolver]="getRowActions"
+      (actionClicked)="handleAction($event)"
+      [showPaginator]="true"
+    />
+  </div>
+</div>

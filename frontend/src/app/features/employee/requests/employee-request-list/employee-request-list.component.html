@@ -1,0 +1,13 @@
+<app-base-maintenance-request-list>
+  <button
+    toolbar-extra-actions
+    mat-fab
+    color="accent"
+    [matMenuTriggerFor]="downloadMenu"
+    matTooltip="Baixar Relatórios"
+    aria-label="Opções de download de relatório"
+  >
+    <mat-icon>download</mat-icon>
+  </button>
+  <mat-menu #downloadMenu="matMenu"> </mat-menu>
+</app-base-maintenance-request-list>
