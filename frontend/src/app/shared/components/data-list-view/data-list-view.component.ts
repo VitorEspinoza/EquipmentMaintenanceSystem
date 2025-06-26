@@ -15,9 +15,9 @@ export class DataListViewComponent<TAction> {
   subtitle = input<string>();
   actions = input<DataViewAction<TAction>[]>([]);
 
-  containerClass = input('p-12 bg-white shadow-md rounded-lg flex flex-col');
+  containerClass = input('bg-white shadow-md rounded-lg flex flex-col p-6');
   titleClass = input('text-2xl font-semibold text-gray-800 mb-4 text-center');
-  contentClass = input('overflow-x-auto');
+  contentClass = input('overflow-x-auto min-w-0');
   toolbarClass = input('p-2 flex justify-end gap-6 mb-4');
 
   showToolbar = input(true);

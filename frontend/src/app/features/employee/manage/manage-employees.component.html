@@ -1,72 +1,87 @@
-<div class="p-4 md:p-8">
-  <h2 class="text-xl font-bold mb-4">Gerenciar Funcionários</h2>
+<div class="bg-white shadow-md rounded-lg">
+  <div class="p-6 space-y-8">
+    <header class="text-center border-b pb-4">
+      <h2 class="text-2xl font-semibold text-gray-800">Gerenciar Funcionários</h2>
+      <p class="text-sm text-gray-500">Adicione novos funcionários e edite os existentes.</p>
+    </header>
 
-  <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()" class="grid gap-4 md:grid-cols-2">
-    <mat-form-field appearance="outline">
-      <mat-label>Nome</mat-label>
-      <input matInput formControlName="name" required />
-      @if (employeeForm.get('name')?.hasError('required')) {
-        <mat-error> Nome obrigatório</mat-error>
-      }
-    </mat-form-field>
+    <section>
+      <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()" class="grid gap-4 md:grid-cols-2">
+        <mat-form-field appearance="outline">
+          <mat-label>Nome</mat-label>
+          <input matInput formControlName="name" required />
+          @if (employeeForm.get('name')?.hasError('required')) {
+            <mat-error> Nome obrigatório</mat-error>
+          }
+        </mat-form-field>
 
-    <mat-form-field appearance="outline">
-      <mat-label>E-mail</mat-label>
-      <input matInput formControlName="email" required type="email" />
-      @if (employeeForm.get('email')?.hasError('required')) {
-        <mat-error> Email obrigatório</mat-error>
-      }
-      @if (employeeForm.get('email')?.hasError('email')) {
-        <mat-error> Email inválido</mat-error>
-      }
-    </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>E-mail</mat-label>
+          <input matInput formControlName="email" required type="email" />
+          @if (employeeForm.get('email')?.hasError('required')) {
+            <mat-error> Email obrigatório</mat-error>
+          }
+          @if (employeeForm.get('email')?.hasError('email')) {
+            <mat-error> Email inválido</mat-error>
+          }
+        </mat-form-field>
 
-    <mat-form-field appearance="outline">
-      <mat-label>Data de Nascimento</mat-label>
-      <input
-        matInput
-        name="birthDate"
-        [formControlName]="'birthDate'"
-        [matDatepicker]="picker"
-        placeholder="DD/MM/AAAA"
-        maxlength="10"
-        required
-      />
-      @if (employeeForm.get('birthDate')?.hasError('required')) {
-        <mat-error> Data de Nascimento obrigatória</mat-error>
-      }
-      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-      <mat-datepicker #picker></mat-datepicker>
-    </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Data de Nascimento</mat-label>
+          <input
+            matInput
+            name="birthDate"
+            [formControlName]="'birthDate'"
+            [matDatepicker]="picker"
+            placeholder="DD/MM/AAAA"
+            required
+          />
+          @if (employeeForm.get('birthDate')?.hasError('required')) {
+            <mat-error> Data de Nascimento obrigatória</mat-error>
+          }
+          @if (employeeForm.get('birthDate')?.hasError('minAge')) {
+            <mat-error> O funcionário precisa ter no mínimo 18 anos</mat-error>
+          }
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
 
-    @if (!selectedEmployee()) {
-      <mat-form-field appearance="outline">
-        <mat-label>Senha</mat-label>
-        <input matInput formControlName="password" type="password" required />
-        @if (employeeForm.get('password')?.hasError('required')) {
-          <mat-error> Senha obrigatória</mat-error>
-        }
-      </mat-form-field>
-    }
+        <mat-form-field appearance="outline">
+          <mat-label>Senha</mat-label>
+          <input matInput formControlName="password" type="password" [required]="!selectedEmployee()" />
+          @if (employeeForm.get('password')?.hasError('required')) {
+            <mat-error> Senha obrigatória para novos funcionários</mat-error>
+          }
+        </mat-form-field>
 
-    <div class="md:col-span-2">
-      <button mat-raised-button color="primary" type="submit" [disabled]="!employeeForm.valid">
-        {{ selectedEmployee() ? 'Atualizar' : 'Adicionar' }} Funcionário
-      </button>
-    </div>
-  </form>
+        <div class="md:col-span-2 flex justify-end">
+          <button mat-raised-button color="primary" type="submit" [disabled]="employeeForm.invalid">
+            <mat-icon class="mr-2">{{ selectedEmployee() ? 'edit' : 'add' }}</mat-icon>
+            <span>{{ selectedEmployee() ? 'Atualizar Funcionário' : 'Adicionar Funcionário' }}</span>
+          </button>
+        </div>
+      </form>
+    </section>
 
-  <div class="mt-8">
-    <h3 class="text-lg font-semibold mb-2">Lista de Funcionários</h3>
-    <mat-slide-toggle class="mb-2" (change)="onToggleChange()" labelPosition="before">
-      <b>Inativos</b>
-    </mat-slide-toggle>
-    <app-dynamic-table
-      [dataSource]="employees()"
-      [columns]="tableColumns()"
-      [actionsResolver]="getRowActions"
-      (actionClicked)="handleAction($event)"
-      [showPaginator]="true"
-    />
+    <mat-divider></mat-divider>
+
+    <section>
+      <div class="flex justify-between items-center mb-4 flex-wrap gap-4">
+        <h3 class="text-lg font-semibold text-gray-700">Lista de Funcionários</h3>
+        <mat-slide-toggle (change)="onToggleChange()" labelPosition="before" [checked]="!filterByActiveEmployees()">
+          <b>Mostrar Inativos</b>
+        </mat-slide-toggle>
+      </div>
+
+      <div class="overflow-x-auto rounded-lg">
+        <app-dynamic-table
+          [dataSource]="employees()"
+          [columns]="tableColumns()"
+          [actionsResolver]="getRowActions"
+          (actionClicked)="handleAction($event)"
+          [showPaginator]="true"
+        />
+      </div>
+    </section>
   </div>
 </div>

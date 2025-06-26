@@ -12,6 +12,8 @@ import java.util.Optional;
 public interface EquipmentCategoryRepository extends JpaRepository<EquipmentCategory, Integer>, JpaSpecificationExecutor<EquipmentCategory> {
     Optional<EquipmentCategory> findByNameIgnoreCase(String name);
 
+    Optional<EquipmentCategory> findByNameIgnoreCaseAndIdNot(String email, Integer id);
+
     @NonNull
     Optional<EquipmentCategory> findById(Integer id);
 

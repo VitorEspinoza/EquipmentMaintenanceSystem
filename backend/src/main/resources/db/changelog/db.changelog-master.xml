@@ -4,20 +4,11 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <include file="/db/changelog/migrations/tables/001_create_account_table.xml"/>
-    <include file="/db/changelog/migrations/tables/002_create_address_table.xml"/>
-    <include file="/db/changelog/migrations/tables/003_create_client_table.xml"/>
-    <include file="/db/changelog/migrations/tables/004_create_employee_table.xml"/>
-    <include file="/db/changelog/migrations/tables/005_create_equipment_category_table.xml"/>
-    <include file="/db/changelog/migrations/tables/006_create_equipment_table.xml"/>
-    <include file="/db/changelog/migrations/tables/007_create_maintenance_request_table.xml"/>
-    <include file="/db/changelog/migrations/tables/008_create_maintenance_table.xml"/>
-    <include file="/db/changelog/migrations/tables/009_create_maintenance_history_table.xml"/>
-    <include file="/db/changelog/migrations/tables/010_create_request_state_history_table.xml"/>
-    <include file="db/changelog/migrations/indexes/001_create_indexes.xml"/>
-    <include file="/db/changelog/migrations/tables/011_drop_equipment_table.xml"/>
-    <include file="/db/changelog/migrations/tables/012_refactor_maintenance_request_workflow.xml"/>
-    <include file="/db/changelog/migrations/tables/013_remove_maintenance_history_and_maintenance_tables.xml"/>
-    <include file="/db/changelog/migrations/tables/014_create_default_admin.xml"/>
-    <include file="/db/changelog/migrations/db.changelong-1.0.xml"/>
+    <includeAll path="migrations/tables" relativeToChangelogFile="true"/>
+
+    <includeAll path="migrations/indexes" relativeToChangelogFile="true"/>
+
+    <include file="migrations/db.changelong-1.0.xml" relativeToChangelogFile="true"/>
+    
+    <includeAll path="migrations/seed" relativeToChangelogFile="true"/>
 </databaseChangeLog>

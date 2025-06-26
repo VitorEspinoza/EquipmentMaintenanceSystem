@@ -8,9 +8,7 @@
             CREATE INDEX idx_maintenance_state ON maintenance_request(state);
             CREATE INDEX idx_client_account ON client(id_account);
             CREATE INDEX idx_employee_account ON employee(id_account);
-            CREATE INDEX idx_equipment_category ON equipment(id_equipment_category);
             CREATE INDEX idx_request_client ON maintenance_request(id_client);
-            CREATE INDEX idx_maintenance_request ON maintenance(id_request);
             CREATE INDEX idx_state_history_request ON request_state_history(id_request);
         </sql>
     </changeSet>

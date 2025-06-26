@@ -58,7 +58,7 @@ public interface MaintenanceRequestRepository extends JpaRepository<MaintenanceR
             SUM(mr.quotedValue) AS total
         FROM MaintenanceRequest mr
         LEFT JOIN mr.category ec
-        WHERE mr.state = 'PAID'
+        WHERE mr.state = 'PAID' OR mr.state = 'COMPLETED'
         GROUP BY ec.name
         ORDER BY total DESC
     """)
