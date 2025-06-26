@@ -1,17 +1,27 @@
-FROM openjdk:17-jdk AS build
-WORKDIR /app
-COPY pom.xml .
-COPY src src
+FROM eclipse-temurin:17-jdk-jammy AS build
 
+WORKDIR /app
+
+COPY pom.xml .
+
+RUN ./mvnw dependency:go-offline
+
+COPY src ./src
 COPY mvnw .
 COPY .mvn .mvn
 
 RUN chmod +x ./mvnw
+
 RUN ./mvnw clean package -DskipTests
 
-FROM openjdk:19-jdk
-VOLUME /tmp
+FROM eclipse-temurin:17-jre-jammy
+
+WORKDIR /app
+
+ARG PORT=8080
+
+EXPOSE ${PORT}
 
 COPY --from=build /app/target/*.jar app.jar
-ENTRYPOINT ["java","-jar","/app.jar"]
-EXPOSE 8080
+
+ENTRYPOINT ["java", "-jar", "app.jar"]
