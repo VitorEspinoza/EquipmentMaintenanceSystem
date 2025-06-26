@@ -1,4 +1,4 @@
-import { HttpResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { catchError, EMPTY, filter, Observable, tap } from 'rxjs';
@@ -164,9 +164,11 @@ export class EmployeeRequestListStrategy implements RequestListStrategy {
         }
         this.fileDownloadService.saveFile(blob, filename);
       },
-      error: err => {
-        console.error('Falha no download do relatório:', err);
-        this.notificationService.error('Não foi possível baixar o relatório.');
+      error: (err: HttpErrorResponse) => {
+        if (err.status === 404)
+          return this.notificationService.info('Nenhum dado encontrado para o relatório solicitado.');
+
+        this.notificationService.error('Não foi possível baixar o relatório. Tente novamente mais tarde.');
       },
     });
   }
