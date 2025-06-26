@@ -10,7 +10,7 @@ import { MaintenanceRequest } from '../../../requests/shared/models/maintenance-
 import { IMaintenanceRequestService } from '../../../requests/shared/models/maintenance-request-service';
 import { MaintenanceRequestState } from '../../../requests/shared/models/maintenance-request-state';
 import { RequestListStrategy } from '../../../requests/shared/models/strategies/maintenance-request-list.strategy';
-import { FiltersStateService } from '../../../requests/shared/services/filters-state.service';
+import { FiltersService } from '../../../requests/shared/services/filters-state.service';
 import { EmployeeRequestService } from '../../services/employee-request.service';
 import { ReportFilters } from '../../shared/models/reportFilters';
 import { ReportFilterModalComponent } from '../report-filter-modal/report-filter-modal.component';
@@ -19,7 +19,7 @@ import { ReportFilterModalComponent } from '../report-filter-modal/report-filter
 export class EmployeeRequestListStrategy implements RequestListStrategy {
   private readonly employeeRequestService = inject(EmployeeRequestService);
   private readonly notificationService = inject(NotificationService);
-  private readonly filtersService = inject(FiltersStateService);
+  private readonly filtersService = inject(FiltersService);
   private readonly fileDownloadService = inject(FileDownloadService);
   private readonly dialog = inject(MatDialog);
 

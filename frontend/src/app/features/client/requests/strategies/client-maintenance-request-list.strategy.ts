@@ -8,7 +8,7 @@ import { MaintenanceRequest } from '../../../requests/shared/models/maintenance-
 import { IMaintenanceRequestService } from '../../../requests/shared/models/maintenance-request-service';
 import { MaintenanceRequestState } from '../../../requests/shared/models/maintenance-request-state';
 import { RequestListStrategy } from '../../../requests/shared/models/strategies/maintenance-request-list.strategy';
-import { FiltersStateService } from '../../../requests/shared/services/filters-state.service';
+import { FiltersService } from '../../../requests/shared/services/filters-state.service';
 import { ClientRequestService } from '../../shared/services/client-request.service';
 import { CreateRequestModalComponent } from '../create-request-modal/create-request-modal.component';
 
@@ -16,7 +16,7 @@ import { CreateRequestModalComponent } from '../create-request-modal/create-requ
 export class ClientRequestListStrategy implements RequestListStrategy {
   private readonly clientRequestService = inject(ClientRequestService);
   private readonly notificationService = inject(NotificationService);
-  private readonly filtersService = inject(FiltersStateService);
+  private readonly filtersService = inject(FiltersService);
   private readonly dialog = inject(MatDialog);
 
   doInitActions() {

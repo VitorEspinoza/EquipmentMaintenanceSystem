@@ -6,7 +6,7 @@ import { DataViewAction, TableAction } from '../../../../../shared/models/TableC
 import { MaintenanceRequest } from '../../models/maintenance-request';
 import { MaintenanceRequestState } from '../../models/maintenance-request-state';
 import { REQUEST_LIST_STRATEGY, RequestListStrategy } from '../../models/strategies/maintenance-request-list.strategy';
-import { CLEARED_FILTERS_STATE, FiltersStateService } from '../../services/filters-state.service';
+import { CLEARED_FILTERS_STATE, FiltersService } from '../../services/filters-state.service';
 import { DynamicTableComponent } from './../../../../../shared/components/dynamic-table/dynamic-table.component';
 
 @Component({
@@ -16,7 +16,7 @@ import { DynamicTableComponent } from './../../../../../shared/components/dynami
   styleUrl: './base-maintenance-request-list.component.css',
 })
 export class BaseMaintenanceRequestListComponent implements OnInit {
-  private readonly filtersService = inject(FiltersStateService);
+  private readonly filtersService = inject(FiltersService);
 
   private strategy: RequestListStrategy = inject(REQUEST_LIST_STRATEGY);
   private requestService = this.strategy.getRequestService();

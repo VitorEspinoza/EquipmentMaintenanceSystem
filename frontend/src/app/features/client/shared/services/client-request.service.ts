@@ -10,7 +10,7 @@ import { MaintenanceRequest } from '../../../requests/shared/models/maintenance-
 import { MaintenanceAction } from '../../../requests/shared/models/maintenance-action/maintenance-action';
 import { MaintenanceActionData } from '../../../requests/shared/models/maintenance-action/maintenance-action-data';
 import { IMaintenanceRequestService } from '../../../requests/shared/models/maintenance-request-service';
-import { FiltersStateService } from '../../../requests/shared/services/filters-state.service';
+import { FiltersService } from '../../../requests/shared/services/filters-state.service';
 import { MaintenanceActionService } from '../../../requests/shared/services/maintenance-action.service';
 import { BudgetRejectionModalComponent } from '../../requests/budget-rejection-modal/budget-rejection-modal.component';
 
@@ -20,7 +20,7 @@ import { BudgetRejectionModalComponent } from '../../requests/budget-rejection-m
 export class ClientRequestService implements IMaintenanceRequestService {
   private crudService = inject(CrudService);
   private actionService = inject(MaintenanceActionService);
-  private filtersService = inject(FiltersStateService);
+  private filtersService = inject(FiltersService);
   endpoint = 'client/maintenance-request';
 
   getAll(): Observable<DefaultResponse<MaintenanceRequest[]>> {

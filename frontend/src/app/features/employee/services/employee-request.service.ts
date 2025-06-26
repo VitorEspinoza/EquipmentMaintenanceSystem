@@ -11,7 +11,7 @@ import { MaintenanceRequest } from '../../requests/shared/models/maintenance-req
 import { MaintenanceAction } from '../../requests/shared/models/maintenance-action/maintenance-action';
 import { MaintenanceActionData } from '../../requests/shared/models/maintenance-action/maintenance-action-data';
 import { IMaintenanceRequestService } from '../../requests/shared/models/maintenance-request-service';
-import { FiltersStateService } from '../../requests/shared/services/filters-state.service';
+import { FiltersService } from '../../requests/shared/services/filters-state.service';
 import { MaintenanceActionService } from '../../requests/shared/services/maintenance-action.service';
 import { DoMaintenanceComponent } from '../requests/do-maintenance/do-maintenance.component';
 import { QuoteMaintenenceModalComponent } from '../requests/quote-maintenence/quote-maintenence.component';
@@ -24,7 +24,7 @@ import { MaintenanceInfo } from '../shared/models/maintenanceInfo';
 export class EmployeeRequestService implements IMaintenanceRequestService {
   private readonly crudService = inject(CrudService);
   private readonly httpClient = inject(HttpClient);
-  private readonly filtersStateService = inject(FiltersStateService);
+  private readonly filtersStateService = inject(FiltersService);
   private readonly actionService = inject(MaintenanceActionService);
 
   private endpoint = 'employee/maintenance-request';
