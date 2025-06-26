@@ -2,15 +2,15 @@ FROM eclipse-temurin:17-jdk-jammy AS build
 
 WORKDIR /app
 
+COPY mvnw .
+COPY .mvn .mvn
 COPY pom.xml .
+
+RUN chmod +x ./mvnw
 
 RUN ./mvnw dependency:go-offline
 
 COPY src ./src
-COPY mvnw .
-COPY .mvn .mvn
-
-RUN chmod +x ./mvnw
 
 RUN ./mvnw clean package -DskipTests
 
@@ -18,9 +18,7 @@ FROM eclipse-temurin:17-jre-jammy
 
 WORKDIR /app
 
-ARG PORT=8080
-
-EXPOSE ${PORT}
+EXPOSE 8080
 
 COPY --from=build /app/target/*.jar app.jar
 
