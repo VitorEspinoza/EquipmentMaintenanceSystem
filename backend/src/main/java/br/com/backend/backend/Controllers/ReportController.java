@@ -24,8 +24,8 @@ public class ReportController {
 
     @GetMapping("/revenue")
     public ResponseEntity<byte[]> getRevenue(
-            @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
-            @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate from,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate to
     ) throws IOException {
         byte[] pdfBytes = reportService.getRevenueReport(from, to);
 

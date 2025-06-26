@@ -2,6 +2,7 @@ package br.com.backend.backend.ExternalServices.Report;
 
 import br.com.backend.backend.DTOs.ResultViewModel;
 import br.com.backend.backend.Exceptions.Custom.InvalidFilterException;
+import br.com.backend.backend.Exceptions.Custom.ReportDataNotFoundException;
 import br.com.backend.backend.ExternalServices.Pdf.Interfaces.IPdfReportBuilder;
 import br.com.backend.backend.ExternalServices.Pdf.Models.PdfReportBuilder;
 import br.com.backend.backend.ExternalServices.Pdf.Interfaces.IData;
@@ -32,7 +33,7 @@ public class ReportService {
         List<RevenueReportProjection> data = fetchRevenueData(from, to);
 
         if (data.isEmpty()) {
-            throw new InvalidFilterException("No data found for the selected date");
+            throw new ReportDataNotFoundException("No data found for the selected date");
         }
 
         IData<RevenueReportProjection> dataExtractor = new RevenueReportDataExtractor();
@@ -45,7 +46,7 @@ public class ReportService {
         List<RevenueReportByCategoryProjection> data = maintenanceRequestRepository.getRevenueByCategoryReport();
 
         if (data.isEmpty()) {
-            throw new InvalidFilterException("No data found for the selected category");
+            throw new ReportDataNotFoundException("No data found for the selected category");
         }
 
         IData<RevenueReportByCategoryProjection> dataExtractor = new RevenueReportByCategoryDataExtractor();
