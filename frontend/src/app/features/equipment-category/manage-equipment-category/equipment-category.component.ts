@@ -167,7 +167,7 @@ export class EquipmentCategoryComponent implements OnInit {
       error: err => {
         let errorMessage = err?.error?.errors?.join(', ') || 'Erro ao criar categoria, tente novamente mais tarde.';
         errorMessage = errorMessage.cotains('already exists')
-          ? `Categoria com o nome "${category}" já existente`
+          ? `Categoria com o nome "${category.name}" já existente`
           : errorMessage;
 
         this.notificationService.error(errorMessage);
