@@ -132,7 +132,7 @@ export class ManageEmployeesComponent implements OnInit {
       key: 'birthDate',
       header: 'Nascimento',
       type: 'date',
-      dateFormat: 'dd/MM/yyyy HH:mm',
+      dateFormat: 'dd/MM/yyyy',
     },
     {
       key: 'actions',
