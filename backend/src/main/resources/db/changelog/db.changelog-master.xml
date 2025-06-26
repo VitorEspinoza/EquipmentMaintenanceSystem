@@ -8,6 +8,7 @@
 
     <includeAll path="migrations/indexes" relativeToChangelogFile="true"/>
 
-    <includeAll path="migrations/seed" relativeToChangelogFile="true"/>
     <include file="migrations/db.changelong-1.0.xml" relativeToChangelogFile="true"/>
+    
+    <includeAll path="migrations/seed" relativeToChangelogFile="true"/>
 </databaseChangeLog>
