@@ -1,0 +1,57 @@
+<div class="overflow-x-auto">
+  <table mat-table [dataSource]="internalDataSource" [class]="tableClass()">
+    @for (column of columns(); track column.key) {
+      <ng-container [matColumnDef]="column.key">
+        <th mat-header-cell *matHeaderCellDef [class]="column.headerClass || 'text-center!'">
+          {{ column.header }}
+        </th>
+        <td mat-cell *matCellDef="let element" [ngClass]="getCellClass(column, element.original)">
+          @switch (column.type) {
+            @case ('text') {
+              <span>{{ element.processed[column.key] }}</span>
+            }
+            @case ('date') {
+              <span>{{ element.processed[column.key] }}</span>
+            }
+            @case ('badge') {
+              <span
+                class="px-3 py-1 rounded-full text-xs font-semibold"
+                [class]="getCellClass(column, element.original)"
+              >
+                {{ element.processed[column.key] }}
+              </span>
+            }
+            @case ('actions') {
+              <div class="self-start">
+                @for (tableAction of element.actions; track tableAction.action) {
+                  @if (tableAction.route) {
+                    <a mat-button [routerLink]="tableAction.route">
+                      {{ tableAction.label }}
+                    </a>
+                  } @else {
+                    <button mat-button (click)="actionClicked.emit({ tableAction, element: element.original })">
+                      {{ tableAction.label }}
+                    </button>
+                  }
+                }
+              </div>
+            }
+          }
+        </td>
+      </ng-container>
+    }
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns()"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns()" [class]="rowClass()"></tr>
+  </table>
+
+  @if (!internalDataSource.data || internalDataSource.data.length === 0) {
+    <div class="text-center p-8 text-gray-500">
+      {{ emptyMessage() }}
+    </div>
+  }
+
+  @if (showPaginator()) {
+    <mat-paginator #paginator [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons> </mat-paginator>
+  }
+</div>

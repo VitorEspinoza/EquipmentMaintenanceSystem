@@ -1,0 +1,43 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="vitor.espinoza">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT COUNT(*) FROM account WHERE email = 'mario@gmail.com';
+            </sqlCheck>
+        </preConditions>
+        <sql dbms="postgresql">
+            INSERT INTO account (id, email, password, role, active) VALUES
+                                                                        (NEXTVAL('account_id_seq'), 'mario@gmail.com', 'B3suutB2IxgKZR7Zc4gCUg==:XLX8WqWsx17mts0UnoHel3ZpkyzC6Xbmnz4SteNpWis=', 'EMPLOYEE', true),
+                                                                        (NEXTVAL('account_id_seq'), 'maria@gmail.com', 'q4Gbz3xIIp/uqfiR6eQ2QQ==:mGeAnBkQNJ1dqS6FQYlIDJ6FMTGzWPwC4cRds+kFklg=', 'EMPLOYEE', true),
+                                                                        (NEXTVAL('account_id_seq'), 'joao@gmail.com', 'uqBpfvxwaMOCd6ltWxXfvQ==:wc7C3lsoOT/ZSDjFaIyZhhR1YERnMUv/iyrnxz5kX3s=', 'CLIENT', true),
+                                                                        (NEXTVAL('account_id_seq'), 'jose@gmail.com', 'bNeACrVK2CvbzC3cnEV08A==:BRqmo9Lpr+JUK0nTzjiLYeTX01e19QlJE5BsX2DrWoI=', 'CLIENT', true),
+                                                                        (NEXTVAL('account_id_seq'), 'joana@gmail.com', 'REuVioW1Jovdk4WZI5kvew==:VvMXJv42uIyuF/txQh6TCoMZVnA9GMeNOgwx4XZBkqE=', 'CLIENT', true),
+                                                                        (NEXTVAL('account_id_seq'), 'joaquina@gmail.com', 'ArCiNoHtfYF4P8po52RiRw==:sC2uRnjMT45uJffngyIVQkjleIKXYrKRVhZ0vyauJ/s=', 'CLIENT', true);
+
+            INSERT INTO employee (id, id_account, name, birth_date) VALUES
+                                                                        (NEXTVAL('employee_id_seq'), (SELECT id FROM account WHERE email = 'mario@gmail.com'), 'Mario', '2005-06-02'),
+                                                                        (NEXTVAL('employee_id_seq'), (SELECT id FROM account WHERE email = 'maria@gmail.com'), 'Maria', '2005-06-02');
+
+            INSERT INTO address (id, zipcode, neighbourhood, street, city, state, number, complement) VALUES
+                (NEXTVAL('address_id_seq'), '83608136', 'Vila São Luiz', 'Rua Nossa Senhora do Rocio', 'Campo Largo', 'Paraná', '117', 'Casa');
+
+            INSERT INTO client (id, id_account, id_address, name, cpf, phone) VALUES
+                                                                                  (NEXTVAL('client_id_seq'), (SELECT id FROM account WHERE email = 'joao@gmail.com'), (SELECT id FROM address WHERE zipcode = '83608136' AND number = '117'), 'joao', '03493418000', '41998643751'),
+                                                                                  (NEXTVAL('client_id_seq'), (SELECT id FROM account WHERE email = 'jose@gmail.com'), (SELECT id FROM address WHERE zipcode = '83608136' AND number = '117'), 'jose', '10802688047', '41997248962'),
+                                                                                  (NEXTVAL('client_id_seq'), (SELECT id FROM account WHERE email = 'joana@gmail.com'), (SELECT id FROM address WHERE zipcode = '83608136' AND number = '117'), 'joana', '67361312004', '4199206314'),
+                                                                                  (NEXTVAL('client_id_seq'), (SELECT id FROM account WHERE email = 'joaquina@gmail.com'), (SELECT id FROM address WHERE zipcode = '83608136' AND number = '117'), 'joaquina', '95564520017', '41995146676');
+
+            INSERT INTO equipment_category(id, name, description) VALUES
+                                                                      (NEXTVAL('equipment_category_id_seq'), 'Notebook', 'Computadores portáteis'),
+                                                                      (NEXTVAL('equipment_category_id_seq'), 'Desktop', 'Computadores fixos'),
+                                                                      (NEXTVAL('equipment_category_id_seq'), 'Impressora', 'Dispositivos que fazem impressão'),
+                                                                      (NEXTVAL('equipment_category_id_seq'), 'Mouse', 'Controladores da seta na interface do computador'),
+                                                                      (NEXTVAL('equipment_category_id_seq'), 'Teclado', 'Dispositivos de digitação');
+        </sql>
+    </changeSet>
+</databaseChangeLog>

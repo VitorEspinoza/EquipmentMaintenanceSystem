@@ -1,0 +1,17 @@
+<form [formGroup]="maintenanceInfoForm" class="flex flex-col">
+  <mat-form-field appearance="outline" class="pt-2">
+    <mat-label>Descrição de manutenção</mat-label>
+    <input type="text" matInput formControlName="maintenanceDescription" />
+    @if (maintenanceInfoForm.get('maintenanceDescription')?.hasError('required')) {
+      <mat-error>A descrição de manutenção é obrigatória</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Orientações ao cliente</mat-label>
+    <textarea matInput type="text" formControlName="customerGuidelines" rows="4"></textarea>
+    @if (maintenanceInfoForm.get('customerGuidelines')?.hasError('required')) {
+      <mat-error>As orientações ao cliente são obrigatórias</mat-error>
+    }
+  </mat-form-field>
+</form>

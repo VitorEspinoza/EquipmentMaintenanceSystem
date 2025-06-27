@@ -1,0 +1,63 @@
+<h2 mat-dialog-title class="self-center">Filtrar Solicitações</h2>
+<mat-dialog-content>
+  <form [formGroup]="filtersForm" class="flex flex-col gap-6">
+    <mat-form-field appearance="outline" class="pt-2">
+      <mat-label>Filtrar: </mat-label>
+      <mat-select formControlName="dateFilter" name="food">
+        @for (dateFilter of dateFilterList; track dateFilter.value) {
+          <mat-option [value]="dateFilter.value">{{ dateFilter.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Selecione o intervalo de datas</mat-label>
+      <mat-date-range-input [disabled]="disableDateRange()" [formGroup]="filtersForm" [rangePicker]="picker">
+        <input matStartDate formControlName="from" placeholder="Desde" />
+        <input matEndDate formControlName="to" placeholder="Até" />
+      </mat-date-range-input>
+      @if (!disableDateRange()) {
+        <mat-hint>DD/MM/YYYY – DD/MM/YYYY</mat-hint>
+      }
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-date-range-picker #picker></mat-date-range-picker>
+      @if (
+        filtersForm.get('from')?.hasError('matStartDateInvalid') ||
+        filtersForm.get('from')?.hasError('matDatepickerParse')
+      ) {
+        <mat-error>Data de início inválida</mat-error>
+      }
+      @if (
+        filtersForm.get('to')?.hasError('matEndDateInvalid') || filtersForm.get('to')?.hasError('matDatepickerParse')
+      ) {
+        <mat-error>Data de término inválida</mat-error>
+      }
+
+      @if (filtersForm.get('from')?.hasError('required') || filtersForm.get('to')?.hasError('required')) {
+        <mat-error>As datas de início e fim são obrigatórias para o intervalo.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="pt-2">
+      <mat-label>Estado: </mat-label>
+      <mat-select formControlName="state" name="food">
+        <mat-option [value]="null">Limpar</mat-option>
+        @for (state of requestStates; track state.key) {
+          <mat-option [value]="state.key">{{ state.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions>
+  <button mat-raised-button type="button" mat-dialog-close>Cancelar</button>
+  <button mat-stroked-button type="button" (click)="clearFilters()">Limpar Filtros</button>
+  <button
+    mat-flat-button
+    type="button"
+    (click)="applyFilters()"
+    [disabled]="!filtersForm.valid || !hasFiltersApplied()"
+  >
+    Filtrar
+  </button>
+</mat-dialog-actions>

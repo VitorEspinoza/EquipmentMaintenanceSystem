@@ -1,0 +1,13 @@
+.body {
+  margin-left: 5rem;
+  position: relative;
+  transition: margin-left 0.3s ease-in-out;
+}
+
+.body-trimmed {
+  margin-left: 17rem;
+}
+
+.body-md-screen {
+  margin-left: 5rem;
+}

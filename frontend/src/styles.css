@@ -1,1 +1,20 @@
 /* You can add global styles to this file, and also import other style files */
+@layer theme, utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.custom-notification .mdc-snackbar__surface,
+.custom-notification .mat-mdc-snackbar-surface {
+  padding: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}

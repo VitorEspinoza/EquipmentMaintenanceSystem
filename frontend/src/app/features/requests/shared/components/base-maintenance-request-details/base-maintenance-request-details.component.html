@@ -1,0 +1,174 @@
+<div class="bg-white shadow-md rounded-lg">
+  @if (request()) {
+    <div class="p-6 space-y-8">
+      <header class="text-center border-b pb-6">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-2">Detalhes da Solicitação #{{ request()!.id }}</h2>
+        <p class="text-gray-600">{{ request()!.client.name }} — {{ request()!.equipmentDescription }}</p>
+
+        <div class="flex justify-center md:justify-end flex-wrap gap-2 mt-4 -mb-2">
+          @for (action of actions(); track action) {
+            <button mat-stroked-button color="primary" (click)="executeAction(action)">
+              <span>{{ action }}</span>
+            </button>
+          }
+        </div>
+      </header>
+
+      <ng-content select="[before-main]"></ng-content>
+
+      <section>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+          <mat-list role="list">
+            <mat-list-item role="listitem">
+              <mat-icon matListItemIcon>build</mat-icon>
+              <div matListItemTitle><strong>Equipamento:</strong> {{ request()!.equipmentDescription }}</div>
+              <div matListItemLine>Categoria: {{ request()!.equipmentCategory.name }}</div>
+            </mat-list-item>
+            <mat-list-item role="listitem">
+              <mat-icon matListItemIcon>schedule</mat-icon>
+              <div matListItemTitle><strong>Data da Solicitação:</strong></div>
+              <div matListItemLine>{{ request()!.createdAt | date: 'dd/MM/yyyy HH:mm' }}</div>
+            </mat-list-item>
+            @if (request()!.approvedAt) {
+              <mat-list-item role="listitem">
+                <mat-icon matListItemIcon>thumb_up_alt</mat-icon>
+                <div matListItemTitle><strong>Data de Aprovação:</strong></div>
+                <div matListItemLine>{{ request()!.approvedAt | date: 'dd/MM/yyyy HH:mm' }}</div>
+              </mat-list-item>
+            }
+            @if (request()!.maintenanceCompletedAt) {
+              <mat-list-item role="listitem">
+                <mat-icon matListItemIcon>event_available</mat-icon>
+                <div matListItemTitle><strong>Manutenção Concluída em:</strong></div>
+                <div matListItemLine>{{ request()!.maintenanceCompletedAt | date: 'dd/MM/yyyy HH:mm' }}</div>
+              </mat-list-item>
+            }
+          </mat-list>
+
+          <mat-list role="list">
+            <mat-list-item role="listitem">
+              <mat-icon matListItemIcon>info</mat-icon>
+              <div matListItemTitle class="pb-1"><strong>Status Atual:</strong></div>
+              <div matListItemLine>
+                <span class="px-3 rounded-full text-sm font-medium" [ngClass]="request()!.translatedState | stateClass">
+                  {{ request()!.translatedState }}
+                </span>
+              </div>
+            </mat-list-item>
+            @if (request()!.assignedToEmployee) {
+              <mat-list-item role="listitem">
+                <mat-icon matListItemIcon>assignment_ind</mat-icon>
+                <div matListItemTitle><strong>Técnico Designado:</strong></div>
+                <div matListItemLine>{{ request()!.assignedToEmployee!.name }}</div>
+              </mat-list-item>
+            }
+            @if (request()!.paidAt) {
+              <mat-list-item role="listitem" class="text-green-700">
+                <mat-icon matListItemIcon class="text-green-600">check_circle</mat-icon>
+                <div matListItemTitle><strong>Pagamento Confirmado em:</strong></div>
+                <div matListItemLine>{{ request()!.paidAt | date: 'dd/MM/yyyy HH:mm' }}</div>
+              </mat-list-item>
+            }
+            @if (request()!.finalizedAt) {
+              <mat-list-item role="listitem">
+                <mat-icon matListItemIcon>verified</mat-icon>
+                <div matListItemTitle><strong>Finalizado por:</strong> {{ request()!.finalizedByEmployee?.name }}</div>
+                <div matListItemLine>Em: {{ request()!.finalizedAt | date: 'dd/MM/yyyy HH:mm' }}</div>
+              </mat-list-item>
+            }
+          </mat-list>
+        </div>
+
+        @if (request()!.rejectionReason) {
+          <div class="mt-4 p-4 bg-red-50 border-l-4 border-red-400 rounded-r-lg">
+            <mat-list-item role="listitem" class="text-red-700">
+              <mat-icon matListItemIcon class="text-red-500">error</mat-icon>
+              <div matListItemTitle><strong>Motivo da Rejeição:</strong> {{ request()!.rejectionReason }}</div>
+              @if (request()!.rejectedAt) {
+                <div matListItemLine>Em: {{ request()!.rejectedAt | date: 'dd/MM/yyyy HH:mm' }}</div>
+              }
+            </mat-list-item>
+          </div>
+        }
+      </section>
+
+      <div class="border-y border-gray-200">
+        @if (request()!.quotedValue; as quotedValue) {
+          <div class="py-4 px-2 flex justify-between items-center flex-wrap gap-2">
+            <div>
+              <p class="text-lg font-semibold text-gray-800">Valor Orçado</p>
+              @if (request()!.quotedAt) {
+                <p class="text-sm text-gray-500">Definido em: {{ request()!.quotedAt | date: 'longDate' }}</p>
+              }
+            </div>
+            <p class="text-3xl font-bold text-green-700">
+              {{ quotedValue | currency: 'BRL' }}
+            </p>
+          </div>
+        } @else {
+          <div class="py-5 text-center">
+            <p class="text-gray-500 italic">Aguardando Orçamento</p>
+          </div>
+        }
+      </div>
+
+      <section>
+        <h3 class="text-lg font-semibold text-gray-700 mb-3">Descrições e Orientações</h3>
+        <mat-accordion class="!border-none" multi="true">
+          @if (request()!.defectDescription) {
+            <mat-expansion-panel class="!shadow-none border border-gray-200 !rounded-md mb-2">
+              <mat-expansion-panel-header>
+                <mat-panel-title class="flex items-center">
+                  <mat-icon class="mr-3 text-gray-500">bug_report</mat-icon>
+                  <span class="font-medium text-gray-800">Descrição do Defeito</span>
+                </mat-panel-title>
+                <mat-panel-description class="text-sm text-gray-600 italic"
+                  >Informado pelo cliente</mat-panel-description
+                >
+              </mat-expansion-panel-header>
+              <p class="text-gray-700 pt-3 px-4 pb-4 whitespace-pre-wrap">{{ request()!.defectDescription }}</p>
+            </mat-expansion-panel>
+          }
+
+          @if (request()!.maintenanceDescription) {
+            <mat-expansion-panel class="!shadow-none border border-gray-200 !rounded-md mb-2">
+              <mat-expansion-panel-header>
+                <mat-panel-title class="flex items-center">
+                  <mat-icon class="mr-3 text-gray-500">description</mat-icon>
+                  <span class="font-medium text-gray-800">Relatório da Manutenção</span>
+                </mat-panel-title>
+                <mat-panel-description class="text-sm text-gray-600 italic"
+                  >Realizado pelo técnico</mat-panel-description
+                >
+              </mat-expansion-panel-header>
+              <p class="text-gray-700 pt-3 px-4 pb-4 whitespace-pre-wrap">{{ request()!.maintenanceDescription }}</p>
+            </mat-expansion-panel>
+          }
+
+          @if (request()!.customerGuidelines) {
+            <mat-expansion-panel class="!shadow-none border border-gray-200 !rounded-md mb-2">
+              <mat-expansion-panel-header>
+                <mat-panel-title class="flex items-center">
+                  <mat-icon class="mr-3 text-gray-500">lightbulb</mat-icon>
+                  <span class="font-medium text-gray-800">Orientações para o Cliente</span>
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <p class="text-gray-700 pt-3 px-4 pb-4 whitespace-pre-wrap">{{ request()!.customerGuidelines }}</p>
+            </mat-expansion-panel>
+          }
+        </mat-accordion>
+      </section>
+
+      <section>
+        <h3 class="text-lg font-semibold text-gray-700 mb-3">Histórico de Estados</h3>
+        <div class="overflow-x-auto rounded-lg">
+          <app-dynamic-table [dataSource]="request()!.stateHistory" [columns]="historyTableColumns()" />
+        </div>
+      </section>
+    </div>
+  } @else {
+    <div class="flex justify-center items-center h-64">
+      <p class="text-gray-500">A carregar detalhes da solicitação...</p>
+    </div>
+  }
+</div>

@@ -1,0 +1,133 @@
+<div class="min-h-screen bg-gray-100 flex items-center justify-center">
+  <mat-card class="max-w-4xl p-6 shadow-lg flex flex-col">
+    <mat-card-header class="flex justify-center mb-4">
+      <mat-card-title class="!text-2xl !font-semibold">Cadastro</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form id="registerForm" [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-4 flex flex-col">
+        <div class="flex space-x-4">
+          <mat-form-field appearance="outline">
+            <mat-label>Nome</mat-label>
+            <input matInput formControlName="name" type="text" />
+            @if (registerForm.get('name')?.hasError('required')) {
+              <mat-error>Nome obrigatório</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email" type="email" />
+            @if (registerForm.get('email')?.hasError('required')) {
+              <mat-error>Email obrigatório</mat-error>
+            }
+            @if (registerForm.get('email')?.hasError('email')) {
+              <mat-error>Email inválido</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <div class="flex space-x-4">
+          <mat-form-field appearance="outline">
+            <mat-label>CPF</mat-label>
+            <input #tel matInput formControlName="cpf" type="text" inputmode="numeric" mask="000.000.000-00" />
+            @if (registerForm.get('cpf')?.hasError('required')) {
+              <mat-error>CPF obrigatório</mat-error>
+            }
+            @if (registerForm.get('cpf')?.hasError('pattern')) {
+              <mat-error>CPF inválido</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Telefone</mat-label>
+            <input matInput formControlName="phone" type="text" placeholder="(99) 99999-9999" mask="(00) 0000-00009" />
+            @if (registerForm.get('phone')?.hasError('required')) {
+              <mat-error>Telefone obrigatório</mat-error>
+            }
+            @if (registerForm.get('phone')?.hasError('pattern')) {
+              <mat-error>Telefone inválido</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <div formGroupName="address" class="space-y-4 flex flex-col">
+          <mat-form-field appearance="outline">
+            <mat-label>CEP</mat-label>
+            <input matInput formControlName="zipcode" type="text" mask="00000-000" />
+            @if (registerForm.get('address.zipcode')?.hasError('required')) {
+              <mat-error>CEP obrigatório</mat-error>
+            }
+          </mat-form-field>
+
+          <div class="flex space-x-4">
+            <mat-form-field appearance="outline" class="w-2/3">
+              <mat-label>Rua</mat-label>
+              <input matInput formControlName="street" type="text" />
+              @if (registerForm.get('address.street')?.hasError('required')) {
+                <mat-error>Rua obrigatória</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="w-1/3">
+              <mat-label>Número</mat-label>
+              <input matInput formControlName="number" type="text" inputmode="numeric" mask="0*" />
+              @if (registerForm.get('address.number')?.hasError('required')) {
+                <mat-error>Número obrigatório</mat-error>
+              }
+            </mat-form-field>
+          </div>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Complemento</mat-label>
+            <input matInput formControlName="complement" type="text" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Bairro</mat-label>
+            <input matInput formControlName="neighbourhood" type="text" />
+            @if (registerForm.get('address.neighbourhood')?.hasError('required')) {
+              <mat-error>Bairro obrigatório</mat-error>
+            }
+          </mat-form-field>
+
+          <div class="flex space-x-4">
+            <mat-form-field appearance="outline" class="flex-1">
+              <mat-label>Cidade</mat-label>
+              <input type="text" matInput formControlName="city" />
+              @if (registerForm.get('address.city')?.hasError('required')) {
+                <mat-error>Cidade obrigatória</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="flex-1">
+              <mat-label>Estado</mat-label>
+              <input type="text" matInput formControlName="state" />
+              @if (registerForm.get('address.state')?.hasError('required')) {
+                <mat-error>Estado obrigatório</mat-error>
+              }
+            </mat-form-field>
+          </div>
+        </div>
+      </form>
+    </mat-card-content>
+    <mat-card-actions class="mt-4 flex justify-center">
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        class="w-full py-2"
+        [disabled]="registerForm.invalid"
+        form="registerForm"
+      >
+        Cadastrar
+      </button>
+    </mat-card-actions>
+
+    <mat-card-footer>
+      <p class="text-center mt-4 text-sm">
+        Já tem uma conta?
+        <a [routerLink]="['/login']" class="text-blue-500 hover:underline">Entrar</a>
+      </p>
+    </mat-card-footer>
+  </mat-card>
+</div>

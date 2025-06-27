@@ -1,0 +1,21 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="1" author="rafael.leonardo">
+        <sql dbms="postgresql">
+            CREATE TABLE maintenance_history (
+                                                 id SERIAL PRIMARY KEY,
+                                                 id_maintenance INTEGER NOT NULL,
+                                                 id_origin_employee INTEGER NOT NULL,
+                                                 id_destination_employee INTEGER NOT NULL,
+                                                 redirectDate TIMESTAMP NOT NULL,
+                                                 reason VARCHAR(255) NOT NULL,
+                                                 FOREIGN KEY (id_maintenance) REFERENCES maintenance(id),
+                                                 FOREIGN KEY (id_origin_employee) REFERENCES employee(id),
+                                                 FOREIGN KEY (id_destination_employee) REFERENCES employee(id)
+            );
+        </sql>
+    </changeSet>
+</databaseChangeLog>
