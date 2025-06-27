@@ -23,6 +23,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +37,7 @@ public class EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final AccountService accountService;
     private final CurrentUserService currentUserService;
+    private final PasswordEncoder passwordEncoder;
 
     public ResultViewModel<EmployeeDTO> create(CreateEmployeeDTO createEmployeeDTO) {
         CreateAccountDTO accountCreate = new CreateAccountDTO(createEmployeeDTO.getEmail(), createEmployeeDTO.getPassword(), "EMPLOYEE");
@@ -68,7 +70,9 @@ public class EmployeeService {
             throw new AccountAlreadyExists("email");
         }
 
-        employee.update(dto.getName(), dto.getEmail(), dto.getBirthDate());
+        String encryptedPassword = passwordEncoder.encode(dto.getPassword());
+
+        employee.update(dto.getName(), dto.getEmail(), dto.getBirthDate(), encryptedPassword);
         employeeRepository.save(employee);
         return ResultViewModel.success(EmployeeDTO.fromEntity(employee));
     }
