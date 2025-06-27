@@ -30,7 +30,7 @@ export class ClientRequestListStrategy implements RequestListStrategy {
     return [
       {
         key: 'equipmentDescription',
-        header: 'Equipamento',
+        header: 'Descrição do Equipamento',
         type: 'text',
         slice: { start: 0, end: 30 },
       },

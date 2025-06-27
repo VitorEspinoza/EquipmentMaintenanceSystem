@@ -42,7 +42,7 @@ export class EmployeeRequestListStrategy implements RequestListStrategy {
       },
       {
         key: 'equipmentDescription',
-        header: 'Equipamento',
+        header: 'Descrição do Equipamento',
         type: 'text',
         slice: { start: 0, end: 30 },
       },
