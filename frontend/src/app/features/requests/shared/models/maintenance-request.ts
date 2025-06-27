@@ -26,6 +26,6 @@ export interface MaintenanceRequest {
   paidAt?: Date;
   finalizedAt?: Date;
   finalizedByEmployee?: Employee;
-  assignToEmployee?: Employee;
+  assignedToEmployee?: Employee;
   stateHistory: MaintenanceRequestHistory[];
 }

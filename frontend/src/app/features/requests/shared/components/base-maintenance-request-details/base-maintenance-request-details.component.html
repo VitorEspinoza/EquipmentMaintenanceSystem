@@ -55,11 +55,11 @@
                 </span>
               </div>
             </mat-list-item>
-            @if (request()!.assignToEmployee) {
+            @if (request()!.assignedToEmployee) {
               <mat-list-item role="listitem">
                 <mat-icon matListItemIcon>assignment_ind</mat-icon>
                 <div matListItemTitle><strong>Técnico Designado:</strong></div>
-                <div matListItemLine>{{ request()!.assignToEmployee!.name }}</div>
+                <div matListItemLine>{{ request()!.assignedToEmployee!.name }}</div>
               </mat-list-item>
             }
             @if (request()!.paidAt) {
