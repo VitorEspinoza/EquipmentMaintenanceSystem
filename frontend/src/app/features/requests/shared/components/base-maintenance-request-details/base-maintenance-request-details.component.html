@@ -48,9 +48,9 @@
           <mat-list role="list">
             <mat-list-item role="listitem">
               <mat-icon matListItemIcon>info</mat-icon>
-              <div matListItemTitle><strong>Status Atual:</strong></div>
+              <div matListItemTitle class="pb-1"><strong>Status Atual:</strong></div>
               <div matListItemLine>
-                <span class="px-3 py-1 rounded-full text-sm font-medium" [ngClass]="stateClass()">
+                <span class="px-3 rounded-full text-sm font-medium" [ngClass]="stateClass()">
                   {{ request()!.translatedState }}
                 </span>
               </div>

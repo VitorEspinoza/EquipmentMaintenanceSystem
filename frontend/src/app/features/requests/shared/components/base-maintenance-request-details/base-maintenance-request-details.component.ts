@@ -89,17 +89,17 @@ export class BaseMaintenanceRequestDetailsComponent {
     if (!this.request()) {
       return defaultClass;
     }
-    const state = this.request()!.state;
+    const state = this.request()!.translatedState;
 
-    const map: Record<MaintenanceRequestState, string> = {
-      [MaintenanceRequestState.OPEN]: 'bg-gray-500 text-white',
-      [MaintenanceRequestState.QUOTED]: 'bg-yellow-800 text-white',
-      [MaintenanceRequestState.REJECTED]: 'bg-red-600 text-white',
-      [MaintenanceRequestState.APPROVED]: 'bg-yellow-500 text-white',
-      [MaintenanceRequestState.REDIRECTED]: 'bg-purple-600 text-white',
-      [MaintenanceRequestState.FIXED]: 'bg-blue-500 text-white',
-      [MaintenanceRequestState.PAID]: 'bg-orange-500 text-white',
-      [MaintenanceRequestState.COMPLETED]: 'bg-green-600 text-white',
+    const map: Record<string, string> = {
+      [MaintenanceRequestState.OPEN]: 'bg-gray-200',
+      [MaintenanceRequestState.QUOTED]: 'bg-orange-900 text-white',
+      [MaintenanceRequestState.REJECTED]: 'bg-red-800 text-white',
+      [MaintenanceRequestState.REDIRECTED]: 'bg-purple-200',
+      [MaintenanceRequestState.FIXED]: 'bg-blue-200',
+      [MaintenanceRequestState.APPROVED]: 'bg-yellow-200',
+      [MaintenanceRequestState.PAID]: 'bg-orange-400 text-white',
+      [MaintenanceRequestState.COMPLETED]: 'bg-green-200',
     };
 
     return map[state] || defaultClass;
