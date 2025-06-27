@@ -9,7 +9,6 @@
     <app-dynamic-table
       [dataSource]="requests()"
       [columns]="tableColumns()"
-      [badgeClassResolver]="getBadgeClass"
       [actionsResolver]="getRowActions"
       (actionClicked)="handleAction($event)"
       [showPaginator]="true"

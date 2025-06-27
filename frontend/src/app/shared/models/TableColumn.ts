@@ -1,11 +1,11 @@
-export interface TableColumn {
+export interface TableColumn<T = any> {
   key: string;
   header: string;
   type: 'text' | 'date' | 'badge' | 'actions' | 'custom';
   defaultValue?: string;
   dateFormat?: string;
   headerClass?: string;
-  cellClass?: string;
+  cellClass?: string | ((element: T) => string);
   slice?: { start: number; end: number };
 }
 
