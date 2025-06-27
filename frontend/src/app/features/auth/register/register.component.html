@@ -29,7 +29,7 @@
         <div class="flex space-x-4">
           <mat-form-field appearance="outline">
             <mat-label>CPF</mat-label>
-            <input #tel matInput formControlName="cpf" type="text" inputmode="numeric" mask="CPF_CNPJ" maxlength="14" />
+            <input #tel matInput formControlName="cpf" type="text" inputmode="numeric" mask="000.000.000-00" />
             @if (registerForm.get('cpf')?.hasError('required')) {
               <mat-error>CPF obrigatório</mat-error>
             }
@@ -50,72 +50,64 @@
           </mat-form-field>
         </div>
 
-        <mat-form-field appearance="outline">
-          <mat-label>CEP</mat-label>
-          <input matInput formControlName="zipcode" type="text" mask="00000-000" />
-          @if (registerForm.get('zipcode')?.hasError('required')) {
-            <mat-error>CEP obrigatório</mat-error>
-          }
-          @if (registerForm.get('zipcode')?.hasError('pattern')) {
-            <mat-error>CEP inválido</mat-error>
-          }
-        </mat-form-field>
-
-        <div class="flex space-x-4">
-          <mat-form-field appearance="outline" class="w-2/3">
-            <mat-label>Rua</mat-label>
-            <input matInput formControlName="street" type="text" />
-            @if (registerForm.get('street')?.hasError('required')) {
-              <mat-error>Rua obrigatória</mat-error>
+        <div formGroupName="address" class="space-y-4 flex flex-col">
+          <mat-form-field appearance="outline">
+            <mat-label>CEP</mat-label>
+            <input matInput formControlName="zipcode" type="text" mask="00000-000" />
+            @if (registerForm.get('address.zipcode')?.hasError('required')) {
+              <mat-error>CEP obrigatório</mat-error>
             }
           </mat-form-field>
 
-          <mat-form-field appearance="outline" class="w-1/3">
-            <mat-label>Número</mat-label>
-            <input matInput formControlName="number" type="text" inputmode="numeric" mask="0*" />
-            @if (registerForm.get('number')?.hasError('required')) {
-              <mat-error>Número obrigatório</mat-error>
-            }
-            @if (registerForm.get('number')?.hasError('pattern')) {
-              <mat-error>Número inválido</mat-error>
+          <div class="flex space-x-4">
+            <mat-form-field appearance="outline" class="w-2/3">
+              <mat-label>Rua</mat-label>
+              <input matInput formControlName="street" type="text" />
+              @if (registerForm.get('address.street')?.hasError('required')) {
+                <mat-error>Rua obrigatória</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="w-1/3">
+              <mat-label>Número</mat-label>
+              <input matInput formControlName="number" type="text" inputmode="numeric" mask="0*" />
+              @if (registerForm.get('address.number')?.hasError('required')) {
+                <mat-error>Número obrigatório</mat-error>
+              }
+            </mat-form-field>
+          </div>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Complemento</mat-label>
+            <input matInput formControlName="complement" type="text" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Bairro</mat-label>
+            <input matInput formControlName="neighbourhood" type="text" />
+            @if (registerForm.get('address.neighbourhood')?.hasError('required')) {
+              <mat-error>Bairro obrigatório</mat-error>
             }
           </mat-form-field>
+
+          <div class="flex space-x-4">
+            <mat-form-field appearance="outline" class="flex-1">
+              <mat-label>Cidade</mat-label>
+              <input type="text" matInput formControlName="city" />
+              @if (registerForm.get('address.city')?.hasError('required')) {
+                <mat-error>Cidade obrigatória</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="flex-1">
+              <mat-label>Estado</mat-label>
+              <input type="text" matInput formControlName="state" />
+              @if (registerForm.get('address.state')?.hasError('required')) {
+                <mat-error>Estado obrigatório</mat-error>
+              }
+            </mat-form-field>
+          </div>
         </div>
-
-        <mat-form-field appearance="outline">
-          <mat-label>Complemento</mat-label>
-          <input matInput formControlName="complement" type="text" />
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-          <mat-label>Bairro</mat-label>
-          <input matInput formControlName="neighbourhood" type="text" />
-          @if (registerForm.get('neighbourhood')?.hasError('required')) {
-            <mat-error>Bairro obrigatório</mat-error>
-          }
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-          <mat-label>Cidade</mat-label>
-          <input type="text" matInput formControlName="city" type="text" />
-          @if (registerForm.get('city')?.hasError('required')) {
-            <mat-error>Cidade obrigatória</mat-error>
-          }
-          @if (registerForm.get('city')?.hasError('invalidCity')) {
-            <mat-error>Cidade inválida</mat-error>
-          }
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-          <mat-label>Estado</mat-label>
-          <input type="text" matInput formControlName="state" type="text" />
-          @if (registerForm.get('state')?.hasError('required')) {
-            <mat-error>Estado obrigatório</mat-error>
-          }
-          @if (registerForm.get('state')?.hasError('invalidState')) {
-            <mat-error>Estado inválido</mat-error>
-          }
-        </mat-form-field>
       </form>
     </mat-card-content>
     <mat-card-actions class="mt-4 flex justify-center">
@@ -124,7 +116,7 @@
         color="primary"
         type="submit"
         class="w-full py-2"
-        [disabled]="!registerForm.valid"
+        [disabled]="registerForm.invalid"
         form="registerForm"
       >
         Cadastrar
