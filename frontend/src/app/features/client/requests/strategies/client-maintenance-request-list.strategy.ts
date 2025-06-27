@@ -9,6 +9,7 @@ import { IMaintenanceRequestService } from '../../../requests/shared/models/main
 import { MaintenanceRequestState } from '../../../requests/shared/models/maintenance-request-state';
 import { RequestListStrategy } from '../../../requests/shared/models/strategies/maintenance-request-list.strategy';
 import { FiltersService } from '../../../requests/shared/services/filters-state.service';
+import { getStateClass } from '../../../requests/shared/utils/maintenance-request.utils';
 import { ClientRequestService } from '../../shared/services/client-request.service';
 import { CreateRequestModalComponent } from '../create-request-modal/create-request-modal.component';
 
@@ -44,6 +45,7 @@ export class ClientRequestListStrategy implements RequestListStrategy {
         key: 'translatedState',
         header: 'Estado',
         type: 'badge',
+        cellClass: element => `text-center! ${getStateClass(element.translatedState)}`,
       },
       {
         key: 'actions',

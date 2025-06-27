@@ -18,11 +18,11 @@ import { TableColumn } from '../../../../../shared/models/TableColumn';
 import { MaintenanceRequest } from '../../models/maintenance-request';
 
 import { MaintenanceAction } from '../../models/maintenance-action/maintenance-action';
-import { MaintenanceRequestState } from '../../models/maintenance-request-state';
 import {
   MAINTENANCE_REQUEST_DETAILS_STRATEGY,
   MaintenanceRequestDetailsStrategy,
 } from '../../models/strategies/maintenance-request-details-strategy';
+import { StateClassPipe } from '../../pipes/state-class.pipe';
 @Component({
   selector: 'app-base-maintenance-request-details',
   imports: [
@@ -37,6 +37,7 @@ import {
     CdkAccordionModule,
     MatExpansionModule,
     DynamicTableComponent,
+    StateClassPipe,
   ],
   templateUrl: './base-maintenance-request-details.component.html',
   styleUrl: './base-maintenance-request-details.component.css',
@@ -82,27 +83,6 @@ export class BaseMaintenanceRequestDetailsComponent {
     const actions = request ? this.strategy.getAvailableActions(request) : [];
 
     return actions;
-  });
-
-  stateClass = computed(() => {
-    const defaultClass = 'bg-gray-300 text-gray-800';
-    if (!this.request()) {
-      return defaultClass;
-    }
-    const state = this.request()!.translatedState;
-
-    const map: Record<string, string> = {
-      [MaintenanceRequestState.OPEN]: 'bg-gray-200',
-      [MaintenanceRequestState.QUOTED]: 'bg-orange-900 text-white',
-      [MaintenanceRequestState.REJECTED]: 'bg-red-800 text-white',
-      [MaintenanceRequestState.REDIRECTED]: 'bg-purple-200',
-      [MaintenanceRequestState.FIXED]: 'bg-blue-200',
-      [MaintenanceRequestState.APPROVED]: 'bg-yellow-200',
-      [MaintenanceRequestState.PAID]: 'bg-orange-400 text-white',
-      [MaintenanceRequestState.COMPLETED]: 'bg-green-200',
-    };
-
-    return map[state] || defaultClass;
   });
 
   successMessage = (action: MaintenanceAction): string => {

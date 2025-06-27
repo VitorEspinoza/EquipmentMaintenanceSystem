@@ -11,6 +11,7 @@ import { IMaintenanceRequestService } from '../../../requests/shared/models/main
 import { MaintenanceRequestState } from '../../../requests/shared/models/maintenance-request-state';
 import { RequestListStrategy } from '../../../requests/shared/models/strategies/maintenance-request-list.strategy';
 import { FiltersService } from '../../../requests/shared/services/filters-state.service';
+import { getStateClass } from '../../../requests/shared/utils/maintenance-request.utils';
 import { EmployeeRequestService } from '../../services/employee-request.service';
 import { ReportFilters } from '../../shared/models/reportFilters';
 import { ReportFilterModalComponent } from '../report-filter-modal/report-filter-modal.component';
@@ -56,6 +57,7 @@ export class EmployeeRequestListStrategy implements RequestListStrategy {
         key: 'translatedState',
         header: 'Estado',
         type: 'badge',
+        cellClass: element => `text-center! ${getStateClass(element.translatedState)}`,
       },
       {
         key: 'actions',

@@ -4,7 +4,6 @@ import { map, startWith, switchMap } from 'rxjs';
 import { DataListViewComponent } from '../../../../../shared/components/data-list-view/data-list-view.component';
 import { DataViewAction, TableAction } from '../../../../../shared/models/TableColumn';
 import { MaintenanceRequest } from '../../models/maintenance-request';
-import { MaintenanceRequestState } from '../../models/maintenance-request-state';
 import { REQUEST_LIST_STRATEGY, RequestListStrategy } from '../../models/strategies/maintenance-request-list.strategy';
 import { CLEARED_FILTERS_STATE, FiltersService } from '../../services/filters-state.service';
 import { DynamicTableComponent } from './../../../../../shared/components/dynamic-table/dynamic-table.component';
@@ -62,22 +61,5 @@ export class BaseMaintenanceRequestListComponent implements OnInit {
         this.manualRefresh.update(value => value + 1);
       },
     });
-  };
-
-  getBadgeClass = (element: MaintenanceRequest, columnKey: string): string => {
-    if (columnKey === 'translatedState') {
-      const stateClassMap: Record<string, string> = {
-        [MaintenanceRequestState.OPEN]: 'bg-gray-200',
-        [MaintenanceRequestState.QUOTED]: 'bg-orange-900 text-white',
-        [MaintenanceRequestState.REJECTED]: 'bg-red-800 text-white',
-        [MaintenanceRequestState.REDIRECTED]: 'bg-purple-200',
-        [MaintenanceRequestState.FIXED]: 'bg-blue-200',
-        [MaintenanceRequestState.APPROVED]: 'bg-yellow-200',
-        [MaintenanceRequestState.PAID]: 'bg-orange-400 text-white',
-        [MaintenanceRequestState.COMPLETED]: 'bg-green-200',
-      };
-      return stateClassMap[element.translatedState];
-    }
-    return '';
   };
 }

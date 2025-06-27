@@ -5,7 +5,7 @@
         <th mat-header-cell *matHeaderCellDef [class]="column.headerClass || 'text-center!'">
           {{ column.header }}
         </th>
-        <td mat-cell *matCellDef="let element" [class]="column.cellClass || 'text-center!'">
+        <td mat-cell *matCellDef="let element" [ngClass]="getCellClass(column, element.original)">
           @switch (column.type) {
             @case ('text') {
               <span>{{ element.processed[column.key] }}</span>
@@ -14,7 +14,10 @@
               <span>{{ element.processed[column.key] }}</span>
             }
             @case ('badge') {
-              <span class="px-3 py-1 rounded-full text-xs font-semibold" [class]="element.badgeClasses[column.key]">
+              <span
+                class="px-3 py-1 rounded-full text-xs font-semibold"
+                [class]="getCellClass(column, element.original)"
+              >
                 {{ element.processed[column.key] }}
               </span>
             }

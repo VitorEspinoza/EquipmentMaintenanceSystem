@@ -1,3 +1,4 @@
+import { NgClass } from '@angular/common';
 import { AfterViewInit, Component, computed, effect, input, output, ViewChild } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -8,7 +9,15 @@ import { RouterModule } from '@angular/router';
 import { TableAction, TableColumn } from '../../models/TableColumn';
 @Component({
   selector: 'app-dynamic-table',
-  imports: [MatTableModule, MatIconModule, MatButtonModule, MatTooltipModule, RouterModule, MatPaginatorModule],
+  imports: [
+    MatTableModule,
+    MatIconModule,
+    MatButtonModule,
+    MatTooltipModule,
+    RouterModule,
+    MatPaginatorModule,
+    NgClass,
+  ],
   templateUrl: './dynamic-table.component.html',
   styleUrl: './dynamic-table.component.css',
 })
@@ -20,7 +29,6 @@ export class DynamicTableComponent<TAction = any, TData = any> implements AfterV
   emptyMessage = input('Nenhum registro encontrado');
   showPaginator = input(false);
 
-  badgeClassResolver = input<(element: TData, columnKey: string) => string>();
   actionsResolver = input<(element: TData) => TableAction<TAction>[]>();
 
   actionClicked = output<{ tableAction: TableAction<TAction>; element: TData }>();
@@ -34,14 +42,13 @@ export class DynamicTableComponent<TAction = any, TData = any> implements AfterV
   processedData = computed(() => {
     const data = this.dataSource();
     const cols = this.columns();
-    const badgeResolver = this.badgeClassResolver();
     const actionResolver = this.actionsResolver();
+
     return data.map(item => {
       return {
         original: item,
         processed: this.processRowData(item, cols),
         actions: actionResolver?.(item) || [],
-        badgeClasses: this.processBadgeClasses(item, cols, badgeResolver),
       };
     });
   });
@@ -87,21 +94,11 @@ export class DynamicTableComponent<TAction = any, TData = any> implements AfterV
     return processed;
   }
 
-  private processBadgeClasses(
-    item: TData,
-    columns: TableColumn[],
-    resolver?: (element: TData, columnKey: string) => string
-  ): Record<string, string> {
-    const badgeClasses: Record<string, string> = {};
-
-    columns
-      .filter(col => col.type === 'badge')
-      .forEach(col => {
-        const key = col.key as string;
-        badgeClasses[key] = resolver?.(item, key) || '';
-      });
-
-    return badgeClasses;
+  getCellClass(column: TableColumn<TData>, element: TData): string {
+    if (typeof column.cellClass === 'function') {
+      return column.cellClass(element);
+    }
+    return column.cellClass || 'text-center!';
   }
 
   private getNestedValue(obj: any, path: string): any {
