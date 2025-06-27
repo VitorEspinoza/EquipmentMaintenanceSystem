@@ -69,7 +69,7 @@ export class BaseMaintenanceRequestListComponent implements OnInit {
       const stateClassMap: Record<string, string> = {
         [MaintenanceRequestState.OPEN]: 'bg-gray-200',
         [MaintenanceRequestState.QUOTED]: 'bg-orange-900 text-white',
-        [MaintenanceRequestState.REJECTED]: 'bg-red-200',
+        [MaintenanceRequestState.REJECTED]: 'bg-red-800 text-white',
         [MaintenanceRequestState.REDIRECTED]: 'bg-purple-200',
         [MaintenanceRequestState.FIXED]: 'bg-blue-200',
         [MaintenanceRequestState.APPROVED]: 'bg-yellow-200',
