@@ -14,14 +14,4 @@ export class AddressService {
     const endpoint = `/${zipcode}/json/`;
     return this.crudService.get(endpoint, undefined, this.viaCepUrl);
   }
-
-  searchStates(): Observable<any> {
-    const endpoint = '/api/v1/localidades/estados/';
-    return this.crudService.get(endpoint, undefined, this.ibgeUrl);
-  }
-
-  searchCitiesByState(stateId: number): Observable<any> {
-    const endpoint = `/api/v1/localidades/estados/${stateId}/municipios`;
-    return this.crudService.get(endpoint, undefined, this.ibgeUrl);
-  }
 }

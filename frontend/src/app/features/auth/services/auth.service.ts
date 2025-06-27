@@ -3,7 +3,6 @@ import { Observable, tap } from 'rxjs';
 import { CrudService } from '../../../core/services/crud.service';
 import { Account } from '../models/account';
 import { LoginRequest } from '../models/loginRequest';
-import { LoginResponse } from '../models/loginResponse';
 import { RegisterRequest } from '../models/registerRequest';
 import { DefaultResponse } from './../../../shared/models/DefaultResponse';
 
@@ -33,8 +32,9 @@ export class AuthService {
     return this.setAccount(request$);
   }
 
-  register(credentials: RegisterRequest): Observable<DefaultResponse<LoginResponse>> {
-    return this.crudService.post<DefaultResponse<LoginResponse>>(`${this.clientPrefix}`, credentials);
+  register(credentials: RegisterRequest): Observable<DefaultResponse<Account>> {
+    const request$ = this.crudService.post<DefaultResponse<Account>>(`${this.clientPrefix}`, credentials);
+    return this.setAccount(request$);
   }
 
   getAccount(): Observable<DefaultResponse<Account>> {
